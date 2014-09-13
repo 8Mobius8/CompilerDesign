@@ -10,8 +10,8 @@ import static wci.frontend.java.JavaTokenType.*;
  *
  * <p> Java word tokens (identifiers and reserved words).</p>
  *
+ * <p>Adapted from Dr. Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
- * <p>For instructional purposes only.  No warranties.</p>
  */
 public class JavaWordToken extends JavaToken
 {
@@ -38,7 +38,7 @@ public class JavaWordToken extends JavaToken
 
         // Get the word characters (letter or digit).  The scanner has
         // already determined that the first character is a letter.
-        while (Character.isLetterOrDigit(currentChar)) {
+        while (Character.isLetterOrDigit(currentChar) || currentChar == '_') {
             textBuffer.append(currentChar);
             currentChar = nextChar();  // consume character
         }

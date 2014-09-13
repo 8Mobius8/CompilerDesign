@@ -10,33 +10,55 @@ import wci.frontend.TokenType;
  *
  * <p>Java token types.</p>
  *
+ * <p>Adapted from Dr. Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
- * <p>For instructional purposes only.  No warranties.</p>
  */
 public enum JavaTokenType implements TokenType
 {
-    // Reserved words.
-    AND, ARRAY, BEGIN, CASE, CONST, DIV, DO, DOWNTO, ELSE, END,
-    FILE, FOR, FUNCTION, GOTO, IF, IN, LABEL, MOD, NIL, NOT,
-    OF, OR, PACKED, PROCEDURE, PROGRAM, RECORD, REPEAT, SET,
-    THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
+    // Reserved words. All these reserved words appear in all
+	// lower case in the source code. Don't forget Java is case
+	// sensitive
+	ABSTRACT, DOUBLE, INT, LONG,
+	BREAK, ELSE, SWITCH,
+	CASE, ENUM, NATIVE, SUPER,
+	CHAR, EXTENDS, RETURN, THIS,
+	CLASS, FLOAT, SHORT, THROW,
+	CONST, FOR, PACKAGE, VOID,
+	CONTINUE, GOTO, PROTECTED, VOLATILE,
+	DO, IF, STATIC, WHILE,
 
     // Special symbols.
-    PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), COLON_EQUALS(":="),
-    DOT("."), COMMA(","), SEMICOLON(";"), COLON(":"), QUOTE("'"),
-    EQUALS("="), NOT_EQUALS("<>"), LESS_THAN("<"), LESS_EQUALS("<="),
-    GREATER_EQUALS(">="), GREATER_THAN(">"), LEFT_PAREN("("), RIGHT_PAREN(")"),
-    LEFT_BRACKET("["), RIGHT_BRACKET("]"), LEFT_BRACE("{"), RIGHT_BRACE("}"),
-    UP_ARROW("^"), DOT_DOT(".."),
+	TILDE("~"), EXCLAIM("!"), AT("@"), PERCENT("%"), 
+	CAROT("^"), AMPERSAND("&"), ASTRISK("*"), 
+	MINUS("-"), PLUS("+"), EQUALS("="), PIPE("|"), 
+	SLASH("/"), COLON(":"), SEMI_COLON(";"), 
+	QUESTION_MARK("?"), LESS_THAN("<"), 
+	GREATER_THAN(">"), PERIOD("."), COMMA(","), 
+	SINGLE_QUOTE("'"), DOUBLE_QUOTE("\""), 
+	OPEN_PAREN("("), CLOSE_PAREN(")"), 
+	OPEN_BRAKET("["), CLOSE_BRAKET("]"), 
+	OPEN_BRACE("{"), CLOSE_BRACE("}"), INCREMENT("++"), 
+	DECREMENT("--"), SHIFT_LEFT("<<"), 
+	SHIFT_RIGHT(">>"), LESS_EQUALS("<="), 
+	GREATER_EQUALS(">="), PLUS_EQUALS("+="), 
+	MINUS_EQUALS("-="), MULTI_EQUALS("*="), 
+	DIVIDE_EQUALS("/="), DOUBLE_EQUALS("=="), 
+	PIPE_EQUALS("|="), PERCENT_EQUALS("%="), 
+	AMP_EQUALS("&="), CAROT_EQUALS("^="), 
+	EXCLAIM_EQUALS("!="), DOUBLE_LESS_EQUALS("<<="), 
+	DOUBLE_GREATER_EQUALS(">>="), OR("||"), 
+	AND("&&"), DOUBLE_SLASH("//"), 
+	COMMENT_OPEN("/*"), COMMENT_CLOSE("*/"),
+
 
     IDENTIFIER, INTEGER, REAL, STRING,
     ERROR, END_OF_FILE;
 
-    private static final int FIRST_RESERVED_INDEX = AND.ordinal();
-    private static final int LAST_RESERVED_INDEX  = WITH.ordinal();
+    private static final int FIRST_RESERVED_INDEX = ABSTRACT.ordinal();
+    private static final int LAST_RESERVED_INDEX  = WHILE.ordinal();
 
-    private static final int FIRST_SPECIAL_INDEX = PLUS.ordinal();
-    private static final int LAST_SPECIAL_INDEX  = DOT_DOT.ordinal();
+    private static final int FIRST_SPECIAL_INDEX = TILDE.ordinal();
+    private static final int LAST_SPECIAL_INDEX  = COMMENT_CLOSE.ordinal();
 
     private String text;  // token text
 

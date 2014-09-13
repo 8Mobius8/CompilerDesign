@@ -7,8 +7,8 @@ import wci.frontend.*;
  *
  * <p>Base class for Java token classes.</p>
  *
+ * <p>Adapted from Dr. Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
- * <p>For instructional purposes only.  No warranties.</p>
  */
 public class JavaToken extends Token
 {

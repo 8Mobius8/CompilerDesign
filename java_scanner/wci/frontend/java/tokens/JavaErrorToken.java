@@ -10,8 +10,8 @@ import static wci.frontend.java.JavaTokenType.*;
  *
  * <p>Java error token.</p>
  *
+ * <p>Adapted from Dr. Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
- * <p>For instructional purposes only.  No warranties.</p>
  */
 public class JavaErrorToken extends JavaToken
 {
