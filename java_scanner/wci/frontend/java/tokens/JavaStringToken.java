@@ -13,7 +13,7 @@ import static wci.frontend.java.JavaErrorCode.*;
  *
  * <p> Java string tokens.</p>
  *
- * <p>Adapted from Dr. Mak.</p>
+ * <p>Adapted from Professor Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
  */
 public class JavaStringToken extends JavaToken
@@ -33,6 +33,7 @@ public class JavaStringToken extends JavaToken
      * Extract a Java string token from the source.
      * @throws Exception if an error occurred.
      */
+    @Override
     protected void extract()
         throws Exception
     {
@@ -40,21 +41,28 @@ public class JavaStringToken extends JavaToken
         StringBuilder valueBuffer = new StringBuilder();
 
         char currentChar = nextChar();  // consume initial quote
-        textBuffer.append('\'');
+        textBuffer.append('"');
 
         // Get string characters.
         do {
             // Replace any whitespace character with a blank.
-            if (Character.isWhitespace(currentChar)) {
+            if (Character.isWhitespace(currentChar) && currentChar!= EOL) {
                 currentChar = ' ';
             }
-
-            if ((currentChar != '\'') && (currentChar != EOF)) {
+            
+            //Do we need to check for escape characters? I think in the case of "\n" the value
+                    //would be (newline) and the text would be "\n". In this case, we need to
+                    //check for that and update value accordingly. I did this in JavaCharToken
+            
+                                                                // EOL is not allowed either
+            if ((currentChar != '"') && (currentChar != EOF) && currentChar != EOL) {
                 textBuffer.append(currentChar);
                 valueBuffer.append(currentChar);
                 currentChar = nextChar();  // consume character
             }
 
+            //This doesn't work in java
+            /*
             // Quote?  Each pair of adjacent quotes represents a single-quote.
             if (currentChar == '\'') {
                 while ((currentChar == '\'') && (peekChar() == '\'')) {
@@ -63,20 +71,34 @@ public class JavaStringToken extends JavaToken
                     currentChar = nextChar();        // consume pair of quotes
                     currentChar = nextChar();
                 }
-            }
-        } while ((currentChar != '\'') && (currentChar != EOF));
+            }*/
+        } while ((currentChar != '"') && (currentChar != EOF) && currentChar != EOL);
+                        // In java, strings cannot be split among multiple lines
+                        //And actually, they can't be split in Pascal either so I'm not sure why
+                          //prof. mak doesn't check for this in his pascal code
 
-        if (currentChar == '\'') {
+        if (currentChar == '"') {
             nextChar();  // consume final quote
-            textBuffer.append('\'');
+            textBuffer.append('"');
 
             type = STRING;
             value = valueBuffer.toString();
         }
-        else {
+        else if(currentChar == EOF){
             type = ERROR;
             value = UNEXPECTED_EOF;
         }
+        else if(currentChar == EOL)
+         {
+          type = ERROR;
+          value = UNEXPECTED_EOL;
+         }
+        else
+         {
+          //Should never get here
+          type = ERROR;
+          value = UNRECOGNIZABLE;
+         }
 
         text = textBuffer.toString();
     }
