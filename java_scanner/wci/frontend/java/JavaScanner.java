@@ -50,9 +50,13 @@ public class JavaScanner extends Scanner
         else if (Character.isDigit(currentChar)) {
             token = new JavaNumberToken(source);
         }
-        else if (currentChar == '\'') {
-            token = new JavaStringToken(source);
+        else if (currentChar == '\'') { // single quote means char, '?'
+            token = new JavaCharToken(source);
         }
+        else if (currentChar == '"') //    double quote means string, "?"
+         {
+          token = new JavaStringToken(source);
+         }
         else if (JavaTokenType.SPECIAL_SYMBOLS
                  .containsKey(Character.toString(currentChar))) {
             token = new JavaSpecialSymbolToken(source);
