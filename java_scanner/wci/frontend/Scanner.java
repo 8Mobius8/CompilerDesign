@@ -73,4 +73,14 @@ public abstract class Scanner
     {
         return source.nextChar();
     }
+    
+    /**
+     * Wrapper for source's peekChar method. Does not change the current char pointer.
+     * @return the next character from the source.
+     * @throws Exception if an error occurred (This is mighty helpful, I know).
+     */
+    public char peekChar() throws Exception
+     {
+      return source.peekChar();      
+     }
 }

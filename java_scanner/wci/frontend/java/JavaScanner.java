@@ -4,6 +4,7 @@ import wci.frontend.*;
 import wci.frontend.java.tokens.*;
 
 import static wci.frontend.Source.EOF;
+import static wci.frontend.Source.EOL;
 import static wci.frontend.java.JavaTokenType.*;
 import static wci.frontend.java.JavaErrorCode.*;
 
@@ -70,33 +71,80 @@ public class JavaScanner extends Scanner
         return token;
     }
 
-    /**
-     * Skip whitespace characters by consuming them.  A comment is whitespace.
-     * @throws Exception if an error occurred.
-     */
-    private void skipWhiteSpace()
-        throws Exception
-    {
-        char currentChar = currentChar();
+  /**
+   * Skip whitespace characters by consuming them. A comment is whitespace.
+   *
+   * @throws Exception if an error occurred.
+   */
+  private void skipWhiteSpace()
+     throws Exception
+   {
+    char currentChar = currentChar();
 
-        while (Character.isWhitespace(currentChar) || (currentChar == '{')) {
+    while (Character.isWhitespace(currentChar) || (currentChar == '/'))
+     {
+      /*  Pascal comments are not Java comments
+      // Start of a comment?
+      if (currentChar == '{')
+       {
+        do
+         {
+          currentChar = nextChar();  // consume comment characters
+         } while ((currentChar != '}') && (currentChar != EOF));
 
-            // Start of a comment?
-            if (currentChar == '{') {
-                do {
-                    currentChar = nextChar();  // consume comment characters
-                } while ((currentChar != '}') && (currentChar != EOF));
-
-                // Found closing '}'?
-                if (currentChar == '}') {
-                    currentChar = nextChar();  // consume the '}'
-                }
-            }
-
-            // Not a comment.
-            else {
-                currentChar = nextChar();  // consume whitespace character
-            }
-        }
-    }
-}
+        // Found closing '}'?
+        if (currentChar == '}')
+         {
+          currentChar = nextChar();  // consume the '}'
+         }
+       }
+      */
+      
+      if(currentChar == '/')
+       {
+        if(peekChar() == '*')
+         {
+          //It's a comment block, keep eating chars until you find */
+          nextChar();   //You must eat two chars, since the comment block start is 2 chars long.
+                          // Also, /*/ is not a valid comment block - it starts but never ends. So, make sure
+                          // you eat that * or nasty things will happen.
+                          // Comment blocks must be /**/ or larger.
+           do
+            {
+             currentChar = nextChar();
+             if (currentChar == EOF)
+              { return; }
+            } while ((currentChar != '*' && peekChar() != '/'));
+           
+           nextChar();
+           currentChar = nextChar(); //eat the closing statement
+         }
+        else if(peekChar() == '/')
+         {
+          do
+           {
+            currentChar = nextChar();
+          } while(currentChar != EOF && currentChar != EOL);
+          if(currentChar != EOF) //if it's an EOL, eat it
+           {
+            currentChar = nextChar();
+           }
+         }
+        else
+         {
+          return;
+         }
+       }
+      else if(currentChar == '/')
+       {
+        return;
+       }
+      
+      // Not a comment.
+      else
+       {
+        currentChar = nextChar();  // consume whitespace character
+       }
+     }
+   }
+ }

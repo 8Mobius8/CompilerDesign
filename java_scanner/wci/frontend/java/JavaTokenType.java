@@ -87,6 +87,8 @@ public enum JavaTokenType implements TokenType
     {
         return text;
     }
+    
+    
 
     // Set of lower-cased Java reserved word text strings.
     public static HashSet<String> RESERVED_WORDS = new HashSet<String>();

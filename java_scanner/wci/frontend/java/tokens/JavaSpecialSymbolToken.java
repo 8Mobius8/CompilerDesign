@@ -11,7 +11,7 @@ import static wci.frontend.java.JavaErrorCode.*;
  *
  * <p> Java special symbol tokens.</p>
  *
- * <p>Adapted from Dr. Mak.</p>
+ * <p>Adapted from Professor Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
  */
 public class JavaSpecialSymbolToken extends JavaToken
@@ -31,6 +31,7 @@ public class JavaSpecialSymbolToken extends JavaToken
      * Extract a Java special symbol token from the source.
      * @throws Exception if an error occurred.
      */
+    @Override
     protected void extract()
         throws Exception
     {
@@ -182,7 +183,7 @@ public class JavaSpecialSymbolToken extends JavaToken
             		nextChar(); // consume '/'
             	}
             	else if (currentChar == '*') {
-            		text += currentchar;
+            		text += currentChar;
             		nextChar(); // consume '*'
             	}
             	break;

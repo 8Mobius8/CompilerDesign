@@ -13,7 +13,7 @@ import wci.frontend.java.JavaToken;
  * <p>Java character token.</p>
  *
  * <p>Adapted from Professor Mak.</p>
- * @author Jason Hungerford
+ * @author The_Almost_Donerz
  */
 public class JavaCharToken extends JavaToken
  {
@@ -26,7 +26,7 @@ public class JavaCharToken extends JavaToken
   protected void extract() throws Exception
    {
     char currentChar = nextChar(); //Eat the first quote
-    
+    text = "'";
     if(currentChar == '\'') //single-quote character as next character
      {
       nextChar();
@@ -42,39 +42,39 @@ public class JavaCharToken extends JavaToken
       switch(currentChar)
        {
         case 't':
-          text = "\\t";
+          text += "\\t";
           value = "\t";
           break;
         case 'b':
-          text = "\\b";
+          text += "\\b";
           value = "\b";
           break;
         case 'n':
-          text = "\\n";
+          text += "\\n";
           value = "\n";
           break;
         case 'r':
-          text = "\\r";
+          text += "\\r";
           value = "\r";
           break;
         case 'f':
-          text = "\\f";
+          text += "\\f";
           value = "\f";
           break;
         case '\'':
-          text = "\\'"; //single-quote
+          text += "\\'"; //single-quote
           value = "'";
           break;
         case '"':
-          text = "\\\"";
+          text += "\\\"";
           value = "\"";
           break;
         case '\\':
-          text = "\\\\"; //backslash - text becomes   \\
+          text += "\\\\"; //backslash - text becomes   \\
           value = "\\";  //value becomes    \
           break;
         default:
-          text = "\\" + currentChar;
+          text += "\\" + currentChar;
           type = ERROR;
           value = INVALID_ESCAPE_CHARACTER;
           return;
@@ -108,6 +108,7 @@ public class JavaCharToken extends JavaToken
      }
     text += "'";
     type = CHAR;
+    nextChar(); //eat final '
    }
   
  }

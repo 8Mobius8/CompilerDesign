@@ -54,6 +54,11 @@ public class JavaStringToken extends JavaToken
                     //would be (newline) and the text would be "\n". In this case, we need to
                     //check for that and update value accordingly. I did this in JavaCharToken
             
+            
+            //We need to check for escape characters.
+            
+            
+            
                                                                 // EOL is not allowed either
             if ((currentChar != '"') && (currentChar != EOF) && currentChar != EOL) {
                 textBuffer.append(currentChar);
