@@ -87,9 +87,13 @@ public class JavaSpecialSymbolToken extends JavaToken
             case '&': {
             	currentChar = nextChar(); // consume '&';
             	
-            	if (currentChar == '=' || currentChar == '&') {
+            	if (currentChar == '=') {
             		text += currentChar;
-            		nextChar(); // consume '=' or '&'
+            		nextChar(); // consume '='
+            	}
+            	else if (currentChar == '&') {
+            		text += currentChar;
+            		nextChar(); // consume '&'
             	}
             	break;
             }
@@ -98,9 +102,13 @@ public class JavaSpecialSymbolToken extends JavaToken
             case '+': {
             	currentChar = nextChar(); // consume '+';
             	
-            	if (currentChar == '=' || currentChar == '+') {
+            	if (currentChar == '=') {
             		text += currentChar;
-            		nextChar(); // consume '=' or '+'
+            		nextChar(); // consume '='
+            	}
+            	else if (currentChar == '+') {
+            		text += currentChar;
+            		nextChar(); // consume '+'
             	}
             	break;
             }
@@ -109,9 +117,13 @@ public class JavaSpecialSymbolToken extends JavaToken
             case '-': {
             	currentChar = nextChar(); // consume '-';
             	
-            	if (currentChar == '=' || currentChar == '-') {
+            	if (currentChar == '=') {
             		text += currentChar;
-            		nextChar(); // consume '=' or '-'
+            		nextChar(); // consume '='
+            	}
+            	else if (currentChar == '-') {
+            		text += currentChar;
+            		nextChar(); // consume '-'
             	}
             	break;
             }
@@ -120,9 +132,13 @@ public class JavaSpecialSymbolToken extends JavaToken
             case '*': {
             	currentChar = nextChar(); // consume '*';
             	
-            	if (currentChar == '=' || currentChar == '/') {
+            	if (currentChar == '=') {
             		text += currentChar;
-            		nextChar(); // consume '=' or '/'
+            		nextChar(); // consume '='
+            	}
+            	else if (currentChar == '/') {
+            		text += currentChar;
+            		nextChar(); // consume '/'
             	}
             	break;
             }
@@ -142,9 +158,13 @@ public class JavaSpecialSymbolToken extends JavaToken
             case '|': {
             	currentChar = nextChar(); // consume '|';
             	
-            	if (currentChar == '=' || currentChar == '|') {
+            	if (currentChar == '=') {
             		text += currentChar; 
-            		nextChar(); // consume '|' or '='
+            		nextChar(); // consume '='
+            	}
+            	else if (currentChar == '|') {
+            		text += currentChar;
+            		nextChar(); // consume '|'
             	}
             	break;
             }
@@ -153,9 +173,17 @@ public class JavaSpecialSymbolToken extends JavaToken
             case '/': {
             	currentChar = nextChar(); // consume '/';
             	
-            	if (currentChar == '=' || currentChar == '/' || currentChar == '*') {
+            	if (currentChar == '=') {
             		text += currentChar;
-            		nextChar(); // consume '=' or '/' or '*'
+            		nextChar(); // consume '='
+            	}
+            	else if (currentChar == '/') {
+            		text += currentChar; 
+            		nextChar(); // consume '/'
+            	}
+            	else if (currentChar == '*') {
+            		text += currentchar;
+            		nextChar(); // consume '*'
             	}
             	break;
             }
