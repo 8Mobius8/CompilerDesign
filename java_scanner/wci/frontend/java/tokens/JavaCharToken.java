@@ -39,7 +39,7 @@ public class JavaCharToken extends JavaToken
     if(currentChar == '\\') //escape sequence
      {
       currentChar = nextChar();
-      switch(currentChar)
+      switch(currentChar)  // Use isValidEscapeChar() if you like?
        {
         case 't':
           text += "\\t";
@@ -111,4 +111,18 @@ public class JavaCharToken extends JavaToken
     nextChar(); //eat final '
    }
   
+  public static boolean isValidEscapeChar(char c)
+   {
+	  if( c == 't' || c == 'b' ||
+       	  c == 'n' || c == 'r' ||
+       	  c == 'f' || c == '\''||
+       	  c == '\"'|| c == '\\' )
+	   {
+		  return true;
+	   }
+	  else
+	   {
+		return false;  
+       }
+   }
  }
