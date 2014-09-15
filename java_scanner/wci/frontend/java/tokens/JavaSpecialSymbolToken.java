@@ -199,7 +199,7 @@ public class JavaSpecialSymbolToken extends JavaToken
                 }
                 else if (currentChar == '<') {
                     text += currentChar;
-                    nextChar();  // consume '>'
+                    nextChar();  // consume '<'
                     
                     currentChar = nextChar();
                     
