@@ -53,17 +53,19 @@ public class JavaStringToken extends JavaToken
             if(currentChar == '\\')
             {
             	currentChar = nextChar();
-            	if(JavaCharToken.isValidEscapeChar(currentChar))
+            	String escapeSeq = JavaCharToken.returnValidEscapeChar(currentChar);
+            	if(escapeSeq != null)
             	 { 
-            		textBuffer.append("\\" + currentChar); 
-            		valueBuffer.append(currentChar);
+            		textBuffer.append("\\" + escapeSeq.substring(1)); 
+            		valueBuffer.append(escapeSeq.charAt(0));
             	 } 
             	else
             	 {
-            		textBuffer.append("\\IE ");
+            		textBuffer.append("\\ERROR ");
             		valueBuffer.append(currentChar);
             		type = ERROR; // Should we make an enum for error-escaped string?
             	 }
+            	currentChar = nextChar();
             }
                                                                 // EOL is not allowed either
             if ((currentChar != '"') && (currentChar != EOF) && currentChar != EOL) {

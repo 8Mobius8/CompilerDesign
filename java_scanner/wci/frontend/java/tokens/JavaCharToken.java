@@ -39,46 +39,19 @@ public class JavaCharToken extends JavaToken
     if(currentChar == '\\') //escape sequence
      {
       currentChar = nextChar();
-      switch(currentChar)  // Use isValidEscapeChar() if you like?
+      String escapeSeq = returnValidEscapeChar(currentChar);
+      if(escapeSeq == null)
        {
-        case 't':
-          text += "\\t";
-          value = "\t";
-          break;
-        case 'b':
-          text += "\\b";
-          value = "\b";
-          break;
-        case 'n':
-          text += "\\n";
-          value = "\n";
-          break;
-        case 'r':
-          text += "\\r";
-          value = "\r";
-          break;
-        case 'f':
-          text += "\\f";
-          value = "\f";
-          break;
-        case '\'':
-          text += "\\'"; //single-quote
-          value = "'";
-          break;
-        case '"':
-          text += "\\\"";
-          value = "\"";
-          break;
-        case '\\':
-          text += "\\\\"; //backslash - text becomes   \\
-          value = "\\";  //value becomes    \
-          break;
-        default:
-          text += "\\" + currentChar;
+    	  text += "\\" + currentChar;
           type = ERROR;
           value = INVALID_ESCAPE_CHARACTER;
           return;
        }
+      else 
+      {
+    	  text += escapeSeq.substring(1);
+    	  value = escapeSeq.charAt(0);
+      }
      }
     else if(currentChar == EOL)
      {
@@ -110,19 +83,44 @@ public class JavaCharToken extends JavaToken
     type = CHAR;
     nextChar(); //eat final '
    }
-  
-  public static boolean isValidEscapeChar(char c)
-   {
-	  if( c == 't' || c == 'b' ||
-       	  c == 'n' || c == 'r' ||
-       	  c == 'f' || c == '\''||
-       	  c == '\"'|| c == '\\' )
-	   {
-		  return true;
-	   }
-	  else
-	   {
-		return false;  
-       }
+  /**
+   * Usage:
+   * To get the char value getCharAt(0). To get String version subString(1); 
+   * @param c - A char to check if is an escaped.
+   * @return A string with the value of the character in the first char of String, followed by a string identifying it
+   */
+  public static String returnValidEscapeChar(char c)
+  {
+	  String toReturn = "";
+	  switch(c)
+	  {
+	   case 't':
+	     toReturn = "\t\\t";
+	     break;
+	   case 'b':
+	     toReturn = "\b\\b";
+	     break;
+	   case 'n':
+	     toReturn = "\n\\n";
+	     break;
+	   case 'r':
+	     toReturn = "\r\\r";
+	     break;
+	   case 'f':
+	     toReturn = "\f\\f";
+	     break;
+	   case '\'':
+	     toReturn = "\'\\\'"; //single-quote
+	     break;
+	   case '"':
+	     toReturn = "\"\\\"";
+	     break;
+	   case '\\':
+	     toReturn = "\\\\\\"; //backslash - text becomes   \\
+	     break;
+	   default:
+	     toReturn = null;
+	  }
+	  return toReturn;
    }
  }
