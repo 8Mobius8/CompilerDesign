@@ -171,6 +171,7 @@ public class JavaSpecialSymbolToken extends JavaToken
             }
             
             // / or /= or // or /*
+            // Comments should have been removed already, in skipWhiteSpace() of the JavaScanner
             case '/': {
             	currentChar = nextChar(); // consume '/';
             	
@@ -199,9 +200,9 @@ public class JavaSpecialSymbolToken extends JavaToken
                 }
                 else if (currentChar == '<') {
                     text += currentChar;
-                    nextChar();  // consume '<'
+                    currentChar = nextChar();  // consume '<'
                     
-                    currentChar = nextChar();
+                    //currentChar = nextChar();
                     
                     if (currentChar == '=') {
                     	text += currentChar;
@@ -213,7 +214,7 @@ public class JavaSpecialSymbolToken extends JavaToken
                 break;
             }
 
-            // > or >= or >> or >>=
+            // > or >= or >> or >>> or >>= or >>>=
             case '>': {
                 currentChar = nextChar();  // consume '>';
 
@@ -223,13 +224,23 @@ public class JavaSpecialSymbolToken extends JavaToken
                 }
                 else if (currentChar == '>') {
                 	text += currentChar;
-                	nextChar(); // consume '>'
+                	currentChar = nextChar(); // consume '>'
                 	
-                	currentChar = nextChar();
+                	//currentChar = nextChar();
                 	if (currentChar == '=') {
                 		text += currentChar;
                 		nextChar(); // consume '='
                 	}
+                    else if(currentChar == '<')
+                     {
+                      text += currentChar;
+                      currentChar = nextChar();
+                      if(currentChar == '=')
+                       {
+                        text += currentChar;
+                        nextChar();
+                       }
+                     }
                 }
 
                 break;

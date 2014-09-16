@@ -40,6 +40,7 @@ public enum JavaTokenType implements TokenType
 	OPEN_BRACE("{"), CLOSE_BRACE("}"), INCREMENT("++"), 
 	DECREMENT("--"), SHIFT_LEFT("<<"), 
 	SHIFT_RIGHT(">>"), LESS_EQUALS("<="), 
+    UNSIGNED_SHIFT_RIGHT(">>>"), 
 	GREATER_EQUALS(">="), PLUS_EQUALS("+="), 
 	MINUS_EQUALS("-="), MULTI_EQUALS("*="), 
 	DIVIDE_EQUALS("/="), DOUBLE_EQUALS("=="), 
