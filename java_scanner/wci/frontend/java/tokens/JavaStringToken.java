@@ -56,7 +56,7 @@ public class JavaStringToken extends JavaToken
             	String escapeSeq = JavaCharToken.returnValidEscapeChar(currentChar);
             	if(escapeSeq != null)
             	 { 
-            		textBuffer.append("\\" + escapeSeq.substring(1)); 
+            		textBuffer.append(escapeSeq.substring(1)); 
             		valueBuffer.append(escapeSeq.charAt(0));
             	 } 
             	else
@@ -68,7 +68,7 @@ public class JavaStringToken extends JavaToken
             	currentChar = nextChar();
             }
                                                                 // EOL is not allowed either
-            if ((currentChar != '"') && (currentChar != EOF) && currentChar != EOL) {
+            else if ((currentChar != '"') && (currentChar != EOF) && currentChar != EOL) {
                 textBuffer.append(currentChar);
                 valueBuffer.append(currentChar);
                 currentChar = nextChar();  // consume character

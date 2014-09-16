@@ -74,9 +74,11 @@ public class Message
         s += "\tline: " + temp;
         temp = padString(((Integer)o[1]).toString());
         s += "\tpos: " + temp;
-        s += "\ttext: " + ((String)o[3]);
+        s += "\ttext: " + ((String) o[3]);
+        //if (o.length > 3 && o[4] != null) { s += "\tvalue: " + (o[4].toString()); }
+          // For testing the value of tokens that have one
         break;
-        
+
       case SYNTAX_ERROR:
         s += "*** ";
         s += (String)o[3];

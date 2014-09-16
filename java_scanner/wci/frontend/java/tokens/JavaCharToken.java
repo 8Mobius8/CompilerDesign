@@ -91,9 +91,11 @@ public class JavaCharToken extends JavaToken
    */
   public static String returnValidEscapeChar(char c)
   {
-	  String toReturn = "";
+	  String toReturn;
 	  switch(c)
 	  {
+        //I'm pretty sure you can just return the first bit, since we never use the last part.
+        //  You can get the last part using .substring(1) and assuming that the first char was a \
 	   case 't':
 	     toReturn = "\t\\t";
 	     break;
@@ -110,7 +112,7 @@ public class JavaCharToken extends JavaToken
 	     toReturn = "\f\\f";
 	     break;
 	   case '\'':
-	     toReturn = "\'\\\'"; //single-quote
+	     toReturn = "\'\\'"; //single-quote
 	     break;
 	   case '"':
 	     toReturn = "\"\\\"";
