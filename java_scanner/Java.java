@@ -11,7 +11,7 @@ public class Java
  {
   public static void main(String[] args) throws Exception
    {
-    Source s = new Source(new BufferedReader(new FileReader("C:/javatest.in")));
+    Source s = new Source(new BufferedReader(new FileReader("java_scanner/javatest.in")));
     Parser p = FrontendFactory.createParser("Java", "Top-down", s);
     MessageListener listener = new JavaMessageListener();
     p.addMessageListener(listener);
