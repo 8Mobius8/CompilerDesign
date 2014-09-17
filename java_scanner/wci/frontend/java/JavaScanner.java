@@ -82,52 +82,25 @@ public class JavaScanner extends Scanner
     char currentChar = currentChar();
 
     while (Character.isWhitespace(currentChar) || (currentChar == '/'))
-     {
-      /*  Pascal comments are not Java comments
-      // Start of a comment?
-      if (currentChar == '{')
-       {
-        do
-         {
-          currentChar = nextChar();  // consume comment characters
-         } while ((currentChar != '}') && (currentChar != EOF));
-
-        // Found closing '}'?
-        if (currentChar == '}')
-         {
-          currentChar = nextChar();  // consume the '}'
-         }
-       }
-      */
-      
+     {      
       if(currentChar == '/')
        {
-        if(peekChar() == '*')
+      	if(peekChar() == '*')
          {
-          //It's a comment block, keep eating chars until you find */
+          //It's a comment block, keep eating chars until you find
           nextChar();   //You must eat two chars, since the comment block start is 2 chars long.
                           // Also, /*/ is not a valid comment block - it starts but never ends. So, make sure
                           // you eat that * or nasty things will happen.
                           // Comment blocks must be /**/ or larger.
-//           do
-//            {
-//             currentChar = nextChar();
-//             if (currentChar == EOF)
-//              { return; }
-//            } while ((currentChar != '*' && peekChar() != '/'));
-          
-       // My modified do-while loop
           do
-          {
-	            currentChar = nextChar();
-	            if (currentChar == EOF)
-	            	return; 
-	            if (currentChar == '*' && peekChar() == '/')
-	           	 	break;
-          } while (true);
+           {
+	         currentChar = nextChar();
+	         	if (currentChar == EOF)
+	         		return;
+           } while (currentChar != '*' || peekChar() != '/');
            
-           nextChar();
-           currentChar = nextChar(); //eat the closing statement
+           nextChar();  // consume '*'
+           currentChar = nextChar(); //consume '/'
          }
         else if(peekChar() == '/')
          {
@@ -149,9 +122,7 @@ public class JavaScanner extends Scanner
        {
         return;
        }
-      
-      // Not a comment.
-      else
+      else  // Not a comment.
        {
         currentChar = nextChar();  // consume whitespace character
        }
