@@ -109,12 +109,22 @@ public class JavaScanner extends Scanner
                           // Also, /*/ is not a valid comment block - it starts but never ends. So, make sure
                           // you eat that * or nasty things will happen.
                           // Comment blocks must be /**/ or larger.
-           do
-            {
-             currentChar = nextChar();
-             if (currentChar == EOF)
-              { return; }
-            } while ((currentChar != '*' && peekChar() != '/'));
+//           do
+//            {
+//             currentChar = nextChar();
+//             if (currentChar == EOF)
+//              { return; }
+//            } while ((currentChar != '*' && peekChar() != '/'));
+          
+       // My modified do-while loop
+          do
+          {
+	            currentChar = nextChar();
+	            if (currentChar == EOF)
+	            	return; 
+	            if (currentChar == '*' && peekChar() == '/')
+	           	 	break;
+          } while (true);
            
            nextChar();
            currentChar = nextChar(); //eat the closing statement
