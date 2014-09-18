@@ -43,11 +43,7 @@ public class JavaStringToken extends JavaToken
         textBuffer.append('"');
 
         // Get string characters.
-        do {
-            //Do we need to check for escape characters? I think in the case of "\n" the value
-                    //would be (newline) and the text would be "\n". In this case, we need to
-                    //check for that and update value accordingly. I did this in JavaCharToken
-            
+        do {         
             
             //We need to check for escape characters.
             if(currentChar == '\\')
@@ -61,7 +57,7 @@ public class JavaStringToken extends JavaToken
             	 } 
             	else
             	 {
-            		textBuffer.append("\\ERROR ");
+            		textBuffer.append("ERROR ");
             		valueBuffer.append(currentChar);
             		type = ERROR; // Should we make an enum for error-escaped string?
             	 }

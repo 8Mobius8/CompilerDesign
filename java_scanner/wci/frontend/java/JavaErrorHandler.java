@@ -12,8 +12,8 @@ import static wci.message.MessageType.SYNTAX_ERROR;
  *
  * <p>Error handler Java syntax errors.</p>
  *
+ * <p>Adapted from Dr. Mak.</p>
  * <p>Copyright (c) 2009 by Ronald Mak</p>
- * <p>For instructional purposes only.  No warranties.</p>
  */
 public class JavaErrorHandler
 {

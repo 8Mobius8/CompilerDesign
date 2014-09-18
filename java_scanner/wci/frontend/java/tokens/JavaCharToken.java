@@ -94,8 +94,8 @@ public class JavaCharToken extends JavaToken
 	  String toReturn;
 	  switch(c)
 	  {
-        //I'm pretty sure you can just return the first bit, since we never use the last part.
-        //  You can get the last part using .substring(1) and assuming that the first char was a \
+       // We use the return string as a way of storing the text
+	   // string for the symbol table entry.
 	   case 't':
 	     toReturn = "\t\\t";
 	     break;
