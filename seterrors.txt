@@ -1,0 +1,15 @@
+BEGIN
+    error1 := [1, 2  3];           {missing comma}
+    error2 := [1,, 2, 3,];         {extra commas}
+    error3 := [1, 2, 3;            {missing close square bracket}
+    error4 := [2, 1, 3, 1];        {non-unique members}
+    error4 := [10..20, 15];        {non-unique members}
+    error4 := [15, 10..20];        {non-unique members}
+    error4 := [15..25, 10..20];    {non-unique members}
+    error5 := [2, 5.., 8];         {invalid range of values}
+    error6 := [1, 2, 3] OR [4];    {invalid operator}
+    error6 := [1, 2, 3]/[4, 5];    {invalid operator}
+    error7 := [1, 2, 3] < [4, 5];  {invalid operator}
+    error8 := [1, 2, 3] IN [4];    {invalid operator}
+    error9 := 1 IN 2;              {invalid operator}
+END.
