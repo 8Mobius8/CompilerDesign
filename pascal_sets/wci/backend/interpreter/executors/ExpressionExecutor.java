@@ -39,7 +39,7 @@ public class ExpressionExecutor extends StatementExecutor
     public Object execute(ICodeNode node)
     {
         ICodeNodeTypeImpl nodeType = (ICodeNodeTypeImpl) node.getType();
-
+        
         switch (nodeType) {
 
             case VARIABLE: {
@@ -112,6 +112,18 @@ public class ExpressionExecutor extends StatementExecutor
     private Object executeBinaryOperator(ICodeNode node,
                                          ICodeNodeTypeImpl nodeType)
     {
+    	/* 
+    	 * Need to include executing code for Set.
+    	 * We need to cover these operations:
+    	 *  +	Union of two sets	
+    	 *	-	Difference of two sets	
+    	 *	*	Intersection of two sets	
+    	 *	=	Checks equality of two sets
+    	 *	<>	Checks non-equality of two sets
+    	 *	<=	Contains 
+    	 *	In	Checks set membership of an element in a set
+    	 * */
+    	
         // Get the two operand children of the operator node.
         ArrayList<ICodeNode> children = node.getChildren();
         ICodeNode operandNode1 = children.get(0);

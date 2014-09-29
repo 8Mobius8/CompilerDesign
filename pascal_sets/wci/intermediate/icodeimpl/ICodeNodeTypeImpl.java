@@ -29,10 +29,13 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     MULTIPLY, INTEGER_DIVIDE, FLOAT_DIVIDE, MOD, AND,
 
     // Operands
-    VARIABLE, SET, SUBSCRIPTS, FIELD,
+    VARIABLE, SUBSCRIPTS, FIELD,
     INTEGER_CONSTANT, REAL_CONSTANT,
     STRING_CONSTANT, BOOLEAN_CONSTANT,
 
     // WRITE parameter
     WRITE_PARM,
+    
+    // Special ICodeTypes features of pascal
+    SET, 
 }

@@ -327,4 +327,14 @@ public class ExpressionParser extends StatementParser
 
         return rootNode;
     }
+    
+    private ICodeNode parseSet(TokenType aToken) {
+    	// Implement our function to parse Set in source code
+    	ICodeNode rootNode = null;
+    	
+    	// Should use PascalTokenTypes to control this function. May possibly even use
+    	// parseExpression(), parseTerm(), parseSimpleExpression
+    	
+    	return rootNode;
+    }
 }
