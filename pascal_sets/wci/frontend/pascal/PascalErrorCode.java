@@ -43,6 +43,7 @@ public enum PascalErrorCode
     MISSING_EQUALS("Missing ="),
     MISSING_FOR_CONTROL("Invalid FOR control variable"),
     MISSING_IDENTIFIER("Missing identifier"),
+    MISSING_INTEGER("Missing integer"),
     MISSING_LEFT_BRACKET("Missing ["),
     MISSING_OF("Missing OF"),
     MISSING_PERIOD("Missing ."),
@@ -67,6 +68,7 @@ public enum PascalErrorCode
     UNIMPLEMENTED("Unimplemented feature"),
     UNRECOGNIZABLE("Unrecognizable input"),
     WRONG_NUMBER_OF_PARMS("Wrong number of actual parameters"),
+    NON_UNIQUE_MEMBERS("Non-unique member(s) in set"),
 
     // Fatal errors.
     IO_ERROR(-101, "Object I/O error"),
