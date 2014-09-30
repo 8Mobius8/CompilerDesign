@@ -1,5 +1,6 @@
 package wci.frontend.pascal.parsers;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -7,9 +8,7 @@ import wci.frontend.*;
 import wci.frontend.pascal.*;
 import wci.intermediate.*;
 import wci.intermediate.icodeimpl.*;
-
 import static wci.frontend.pascal.PascalTokenType.*;
-import static wci.frontend.pascal.PascalTokenType.NOT;
 import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
 import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
@@ -74,10 +73,17 @@ public class ExpressionParser extends StatementParser
         // Parse a simple expression and make the root of its tree
         // the root node.
         ICodeNode rootNode = parseSimpleExpression(token);
-
+        
         token = currentToken();
         TokenType tokenType = token.getType();
 
+        if (tokenType == LEFT_BRACKET) {
+        	token = nextToken();
+        	ICodeNode setNode = parseSet(token);
+        	
+        	// TODO: not sure if this should be here...
+        }
+        
         // Look for a relational operator.
         if (REL_OPS.contains(tokenType)) {
 
@@ -126,6 +132,17 @@ public class ExpressionParser extends StatementParser
 
         // Look for a leading + or - sign.
         TokenType tokenType = token.getType();
+        
+        if (tokenType == LEFT_BRACKET) {
+        	
+        	token = nextToken(); // consume the [
+        	
+        	ICodeNode rootNode = parseSet(token);
+        	
+        	return rootNode;
+        	
+        }
+        
         if ((tokenType == PLUS) || (tokenType == MINUS)) {
             signType = tokenType;
             token = nextToken();  // consume the + or -
@@ -328,13 +345,135 @@ public class ExpressionParser extends StatementParser
         return rootNode;
     }
     
-    private ICodeNode parseSet(TokenType aToken) {
-    	// Implement our function to parse Set in source code
-    	ICodeNode rootNode = null;
-    	
+ // Set of relational operators.
+    private static final EnumSet<PascalTokenType> SET_OPS =
+        EnumSet.of(LEFT_BRACKET, RIGHT_BRACKET);
+
+    // Map relational operator tokens to node types.
+    private static final HashMap<PascalTokenType, ICodeNodeType>
+        SET_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeType>();
+    static {
+        REL_OPS_MAP.put(EQUALS, EQ);
+        REL_OPS_MAP.put(NOT_EQUALS, NE);
+        REL_OPS_MAP.put(LESS_THAN, LT);
+        REL_OPS_MAP.put(LESS_EQUALS, LE);
+        REL_OPS_MAP.put(GREATER_THAN, GT);
+        REL_OPS_MAP.put(GREATER_EQUALS, GE);
+    };
+    
+    private ICodeNode parseSet(Token token) 
+    		throws Exception {
     	// Should use PascalTokenTypes to control this function. May possibly even use
     	// parseExpression(), parseTerm(), parseSimpleExpression
+        // Map additive operator tokens to node types.
+
+    	TokenType tokenType = token.getType();
     	
+    	// Named pascal_set because SET was giving me issues
+    	ICodeNode setNode = ICodeFactory.createICodeNode(PASCAL_SET);
+    	
+    	// Now PASCAL_SET is the root node
+    	ICodeNode rootNode = setNode;
+
+    	Token prevToken = null; // Used for range values
+    	ArrayList<ICodeNode> currChildren; // Used for checking for unique values
+    	
+    	while (tokenType != RIGHT_BRACKET) {
+    		// Next should be an integer
+    		if (tokenType == INTEGER) {
+    			ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+                intNode.setAttribute(VALUE, token.getValue());
+                
+                // Check if the number already exists in the set
+                currChildren = rootNode.getChildren();
+                if (currChildren.contains(intNode)) {
+                	System.out.println("TODO: NONUNIQUE NUMBER IN SET");
+                }
+                else {
+                	rootNode.addChild(intNode);
+                }
+                
+                prevToken = token;
+                token = nextToken();  // consume the number
+                tokenType = token.getType();
+    		}
+    		else if (tokenType == IDENTIFIER) {
+    			// TODO: handle identifiers and save to prevToken in case of range
+    			token = nextToken(); // consume the identifier
+    			tokenType = token.getType();
+    		}
+    		else {
+    			// TODO: throw error
+    			System.out.println("TODO: EXPECTED INTEGER, GOT " + token.getText());
+    			// Throw an error for not being an integer
+    			token = nextToken();
+    			tokenType = token.getType();
+    		}
+    		
+    		// TODO: deal with range of numbers that use identifiers
+    		if (tokenType == DOT_DOT) {
+    			int first = (int) prevToken.getValue();
+    			int last = 0;
+    			
+    			token = nextToken(); // Consume the ..
+    			tokenType = token.getType();
+    			
+    			// TODO: handle integers, reals, and identifiers
+    			if (tokenType == INTEGER) {
+    				last = (int) token.getValue();
+    				
+    				for (int i = first+1; i <= last; i++) {
+    					ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+    	                intNode.setAttribute(VALUE, i);
+    	                
+    	                // Check if the number already exists in the set
+    	                currChildren = rootNode.getChildren();
+    	                if (currChildren.contains(intNode)) {
+    	                	// TODO: throw error
+    	                	System.out.println("TODO: NONUNIQUE NUMBER IN SET");
+    	                }
+    	                else {
+    	                	rootNode.addChild(intNode);
+    	                }
+        			}
+    			}
+    			else {
+    				// TODO: throw error
+    				System.out.println("TODO: EXPECTED INTEGER, GOT " + token.getText());
+    			}
+				token = nextToken(); // Consume the "last" value
+				tokenType = token.getType();
+    		}
+    		
+    		if (tokenType == RIGHT_BRACKET) {
+    			token = nextToken(); // Consume the ]
+    			tokenType = token.getType();
+        		return rootNode; // Return the root of the set with all its children
+        	}
+    		
+    		// Next should be a comma
+    		if (tokenType == COMMA) {
+    			token = nextToken(); // Consume the comma
+    			tokenType = token.getType();
+    		}
+    		else {
+    			// TODO: throw error
+    			System.out.println("TODO: EXPECTED COMMA, GOT " + token.getText());
+    			// Throw an error for not being a comma
+    			token = nextToken();
+    			tokenType = token.getType();
+    		}
+    		
+    		if (tokenType == SEMICOLON) {
+    			// TODO: throw error
+    			System.out.println("TODO: MISSING ], GOT " + token.getText());
+    			token = nextToken();
+    			tokenType = token.getType();
+    		}
+    		
+    	}
+    	
+    	// TODO: double check logic for returning empty set
     	return rootNode;
     }
 }
