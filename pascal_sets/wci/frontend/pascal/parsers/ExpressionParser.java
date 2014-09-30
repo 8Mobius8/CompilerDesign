@@ -460,8 +460,8 @@ public class ExpressionParser extends StatementParser
                     	id.appendLineNumber(token.getLineNumber());
                     	
                     	rootNode.addChild(identifierNode);
+                    	
                     }
-                    
                     
                     break;
     			}
@@ -483,28 +483,67 @@ public class ExpressionParser extends StatementParser
     			token = nextToken(); // Consume the ..
     			tokenType = token.getType();
     			
-    			// TODO: handle integers, reals, and identifiers
-    			if (tokenType == INTEGER) {
-    				last = (int) token.getValue();
-    				
-    				for (int i = first+1; i <= last; i++) {
-    					ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
-    	                intNode.setAttribute(VALUE, i);
-    	                
-    	                // Check if the number already exists in the set
-    	                currChildren = rootNode.getChildren();
-    	                if (currChildren.contains(intNode)) {
-    	                	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
-    	                }
-    	                else {
-    	                	rootNode.addChild(intNode);
-    	                }
-        			}
+    			switch ((PascalTokenType) tokenType) {
+	    			case INTEGER: {
+	    				ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+	                    intNode.setAttribute(VALUE, token.getValue());
+	                    
+	                    // Check if the number already exists in the set
+	                    currChildren = rootNode.getChildren();
+	                    if (currChildren.contains(intNode)) {
+	                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+	                    }
+	                    else {
+	                    	rootNode.addChild(intNode);
+	                    }
+	                    
+	                    prevVal = (int)token.getValue();
+	    				break;
+	    			}
+	    			
+	    			case REAL: {
+	    				ICodeNode realNode = ICodeFactory.createICodeNode(REAL_CONSTANT);
+	                    realNode.setAttribute(VALUE, token.getValue());
+	                    
+	                    // Check if the number already exists in the set
+	                    currChildren = rootNode.getChildren();
+	                    if (currChildren.contains(realNode)) {
+	                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+	                    }
+	                    else {
+	                    	rootNode.addChild(realNode);
+	                    }
+	                    
+	                    prevVal = (int)token.getValue();
+	    				break;
+	    			}
+	    				
+	    			case IDENTIFIER: {
+	    				// Look up the identifier in the symbol table stack.
+	                    // Flag the identifier as undefined if it's not found.
+	    				
+	                    String name = token.getText().toLowerCase();
+	                    SymTabEntry id = symTabStack.lookup(name);
+	                    if (id == null) {
+	                        errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+	                        id = symTabStack.enterLocal(name);
+	                    }
+	                    else {
+	                    	ICodeNode identifierNode = ICodeFactory.createICodeNode(VARIABLE);
+	                    	identifierNode.setAttribute(ID, id);
+	                    	id.appendLineNumber(token.getLineNumber());
+	                    	
+	                    	rootNode.addChild(identifierNode);
+	                    	
+	                    }
+	                    
+	                    break;
+	    			}
+	    			default: {
+	    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+	    			}
     			}
-    			else {
-    				// Expected integer
-    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-    			}
+    			
 				token = nextToken(); // Consume the "last" value
 				tokenType = token.getType();
     		}
@@ -532,6 +571,10 @@ public class ExpressionParser extends StatementParser
     			tokenType = token.getType();
     		}
     		
+    	}
+    	
+    	if (tokenType == RIGHT_BRACKET){
+    		token = nextToken(); // consume the [
     	}
     	
     	return rootNode;
