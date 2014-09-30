@@ -23,7 +23,7 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     EQ, NE, LT, LE, GT, GE, NOT,
 
     // Additive operators
-    ADD, SUBTRACT, OR, NEGATE,
+    ADD, SUBTRACT, OR, NEGATE, 
 
     // Multiplicative operators
     MULTIPLY, INTEGER_DIVIDE, FLOAT_DIVIDE, MOD, AND,
@@ -37,5 +37,6 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     WRITE_PARM,
     
     // Special ICodeTypes features of pascal
-    SET, 
+    // SET was giving me issues so I changed to pascal_set to test it
+    PASCAL_SET  // LB and RB for left and right brackets
 }
