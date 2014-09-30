@@ -78,11 +78,14 @@ public class ExpressionParser extends StatementParser
         TokenType tokenType = token.getType();
 
         if (tokenType == LEFT_BRACKET) {
-        	token = nextToken();
+        	token = nextToken(); // consume the [
         	ICodeNode setNode = parseSet(token);
         	
         	// TODO: not sure if this should be here...
         }
+        
+        token = currentToken();
+        tokenType = token.getType();
         
         // Look for a relational operator.
         if (REL_OPS.contains(tokenType)) {
@@ -145,6 +148,9 @@ public class ExpressionParser extends StatementParser
         	return rootNode;
         	
         }
+        
+        token = currentToken();
+        tokenType = token.getType();
         
         if ((tokenType == PLUS) || (tokenType == MINUS)) {
             signType = tokenType;
@@ -408,170 +414,207 @@ public class ExpressionParser extends StatementParser
     	ArrayList<ICodeNode> currChildren; // Used for checking for unique values
     	
     	while (tokenType != RIGHT_BRACKET) {
-    		// Next should be an integer or real or identifier
-			switch ((PascalTokenType) tokenType) {
-    			case INTEGER: {
-    				ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
-                    intNode.setAttribute(VALUE, token.getValue());
-                    
-                    // Check if the number already exists in the set
-                    currChildren = rootNode.getChildren();
-                    if (currChildren.contains(intNode)) {
-                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
-                    }
-                    else {
-                    	rootNode.addChild(intNode);
-                    }
-                    
-                    prevVal = (int)token.getValue();
-    				break;
-    			}
-    			
-    			case REAL: {
-    				ICodeNode realNode = ICodeFactory.createICodeNode(REAL_CONSTANT);
-                    realNode.setAttribute(VALUE, token.getValue());
-                    
-                    // Check if the number already exists in the set
-                    currChildren = rootNode.getChildren();
-                    if (currChildren.contains(realNode)) {
-                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
-                    }
-                    else {
-                    	rootNode.addChild(realNode);
-                    }
-                    
-                    prevVal = (int)token.getValue();
-    				break;
-    			}
-    				
-    			case IDENTIFIER: {
-    				// Look up the identifier in the symbol table stack.
-                    // Flag the identifier as undefined if it's not found.
-    				
-                    String name = token.getText().toLowerCase();
-                    SymTabEntry id = symTabStack.lookup(name);
-                    if (id == null) {
-                        errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
-                        id = symTabStack.enterLocal(name);
-                    }
-                    else {
-                    	ICodeNode identifierNode = ICodeFactory.createICodeNode(VARIABLE);
-                    	identifierNode.setAttribute(ID, id);
-                    	id.appendLineNumber(token.getLineNumber());
-                    	
-                    	rootNode.addChild(identifierNode);
-                    	
-                    }
-                    
-                    break;
-    			}
-    			default: {
-    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-    			}
-			}
-                
-            token = nextToken();  // consume the variable
-            tokenType = token.getType();
-    	
+    		ICodeNode newNode = parseExpression(token);
     		
+    		ICodeNodeType newNodeType = newNode.getType();
     		
-    		// TODO: deal with range of numbers that use identifiers
-    		if (tokenType == DOT_DOT) {
-    			int first = prevVal;
-    			int last = 0;
-    			
-    			token = nextToken(); // Consume the ..
-    			tokenType = token.getType();
-    			
-    			switch ((PascalTokenType) tokenType) {
-	    			case INTEGER: {
-	    				ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
-	                    intNode.setAttribute(VALUE, token.getValue());
-	                    
-	                    // Check if the number already exists in the set
-	                    currChildren = rootNode.getChildren();
-	                    if (currChildren.contains(intNode)) {
-	                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
-	                    }
-	                    else {
-	                    	rootNode.addChild(intNode);
-	                    }
-	                    
-	                    prevVal = (int)token.getValue();
-	    				break;
-	    			}
-	    			
-	    			case REAL: {
-	    				ICodeNode realNode = ICodeFactory.createICodeNode(REAL_CONSTANT);
-	                    realNode.setAttribute(VALUE, token.getValue());
-	                    
-	                    // Check if the number already exists in the set
-	                    currChildren = rootNode.getChildren();
-	                    if (currChildren.contains(realNode)) {
-	                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
-	                    }
-	                    else {
-	                    	rootNode.addChild(realNode);
-	                    }
-	                    
-	                    prevVal = (int)token.getValue();
-	    				break;
-	    			}
-	    				
-	    			case IDENTIFIER: {
-	    				// Look up the identifier in the symbol table stack.
-	                    // Flag the identifier as undefined if it's not found.
-	    				
-	                    String name = token.getText().toLowerCase();
-	                    SymTabEntry id = symTabStack.lookup(name);
-	                    if (id == null) {
-	                        errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
-	                        id = symTabStack.enterLocal(name);
-	                    }
-	                    else {
-	                    	ICodeNode identifierNode = ICodeFactory.createICodeNode(VARIABLE);
-	                    	identifierNode.setAttribute(ID, id);
-	                    	id.appendLineNumber(token.getLineNumber());
-	                    	
-	                    	rootNode.addChild(identifierNode);
-	                    	
-	                    }
-	                    
-	                    break;
-	    			}
-	    			default: {
-	    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
-	    			}
-    			}
-    			
-				token = nextToken(); // Consume the "last" value
-				tokenType = token.getType();
+    		if (newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
+    				|| newNodeType == REAL_CONSTANT) {
+    			rootNode.addChild(newNode);
     		}
+    		else {
+    			errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+    		}
+    		
+    		token = currentToken();
+    		tokenType = token.getType();
     		
     		if (tokenType == RIGHT_BRACKET) {
     			token = nextToken(); // Consume the ]
-    			tokenType = token.getType();
-        		return rootNode; // Return the root of the set with all its children
-        	}
+    			return rootNode;
+    		}
     		
-    		// Next should be a comma
+    		if (tokenType == SEMICOLON) {
+    			errorHandler.flag(token, MISSING_RIGHT_BRACKET, this);
+    		}
+    		
     		if (tokenType == COMMA) {
     			token = nextToken(); // Consume the comma
     			tokenType = token.getType();
     		}
     		else {
     			errorHandler.flag(token, MISSING_COMMA, this);
-    			token = nextToken();
-    			tokenType = token.getType();
     		}
     		
-    		if (tokenType == SEMICOLON) {
-    			errorHandler.flag(token, MISSING_RIGHT_BRACKET, this);
-    			token = nextToken();
-    			tokenType = token.getType();
-    		}
-    		
+    		// Check for comma and error check for semicolon
     	}
+    	
+    	
+//    	while (tokenType != RIGHT_BRACKET) {
+//    		// Next should be an integer or real or identifier
+//			switch ((PascalTokenType) tokenType) {
+//    			case INTEGER: {
+//    				ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+//                    intNode.setAttribute(VALUE, token.getValue());
+//                    
+//                    // Check if the number already exists in the set
+//                    currChildren = rootNode.getChildren();
+//                    if (currChildren.contains(intNode)) {
+//                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+//                    }
+//                    else {
+//                    	rootNode.addChild(intNode);
+//                    }
+//                    
+//                    prevVal = (int)token.getValue();
+//    				break;
+//    			}
+//    			
+//    			case REAL: {
+//    				ICodeNode realNode = ICodeFactory.createICodeNode(REAL_CONSTANT);
+//                    realNode.setAttribute(VALUE, token.getValue());
+//                    
+//                    // Check if the number already exists in the set
+//                    currChildren = rootNode.getChildren();
+//                    if (currChildren.contains(realNode)) {
+//                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+//                    }
+//                    else {
+//                    	rootNode.addChild(realNode);
+//                    }
+//                    
+//                    prevVal = (int)token.getValue();
+//    				break;
+//    			}
+//    				
+//    			case IDENTIFIER: {
+//    				// Look up the identifier in the symbol table stack.
+//                    // Flag the identifier as undefined if it's not found.
+//    				
+//                    String name = token.getText().toLowerCase();
+//                    SymTabEntry id = symTabStack.lookup(name);
+//                    if (id == null) {
+//                        errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+//                        id = symTabStack.enterLocal(name);
+//                    }
+//                    else {
+//                    	ICodeNode identifierNode = ICodeFactory.createICodeNode(VARIABLE);
+//                    	identifierNode.setAttribute(ID, id);
+//                    	id.appendLineNumber(token.getLineNumber());
+//                    	
+//                    	rootNode.addChild(identifierNode);
+//                    	
+//                    }
+//                    
+//                    break;
+//    			}
+//    			default: {
+//    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+//    			}
+//			}
+//                
+//            token = nextToken();  // consume the variable
+//            tokenType = token.getType();
+//    	
+//    		
+//    		
+//    		// TODO: deal with range of numbers that use identifiers
+//    		if (tokenType == DOT_DOT) {
+//    			int first = prevVal;
+//    			int last = 0;
+//    			
+//    			token = nextToken(); // Consume the ..
+//    			tokenType = token.getType();
+//    			
+//    			switch ((PascalTokenType) tokenType) {
+//	    			case INTEGER: {
+//	    				ICodeNode intNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+//	                    intNode.setAttribute(VALUE, token.getValue());
+//	                    
+//	                    // Check if the number already exists in the set
+//	                    currChildren = rootNode.getChildren();
+//	                    if (currChildren.contains(intNode)) {
+//	                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+//	                    }
+//	                    else {
+//	                    	rootNode.addChild(intNode);
+//	                    }
+//	                    
+//	                    prevVal = (int)token.getValue();
+//	    				break;
+//	    			}
+//	    			
+//	    			case REAL: {
+//	    				ICodeNode realNode = ICodeFactory.createICodeNode(REAL_CONSTANT);
+//	                    realNode.setAttribute(VALUE, token.getValue());
+//	                    
+//	                    // Check if the number already exists in the set
+//	                    currChildren = rootNode.getChildren();
+//	                    if (currChildren.contains(realNode)) {
+//	                    	errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+//	                    }
+//	                    else {
+//	                    	rootNode.addChild(realNode);
+//	                    }
+//	                    
+//	                    prevVal = (int)token.getValue();
+//	    				break;
+//	    			}
+//	    				
+//	    			case IDENTIFIER: {
+//	    				// Look up the identifier in the symbol table stack.
+//	                    // Flag the identifier as undefined if it's not found.
+//	    				
+//	                    String name = token.getText().toLowerCase();
+//	                    SymTabEntry id = symTabStack.lookup(name);
+//	                    if (id == null) {
+//	                        errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
+//	                        id = symTabStack.enterLocal(name);
+//	                    }
+//	                    else {
+//	                    	ICodeNode identifierNode = ICodeFactory.createICodeNode(VARIABLE);
+//	                    	identifierNode.setAttribute(ID, id);
+//	                    	id.appendLineNumber(token.getLineNumber());
+//	                    	
+//	                    	rootNode.addChild(identifierNode);
+//	                    	
+//	                    }
+//	                    
+//	                    break;
+//	    			}
+//	    			default: {
+//	    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+//	    			}
+//    			}
+//    			
+//				token = nextToken(); // Consume the "last" value
+//				tokenType = token.getType();
+//    		}
+//    		
+//    		if (tokenType == RIGHT_BRACKET) {
+//    			token = nextToken(); // Consume the ]
+//    			tokenType = token.getType();
+//        		return rootNode; // Return the root of the set with all its children
+//        	}
+//    		
+//    		// Next should be a comma
+//    		if (tokenType == COMMA) {
+//    			token = nextToken(); // Consume the comma
+//    			tokenType = token.getType();
+//    		}
+//    		else {
+//    			errorHandler.flag(token, MISSING_COMMA, this);
+//    			token = nextToken();
+//    			tokenType = token.getType();
+//    		}
+//    		
+//    		if (tokenType == SEMICOLON) {
+//    			errorHandler.flag(token, MISSING_RIGHT_BRACKET, this);
+//    			token = nextToken();
+//    			tokenType = token.getType();
+//    		}
+//    		
+//    	}
     	
     	if (tokenType == RIGHT_BRACKET){
     		token = nextToken(); // consume the [
