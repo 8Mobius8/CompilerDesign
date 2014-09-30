@@ -310,6 +310,12 @@ public class ExpressionParser extends StatementParser
                 token = nextToken();  // consume the identifier
                 break;
             }
+            
+            case DOT_DOT: {
+            	rootNode = ICodeFactory.createICodeNode(RANGE);
+            	token = nextToken(); // consume the ..
+            	break;
+            }
 
             case INTEGER: {
                 // Create an INTEGER_CONSTANT node as the root node.
@@ -416,6 +422,7 @@ public class ExpressionParser extends StatementParser
     	while (tokenType != RIGHT_BRACKET) {
     		ICodeNode newNode = parseExpression(token);
     		
+    		
     		ICodeNodeType newNodeType = newNode.getType();
     		
     		if (newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
@@ -428,6 +435,7 @@ public class ExpressionParser extends StatementParser
     		
     		token = currentToken();
     		tokenType = token.getType();
+    		
     		
     		if (tokenType == RIGHT_BRACKET) {
     			token = nextToken(); // Consume the ]
