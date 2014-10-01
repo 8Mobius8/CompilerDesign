@@ -401,7 +401,10 @@ public class ExpressionParser extends StatementParser
 
     return rootNode;
    }
-
+  
+  private static final EnumSet<ICodeNodeTypeImpl> INT_RESOLVEABLE_NODES
+  	= EnumSet.of(MULTIPLY, INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, INTEGER_CONSTANT, ICodeNodeTypeImpl.RANGE);
+  
   private ICodeNode parseSet(Token token)
      throws Exception
    {
@@ -451,7 +454,7 @@ public class ExpressionParser extends StatementParser
 
         ICodeNode tempNode = parseExpression(token);
         ICodeNodeType tempNodeType = tempNode.getType();
-
+        
         if (tempNodeType == VARIABLE || tempNodeType == INTEGER_CONSTANT
            || tempNodeType == REAL_CONSTANT || newNodeType == MULTIPLY)
          {
