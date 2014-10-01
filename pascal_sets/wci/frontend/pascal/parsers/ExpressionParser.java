@@ -402,8 +402,10 @@ public class ExpressionParser extends StatementParser
     return rootNode;
    }
   
-  private static final EnumSet<ICodeNodeTypeImpl> INT_RESOLVEABLE_NODES
-  	= EnumSet.of(MULTIPLY, INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, INTEGER_CONSTANT);
+  private static final EnumSet<ICodeNodeTypeImpl> SET_TYPES_AND_OPS
+	= EnumSet.of(VARIABLE, INTEGER_CONSTANT, REAL_CONSTANT, MULTIPLY, 
+			INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, ICodeNodeTypeImpl.AND,
+			ICodeNodeTypeImpl.RANGE, ADD, SUBTRACT, NEGATE, ICodeNodeTypeImpl.OR);
   
   private ICodeNode parseSet(Token token)
      throws Exception
@@ -429,8 +431,7 @@ public class ExpressionParser extends StatementParser
 
       ICodeNodeType newNodeType = newNode.getType();
 
-      if (!(newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
-         || newNodeType == REAL_CONSTANT || newNodeType == MULTIPLY)) {
+      if (!(SET_TYPES_AND_OPS.contains(newNodeType))) {
         errorHandler.flag(token, UNEXPECTED_TOKEN, this);
        }
 
@@ -451,7 +452,7 @@ public class ExpressionParser extends StatementParser
         ICodeNode tempNode = parseExpression(token);
         ICodeNodeType tempNodeType = tempNode.getType();
         
-        if (INT_RESOLVEABLE_NODES.contains(tempNodeType))
+        if (SET_TYPES_AND_OPS.contains(tempNodeType))
          {
           dotNode.addChild(tempNode); // Add the other field into the range node
           rootNode.addChild(dotNode); // Add the range into the set tree
