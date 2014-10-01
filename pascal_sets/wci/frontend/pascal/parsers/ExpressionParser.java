@@ -81,6 +81,8 @@ public class ExpressionParser extends StatementParser
         	token = nextToken(); // consume the [
         	ICodeNode setNode = parseSet(token);
         	
+        	rootNode.addChild(setNode);
+        	
         	// TODO: not sure if this should be here...
         }
         
@@ -427,7 +429,6 @@ public class ExpressionParser extends StatementParser
     		
     		if (newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
     				|| newNodeType == REAL_CONSTANT) {
-    			rootNode.addChild(newNode);
     		}
     		else {
     			errorHandler.flag(token, UNEXPECTED_TOKEN, this);
@@ -436,6 +437,34 @@ public class ExpressionParser extends StatementParser
     		token = currentToken();
     		tokenType = token.getType();
     		
+    		if (tokenType == DOT_DOT) {
+    			ICodeNode dotNode = ICodeFactory.createICodeNode(RANGE);
+    			dotNode.setAttribute(VALUE, DOT_DOT);
+    			
+    			dotNode.addChild(newNode); // Set range as the parent node
+    			
+    			token = nextToken(); // Consume the ..
+    			tokenType = token.getType();
+    			
+    			ICodeNode tempNode = parseExpression(token);
+    			ICodeNodeType tempNodeType = tempNode.getType();
+    			
+    			if (tempNodeType == VARIABLE || tempNodeType == INTEGER_CONSTANT
+    					|| tempNodeType == REAL_CONSTANT) {
+    				
+    				dotNode.addChild(tempNode); // Add the other field into the range node
+    				rootNode.addChild(dotNode); // Add the range into the set tree
+    			}
+    			else {
+    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+    			}
+    		}
+    		else {
+    			rootNode.addChild(newNode);
+    		}
+    		
+    		token = currentToken();
+    		tokenType = token.getType();
     		
     		if (tokenType == RIGHT_BRACKET) {
     			token = nextToken(); // Consume the ]
