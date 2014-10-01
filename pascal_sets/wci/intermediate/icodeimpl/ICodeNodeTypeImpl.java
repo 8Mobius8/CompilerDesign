@@ -44,5 +44,5 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     
     // Special ICodeTypes features of pascal
     // SET was giving me issues so I changed to pascal_set to test it
-    PASCAL_SET, RANGE  // LB and RB for left and right brackets
+    SET, RANGE  // LB and RB for left and right brackets
 }

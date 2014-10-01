@@ -411,10 +411,10 @@ public class ExpressionParser extends StatementParser
 
     TokenType tokenType = token.getType();
 
-    // Named pascal_set because SET was giving me issues
-    ICodeNode setNode = ICodeFactory.createICodeNode(PASCAL_SET);
+    // SET type
+    ICodeNode setNode = ICodeFactory.createICodeNode(ICodeNodeTypeImpl.SET);
 
-    // Now PASCAL_SET is the root node
+    // Now SET is the root node
     ICodeNode rootNode = setNode;
 
     int prevVal = 0; // Used for range values

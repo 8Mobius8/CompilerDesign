@@ -12,6 +12,9 @@ import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
 import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
 import static wci.backend.interpreter.RuntimeErrorCode.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * <h1>ExpressionExecutor</h1>
  *
@@ -24,7 +27,7 @@ public class ExpressionExecutor extends StatementExecutor
 {
     /**
      * Constructor.
-     * @param the parent executor.
+     * @param parent the parent executor.
      */
     public ExpressionExecutor(Executor parent)
     {
@@ -94,6 +97,29 @@ public class ExpressionExecutor extends StatementExecutor
                 return !value;
             }
 
+            case SET:
+             {
+              ArrayList<ICodeNode> children = node.getChildren();
+              Set<Integer> set = new HashSet<>();
+              
+              for(ICodeNode i: children)
+               {
+                switch((ICodeNodeTypeImpl)i.getType())
+                 {
+                  case RANGE:
+                    ArrayList<ICodeNode> rkids = i.getChildren();
+                    //The first child must be less than or equal to the second
+                    
+                    //TODO
+                    
+                    break;
+                    
+                  default:
+                 }
+               }
+             }
+            
+            
             // Must be a binary operator.
             default: return executeBinaryOperator(node, nodeType);
         }
