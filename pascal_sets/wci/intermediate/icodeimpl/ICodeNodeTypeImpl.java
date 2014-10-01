@@ -23,7 +23,10 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     EQ, NE, LT, LE, GT, GE, NOT,
 
     // Set operators
-    SET_CONTAINS,
+    
+        SET_IN,           // A IN B  (true if (set)B contains (integer)A
+        
+        
     
     // Additive operators
     ADD, SUBTRACT, OR, NEGATE, 
