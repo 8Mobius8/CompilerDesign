@@ -402,10 +402,11 @@ public class ExpressionParser extends StatementParser
     return rootNode;
    }
   
+  //AND and OR return boolean types, so they should not be included
   private static final EnumSet<ICodeNodeTypeImpl> SET_TYPES_AND_OPS
 	= EnumSet.of(VARIABLE, INTEGER_CONSTANT, REAL_CONSTANT, MULTIPLY, 
-			INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, ICodeNodeTypeImpl.AND,
-			ICodeNodeTypeImpl.RANGE, ADD, SUBTRACT, NEGATE, ICodeNodeTypeImpl.OR);
+			INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD,
+			ICodeNodeTypeImpl.RANGE, ADD, SUBTRACT, NEGATE);
   
   private ICodeNode parseSet(Token token)
      throws Exception
@@ -427,11 +428,18 @@ public class ExpressionParser extends StatementParser
 
     while (tokenType != RIGHT_BRACKET)
      {
+      Token old = token;
+      boolean isConstantSubrange = false; //If it's a constant we can parse it now
+      
       ICodeNode newNode = parseExpression(token);
-
+      if(newNode == null)
+       {
+        break;
+       }
       ICodeNodeType newNodeType = newNode.getType();
 
-      if (!(SET_TYPES_AND_OPS.contains(newNodeType))) {
+      if (!(SET_TYPES_AND_OPS.contains(newNodeType)))
+       {
         errorHandler.flag(token, UNEXPECTED_TOKEN, this);
        }
 
@@ -448,14 +456,51 @@ public class ExpressionParser extends StatementParser
 
         token = nextToken(); // Consume the ..
         tokenType = token.getType();
-
-        ICodeNode tempNode = parseExpression(token);
-        ICodeNodeType tempNodeType = tempNode.getType();
         
-        if (SET_TYPES_AND_OPS.contains(tempNodeType))
+        ICodeNode tempNode = parseExpression(token);
+        
+        if(tempNode == null)
+         {
+          break;
+         }
+        ICodeNodeType tempNodeType = tempNode.getType();
+
+        
+        //Integer constant subrange. Add all the range's values to rootNode
+        if(old.getType() == INTEGER && tokenType == INTEGER)
+         { //they are both integers, so the cast should not fail
+          isConstantSubrange = true;
+          if((int)old.getValue() < (int)token.getValue())
+           {
+            for(int i = (int)old.getValue(); i < (int)token.getValue(); i++)
+             {
+              ICodeNode rangeValue = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+              rangeValue.setAttribute(VALUE, i);
+              
+              if(currChildren.contains(i))
+               {
+                errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+               }
+              else
+               {
+                currChildren.add(i);
+                rootNode.addChild(rangeValue);
+               }
+              
+             }
+           }
+         }
+        
+        
+        if ((!isConstantSubrange) && SET_TYPES_AND_OPS.contains(tempNodeType)) //if it's a constant subrange it's
+                                                            //already been added to the node
          {
           dotNode.addChild(tempNode); // Add the other field into the range node
           rootNode.addChild(dotNode); // Add the range into the set tree
+         }
+        else if(isConstantSubrange)
+         {
+          //not an error, just don't do anything here
          }
         else
          {
@@ -498,6 +543,13 @@ public class ExpressionParser extends StatementParser
        {
         token = nextToken(); // Consume the comma
         tokenType = token.getType();
+        
+        while(((PascalTokenType)token.getType())== COMMA)
+         {
+          errorHandler.flag(token, EXTRA_COMMA, this);
+          token = nextToken();
+          tokenType = token.getType();
+         }
        }
       else
        {

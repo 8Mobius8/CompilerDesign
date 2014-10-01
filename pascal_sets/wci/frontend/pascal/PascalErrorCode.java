@@ -12,6 +12,7 @@ public enum PascalErrorCode
 {
     ALREADY_FORWARDED("Already specified in FORWARD"),
     CASE_CONSTANT_REUSED("CASE constant reused"),
+    EXTRA_COMMA("Too many commas in the set declaration"),
     IDENTIFIER_REDEFINED("Redefined identifier"),
     IDENTIFIER_UNDEFINED("Undefined identifier"),
     INCOMPATIBLE_ASSIGNMENT("Incompatible assignment"),

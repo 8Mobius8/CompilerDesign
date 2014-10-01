@@ -102,13 +102,28 @@ public class ExpressionExecutor extends StatementExecutor
               ArrayList<ICodeNode> children = node.getChildren();
               Set<Integer> set = new HashSet<>();
               
-              for(ICodeNode i: children)
+              for(ICodeNode child: children)
                {
-                switch((ICodeNodeTypeImpl)i.getType())
+                switch((ICodeNodeTypeImpl)child.getType())
                  {
                   case RANGE:
-                    ArrayList<ICodeNode> rkids = i.getChildren();
+                    ArrayList<ICodeNode> rkids = child.getChildren();
                     //The first child must be less than or equal to the second
+                    ICodeNode current = rkids.get(0);
+                    Integer kid1 = (Integer)execute(current);
+                    current = rkids.get(1);
+                    Integer kid2 = (Integer)execute(current);
+                    
+                    if(kid1 >= kid2)
+                     {
+                      errorHandler.flag(rkids.get(0), INVALID_INPUT, this);
+                     }
+                    
+                    for(int i = kid1; i < kid2; i++)
+                     {
+                       //this may be wrong.
+                     }
+                    
                     
                     //TODO
                     
@@ -117,6 +132,8 @@ public class ExpressionExecutor extends StatementExecutor
                   default:
                  }
                }
+              
+              return set;
              }
             
             
