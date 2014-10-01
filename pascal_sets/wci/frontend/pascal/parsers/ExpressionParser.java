@@ -428,7 +428,7 @@ public class ExpressionParser extends StatementParser
     		ICodeNodeType newNodeType = newNode.getType();
     		
     		if (newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
-    				|| newNodeType == REAL_CONSTANT) {
+    				|| newNodeType == REAL_CONSTANT || newNodeType == MULTIPLY) {
     		}
     		else {
     			errorHandler.flag(token, UNEXPECTED_TOKEN, this);
