@@ -102,6 +102,9 @@ public class ExpressionExecutor extends StatementExecutor
     // Set of arithmetic operator node types.
     private static final EnumSet<ICodeNodeTypeImpl> ARITH_OPS =
         EnumSet.of(ADD, SUBTRACT, MULTIPLY, FLOAT_DIVIDE, INTEGER_DIVIDE, MOD);
+    
+    private static final EnumSet<ICodeNodeTypeImpl> SET_OPS =
+       EnumSet.of(SET_IN); //others?
 
     /**
      * Execute a binary operator.
@@ -135,6 +138,8 @@ public class ExpressionExecutor extends StatementExecutor
 
         boolean integerMode = (operand1 instanceof Integer) &&
                               (operand2 instanceof Integer);
+        
+        ///Booleans for set flags?
 
         // ====================
         // Arithmetic operators
@@ -188,6 +193,12 @@ public class ExpressionExecutor extends StatementExecutor
                     }
                 }
             }
+            //else if set flags
+            //{
+            //  intersection (*), union (+), difference (-)
+            //}
+            
+            
             else {
                 float value1 = operand1 instanceof Integer
                                    ? (Integer) operand1 : (Float) operand1;
@@ -233,6 +244,11 @@ public class ExpressionExecutor extends StatementExecutor
         // Relational operators
         // ====================
 
+        else if (SET_OPS.contains(nodeType))
+         {
+          //IN
+         }
+        
         else if (integerMode) {
             int value1 = (Integer) operand1;
             int value2 = (Integer) operand2;
@@ -247,6 +263,9 @@ public class ExpressionExecutor extends StatementExecutor
                 case GE: return value1 >= value2;
             }
         }
+        //else if set flags
+            // equal (=), not equal (<>), subset (<=) (A is subset of B), 
+                        //subset reversed (>=) (B is subset of A)
         else {
             float value1 = operand1 instanceof Integer
                                ? (Integer) operand1 : (Float) operand1;
