@@ -22,6 +22,9 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     // Relational operators
     EQ, NE, LT, LE, GT, GE, NOT,
 
+    // Set operators
+    SET_CONTAINS,
+    
     // Additive operators
     ADD, SUBTRACT, OR, NEGATE, 
 
