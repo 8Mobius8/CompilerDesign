@@ -403,7 +403,7 @@ public class ExpressionParser extends StatementParser
    }
   
   private static final EnumSet<ICodeNodeTypeImpl> INT_RESOLVEABLE_NODES
-  	= EnumSet.of(MULTIPLY, INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, INTEGER_CONSTANT, ICodeNodeTypeImpl.RANGE);
+  	= EnumSet.of(MULTIPLY, INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, INTEGER_CONSTANT);
   
   private ICodeNode parseSet(Token token)
      throws Exception
@@ -429,19 +429,15 @@ public class ExpressionParser extends StatementParser
 
       ICodeNodeType newNodeType = newNode.getType();
 
-      if (newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
-         || newNodeType == REAL_CONSTANT || newNodeType == MULTIPLY)
-       {
-
-       }
-      else
-       {
+      if (!(newNodeType == VARIABLE || newNodeType == INTEGER_CONSTANT
+         || newNodeType == REAL_CONSTANT || newNodeType == MULTIPLY)) {
         errorHandler.flag(token, UNEXPECTED_TOKEN, this);
        }
 
       token = currentToken();
       tokenType = token.getType();
-
+      
+      // If a range is being defined
       if (tokenType == DOT_DOT)
        {
         ICodeNode dotNode = ICodeFactory.createICodeNode(RANGE);
@@ -455,10 +451,8 @@ public class ExpressionParser extends StatementParser
         ICodeNode tempNode = parseExpression(token);
         ICodeNodeType tempNodeType = tempNode.getType();
         
-        if (tempNodeType == VARIABLE || tempNodeType == INTEGER_CONSTANT
-           || tempNodeType == REAL_CONSTANT || newNodeType == MULTIPLY)
+        if (INT_RESOLVEABLE_NODES.contains(tempNodeType))
          {
-
           dotNode.addChild(tempNode); // Add the other field into the range node
           rootNode.addChild(dotNode); // Add the range into the set tree
          }
