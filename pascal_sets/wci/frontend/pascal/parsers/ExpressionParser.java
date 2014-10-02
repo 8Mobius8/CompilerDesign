@@ -105,23 +105,30 @@ public class ExpressionParser extends StatementParser
 //      // TODO: not sure if this should be here...
 //     }
 
-
     // Look for a relational operator.
     if (REL_OPS.contains(tokenType))
      {
-
+    	
             // Create a new operator node and adopt the current tree
       // as its first child.
       ICodeNodeType nodeType = REL_OPS_MAP.get(tokenType);
       ICodeNode opNode = ICodeFactory.createICodeNode(nodeType);
       opNode.addChild(rootNode);
-
+      
+      Token opToken = currentToken();
+      
       token = nextToken();  // consume the operator
-
+      
             // Parse the second simple expression.  The operator node adopts
       // the simple expression's tree as its second child.
-      opNode.addChild(parseSimpleExpression(token));
-
+      ICodeNode rightExp = parseSimpleExpression(token);
+      if(rightExp.getType() == ICodeNodeTypeImpl.SET || rootNode.getType() == ICodeNodeTypeImpl.SET){
+    	  if(!SET_OPS.contains(token.getType()) ){
+    		  errorHandler.flag(opToken, INVALID_OPERATOR, this);
+    	  }
+      }
+      opNode.addChild(rightExp);
+      
       // The operator node becomes the new root node.
       rootNode = opNode;
      }
@@ -408,7 +415,9 @@ public class ExpressionParser extends StatementParser
    }
   
   //AND and OR return boolean types, so they should not be included
-  private static final EnumSet<ICodeNodeTypeImpl> SET_TYPES_AND_OPS
+  private static final EnumSet<PascalTokenType> SET_OPS = 
+		  EnumSet.of(EQUALS, PLUS, MINUS, LESS_EQUALS, GREATER_EQUALS, STAR, NOT_EQUALS, IN);
+  private static final EnumSet<ICodeNodeTypeImpl> SET_TYPES
 	= EnumSet.of(VARIABLE, INTEGER_CONSTANT, REAL_CONSTANT, MULTIPLY, 
 			INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD,
 			ICodeNodeTypeImpl.RANGE, ADD, SUBTRACT, NEGATE);
@@ -457,7 +466,7 @@ public class ExpressionParser extends StatementParser
       ICodeNodeType newNodeType = newNode.getType();
       oldNode = newNode;
 
-      if (!(SET_TYPES_AND_OPS.contains(newNodeType)))
+      if (!(SET_TYPES.contains(newNodeType)))
        {
         errorHandler.flag(token, UNEXPECTED_TOKEN, this);
        }
@@ -523,7 +532,7 @@ public class ExpressionParser extends StatementParser
          }
         
         
-        if ((!isConstantSubrange) && SET_TYPES_AND_OPS.contains(tempNodeType)) //if it's a constant subrange it's
+        if ((!isConstantSubrange) && SET_TYPES.contains(tempNodeType)) //if it's a constant subrange it's
                                                             //already been added to the node
          {
           dotNode.addChild(tempNode); // Add the other field into the range node

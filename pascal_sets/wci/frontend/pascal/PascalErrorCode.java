@@ -27,6 +27,7 @@ public enum PascalErrorCode
     INVALID_IDENTIFIER_USAGE("Invalid identifier usage"),
     INVALID_INDEX_TYPE("Invalid index type"),
     INVALID_NUMBER("Invalid number"),
+    INVALID_OPERATOR("Invalid operator"),
     INVALID_STATEMENT("Invalid statement"),
     INVALID_SUBRANGE_TYPE("Invalid subrange type"),
     INVALID_TARGET("Invalid assignment target"),

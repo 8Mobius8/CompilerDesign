@@ -250,9 +250,9 @@ public class ExpressionExecutor extends StatementExecutor
         		case SET_IN:{   // Membership
         			return set1.containsAll(set2);
         		}
-        		default:
-        			//errorHandler.flag(node, , backend);
-        			break;
+        		default:{
+        			errorHandler.flag(node,INVALID_INPUT, this);
+        		}
         	}
         }
         // ====================
