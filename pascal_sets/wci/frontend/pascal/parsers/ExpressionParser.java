@@ -315,20 +315,11 @@ public class ExpressionParser extends StatementParser
           errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
           id = symTabStack.enterLocal(name);
          }
+    
+        rootNode = ICodeFactory.createICodeNode(VARIABLE);
+        rootNode.setAttribute(ID, id);
+        id.appendLineNumber(token.getLineNumber());
         
-        Integer symTabConstValue = (Integer) id.getAttribute(SymTabKeyImpl.CONSTANT_VALUE);
-
-        if (symTabConstValue != null) {
-        	rootNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
-        	rootNode.setAttribute(VALUE, symTabConstValue);
-        }
-        else {
-        	rootNode = ICodeFactory.createICodeNode(VARIABLE);
-        	rootNode.setAttribute(ID, id);
-        	id.appendLineNumber(token.getLineNumber());
-        }
-        
-
         token = nextToken();  // consume the identifier
         break;
        }
@@ -431,11 +422,11 @@ public class ExpressionParser extends StatementParser
     // Now SET is the root node
     ICodeNode rootNode = setNode;
 
-    int prevVal = 0; // Used for range values
     ArrayList<Integer> currChildren = new ArrayList<>(); // Used for checking for unique values
 
     while (tokenType != RIGHT_BRACKET)
      {
+      Token old = currentToken();
       ICodeNode oldNode = null;
       boolean isConstantSubrange = false; //If it's a constant we can parse it now
       
@@ -444,6 +435,18 @@ public class ExpressionParser extends StatementParser
        {
         break;
        }
+      else if (newNode.getType() == VARIABLE) {
+    	  String targetName = token.getText().toLowerCase();
+          SymTabEntry targetId = symTabStack.lookup(targetName);
+          
+          Integer symTabConstValue = (Integer) targetId.getAttribute(SymTabKeyImpl.CONSTANT_VALUE);
+          
+          if (symTabConstValue != null) {
+          	newNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+          	newNode.setAttribute(VALUE, symTabConstValue);
+          }
+      }
+      
       ICodeNodeType newNodeType = newNode.getType();
       oldNode = newNode;
 
@@ -472,6 +475,18 @@ public class ExpressionParser extends StatementParser
          {
           break;
          }
+        
+        else if (tempNode.getType() == VARIABLE){
+        	String targetName = (String) newNode.getAttribute(ID);
+            SymTabEntry targetId = symTabStack.lookup(targetName);
+            
+            Integer symTabConstValue = (Integer) targetId.getAttribute(SymTabKeyImpl.CONSTANT_VALUE);
+            
+            if (symTabConstValue != null) {
+            	tempNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+            	tempNode.setAttribute(VALUE, symTabConstValue);
+            }
+        }
         ICodeNodeType tempNodeType = tempNode.getType();
 
         
@@ -488,7 +503,7 @@ public class ExpressionParser extends StatementParser
               
               if(currChildren.contains(i))
                {
-                errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+                errorHandler.flag(old, NON_UNIQUE_MEMBERS, this);
                }
               else
                {
@@ -530,7 +545,7 @@ public class ExpressionParser extends StatementParser
          }
         else
          {
-          errorHandler.flag(token, PascalErrorCode.NON_UNIQUE_MEMBERS, this);
+          errorHandler.flag(old, PascalErrorCode.NON_UNIQUE_MEMBERS, this);
          }
        }
 
@@ -543,12 +558,12 @@ public class ExpressionParser extends StatementParser
         return rootNode;
        }
 
-      if (tokenType == SEMICOLON)
+      else if (tokenType == SEMICOLON)
        {
         errorHandler.flag(token, MISSING_RIGHT_BRACKET, this);
        }
 
-      if (tokenType == COMMA)
+      else if (tokenType == COMMA)
        {
         token = nextToken(); // Consume the comma
         tokenType = token.getType();
