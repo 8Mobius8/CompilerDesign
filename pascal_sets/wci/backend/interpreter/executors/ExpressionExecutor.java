@@ -200,39 +200,28 @@ public class ExpressionExecutor extends StatementExecutor
 
         boolean integerMode = (operand1 instanceof Integer) &&
                               (operand2 instanceof Integer);
-        
+        boolean setMode = (operand1 instanceof HashSet) ||
+        				  (operand2 instanceof HashSet);
         ///Booleans for set flags?
-        
-        /* 
-    	 * Need to include executing code for Set.
-    	 * We need to cover these operations:
-    	 *  +	Union of two sets	
-    	 *	-	Difference of two sets	
-    	 *	*	Intersection of two sets	
-    	 *	=	Checks equality of two sets
-    	 *	<>	Checks non-equality of two sets
-    	 *	<=	Contains 
-    	 *	In	Checks set membership of an element in a set
-    	 * */
+
         // ====================
         //      Set Ops
         // ====================
-        if(operandNode1.getType() == SET || operandNode2.getType() == SET) {
-        	Set<Integer> set1, set2;
-        	if(operandNode1.getType() == SET && operandNode2.getType() == SET){
-        		set1 = ((Set<Integer>) operand1);
-        		set2 = ((Set<Integer>) operand2);
-        	} 
-        	else if(operandNode1.getType() == SET && operandNode2.getType() != SET){
-    			set1 = ((Set<Integer>) operand1);
-    			set2 = new HashSet<Integer>();
-        		set2.add((int)operand2);
-	        } 
-        	else {
-        		set2 = ((Set<Integer>) operand2);
-    			set1 = new HashSet<Integer>();
-        		set1.add((int)operand1);
+        if(setMode) {
+        	Set<Integer> set1 = new HashSet<>();
+        	Set<Integer> set2 = new HashSet<>();
+        	
+        	if(operand1 instanceof HashSet){
+        		set1.addAll((Set<Integer>)operand1);
+        	} else {
+        		set1.add((Integer)operand1);
         	}
+        	if(operand2 instanceof HashSet){
+        		set2.addAll((Set<Integer>)operand2);
+        	} else {
+        		set2.add((Integer)operand2);
+        	}
+        	
         	
         	switch(nodeType){
         		case ADD:{ // Union
