@@ -218,29 +218,49 @@ public class ExpressionExecutor extends StatementExecutor
         //      Set Ops
         // ====================
         if(operandNode1.getType() == SET || operandNode2.getType() == SET) {
+        	Set<Integer> set1, set2;
+        	if(operandNode1.getType() == SET && operandNode2.getType() == SET){
+        		set1 = ((Set<Integer>) operand1);
+        		set2 = ((Set<Integer>) operand2);
+        	} 
+        	else if(operandNode1.getType() == SET && operandNode2.getType() != SET){
+    			set1 = ((Set<Integer>) operand1);
+    			set2 = new HashSet<Integer>();
+        		set2.add((int)operand2);
+	        } 
+        	else {
+        		set2 = ((Set<Integer>) operand2);
+    			set1 = new HashSet<Integer>();
+        		set1.add((int)operand1);
+        	}
+        	
         	switch(nodeType){
         		case ADD:{ // Union
-        			if(operand1.getType() == SET)
-        			((Set)operand1).
+					set1.addAll(set2);
+    				return set1;
         		}
-        		case SUBTRACT: // Difference
-        			
-        			break;
-        		case MULTIPLY: // Intersection
-        			
-        			break;
-        		case EQ:       // Equality
-        			
-        			break;
-        		case NE:       // Inequality
-        			
-        			break;
-        		case LE:       // Contains
-        			
-        			break;
-        		case SET_IN:   // Membership
-        			
-        			break;
+        		case SUBTRACT:{ // Difference
+    				set1.removeAll(set2);
+    				return set1;
+        		}
+        		case MULTIPLY:{ // Intersection
+    				set1.retainAll(set2);
+    				return set1;
+        		}
+        		case EQ:{       // Equality
+        			set1.removeAll(set2);
+        			return set1.isEmpty();
+        		}
+        		case NE:{       // Inequality
+        			set1.removeAll(set2);
+        			return !set1.isEmpty();
+        		}
+        		case LE:{       // Contains
+        			return set1.containsAll(set2);
+        		}
+        		case SET_IN:{   // Membership
+        			return set1.containsAll(set2);
+        		}
         		default:
         			//errorHandler.flag(node, , backend);
         			break;
@@ -250,7 +270,7 @@ public class ExpressionExecutor extends StatementExecutor
         // Arithmetic operators
         // ====================
 
-        if (ARITH_OPS.contains(nodeType)) 
+        else if (ARITH_OPS.contains(nodeType)) 
          {
             if (integerMode) {
                 int value1 = (Integer) operand1;
