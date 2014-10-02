@@ -157,19 +157,7 @@ public class ExpressionExecutor extends StatementExecutor
      */
     private Object executeBinaryOperator(ICodeNode node,
                                          ICodeNodeTypeImpl nodeType)
-    {
-    	/* 
-    	 * Need to include executing code for Set.
-    	 * We need to cover these operations:
-    	 *  +	Union of two sets	
-    	 *	-	Difference of two sets	
-    	 *	*	Intersection of two sets	
-    	 *	=	Checks equality of two sets
-    	 *	<>	Checks non-equality of two sets
-    	 *	<=	Contains 
-    	 *	In	Checks set membership of an element in a set
-    	 * */
-    	
+    {    	
         // Get the two operand children of the operator node.
         ArrayList<ICodeNode> children = node.getChildren();
         ICodeNode operandNode1 = children.get(0);
@@ -183,7 +171,50 @@ public class ExpressionExecutor extends StatementExecutor
                               (operand2 instanceof Integer);
         
         ///Booleans for set flags?
-
+        
+        /* 
+    	 * Need to include executing code for Set.
+    	 * We need to cover these operations:
+    	 *  +	Union of two sets	
+    	 *	-	Difference of two sets	
+    	 *	*	Intersection of two sets	
+    	 *	=	Checks equality of two sets
+    	 *	<>	Checks non-equality of two sets
+    	 *	<=	Contains 
+    	 *	In	Checks set membership of an element in a set
+    	 * */
+        // ====================
+        //      Set Ops
+        // ====================
+        if(operandNode1.getType() == SET || operandNode2.getType() == SET) {
+        	switch(nodeType){
+        		case ADD:{ // Union
+        			if(operand1.getType() == SET)
+        			((Set)operand1).
+        		}
+        		case SUBTRACT: // Difference
+        			
+        			break;
+        		case MULTIPLY: // Intersection
+        			
+        			break;
+        		case EQ:       // Equality
+        			
+        			break;
+        		case NE:       // Inequality
+        			
+        			break;
+        		case LE:       // Contains
+        			
+        			break;
+        		case SET_IN:   // Membership
+        			
+        			break;
+        		default:
+        			//errorHandler.flag(node, , backend);
+        			break;
+        	}
+        }
         // ====================
         // Arithmetic operators
         // ====================
@@ -236,12 +267,6 @@ public class ExpressionExecutor extends StatementExecutor
                     }
                 }
             }
-            //else if set flags
-            //{
-            //  intersection (*), union (+), difference (-)
-            //}
-            
-            
             else {
                 float value1 = operand1 instanceof Integer
                                    ? (Integer) operand1 : (Float) operand1;

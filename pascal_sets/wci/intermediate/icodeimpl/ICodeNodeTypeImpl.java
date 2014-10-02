@@ -20,12 +20,7 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     IF, SELECT, SELECT_BRANCH, SELECT_CONSTANTS, NO_OP,
 
     // Relational operators
-    EQ, NE, LT, LE, GT, GE, NOT,
-
-    // Set operators
-    
-        SET_IN,           // A IN B  (true if (set)B contains (integer)A
-        
+    EQ, NE, LT, LE, GT, GE, NOT,      
         
     
     // Additive operators
@@ -44,5 +39,9 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     
     // Special ICodeTypes features of pascal
     // SET was giving me issues so I changed to pascal_set to test it
-    SET, RANGE  // LB and RB for left and right brackets
+    SET, RANGE,  // LB and RB for left and right brackets
+    
+    // Set operators
+    SET_IN,           // A IN B  (true if (set)B contains (integer)A
+    
 }
