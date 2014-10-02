@@ -247,6 +247,9 @@ public class ExpressionExecutor extends StatementExecutor
         		case LE:{       // Contains
         			return set1.containsAll(set2);
         		}
+        		case GE:{
+        			return set2.containsAll(set2);
+        		}
         		case SET_IN:{   // Membership
         			return set1.containsAll(set2);
         		}

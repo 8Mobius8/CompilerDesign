@@ -123,7 +123,7 @@ public class ExpressionParser extends StatementParser
       // the simple expression's tree as its second child.
       ICodeNode rightExp = parseSimpleExpression(token);
       if(rightExp.getType() == ICodeNodeTypeImpl.SET || rootNode.getType() == ICodeNodeTypeImpl.SET){
-    	  if(!SET_OPS.contains(token.getType()) ){
+    	  if(!SET_OPS.contains(tokenType) ){
     		  errorHandler.flag(opToken, INVALID_OPERATOR, this);
     	  }
       }
