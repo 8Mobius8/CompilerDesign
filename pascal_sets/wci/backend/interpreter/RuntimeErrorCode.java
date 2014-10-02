@@ -10,6 +10,7 @@ package wci.backend.interpreter;
  */
 public enum RuntimeErrorCode
 {
+    DUPLICATE_SET_MEMBER("Duplicate set member"),
     UNINITIALIZED_VALUE("Uninitialized value"),
     VALUE_RANGE("Value out of range"),
     INVALID_CASE_EXPRESSION_VALUE("Invalid CASE expression value"),

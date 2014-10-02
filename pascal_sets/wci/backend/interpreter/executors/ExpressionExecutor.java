@@ -121,15 +121,46 @@ public class ExpressionExecutor extends StatementExecutor
                     
                     for(int i = kid1; i < kid2; i++)
                      {
-                       //this may be wrong.
+                      if(i > 50)
+                       {
+                        errorHandler.flag(child, VALUE_RANGE, this);
+                       }
+                      else if(set.contains(i))
+                       {
+                        errorHandler.flag(node, DUPLICATE_SET_MEMBER, this);
+                       }
+                      else
+                       {
+                        set.add(i);
+                       }
                      }
-                    
-                    
-                    //TODO
-                    
                     break;
                     
+                  
                   default:
+                    //is not a range. Execute it and see if the result is an int
+                    //    If it is not, explode
+                    Object result = execute(child);
+                    if(result instanceof Integer)
+                     {
+                      int i = (Integer)result;
+                      if(i > 50)
+                       {
+                        errorHandler.flag(child, VALUE_RANGE, this);
+                       }
+                      else if(set.contains(i))
+                       {
+                        errorHandler.flag(node, DUPLICATE_SET_MEMBER, this);
+                       }
+                      else
+                       {
+                        set.add(i);
+                       }
+                     }
+                  else
+                     {
+                      errorHandler.flag(node, INVALID_INPUT, this);
+                     }
                  }
                }
               
@@ -219,7 +250,8 @@ public class ExpressionExecutor extends StatementExecutor
         // Arithmetic operators
         // ====================
 
-        if (ARITH_OPS.contains(nodeType)) {
+        if (ARITH_OPS.contains(nodeType)) 
+         {
             if (integerMode) {
                 int value1 = (Integer) operand1;
                 int value2 = (Integer) operand2;
