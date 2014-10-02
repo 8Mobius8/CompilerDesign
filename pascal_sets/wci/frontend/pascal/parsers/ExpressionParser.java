@@ -475,6 +475,7 @@ public class ExpressionParser extends StatementParser
          {
           break;
          }
+        
         else if (tempNode.getType() == VARIABLE){
         	String targetName = (String) newNode.getAttribute(ID);
             SymTabEntry targetId = symTabStack.lookup(targetName);
@@ -502,7 +503,7 @@ public class ExpressionParser extends StatementParser
               
               if(currChildren.contains(i))
                {
-                errorHandler.flag(token, NON_UNIQUE_MEMBERS, this);
+                errorHandler.flag(old, NON_UNIQUE_MEMBERS, this);
                }
               else
                {
@@ -544,7 +545,7 @@ public class ExpressionParser extends StatementParser
          }
         else
          {
-          errorHandler.flag(token, PascalErrorCode.NON_UNIQUE_MEMBERS, this);
+          errorHandler.flag(old, PascalErrorCode.NON_UNIQUE_MEMBERS, this);
          }
        }
 
@@ -557,12 +558,12 @@ public class ExpressionParser extends StatementParser
         return rootNode;
        }
 
-      if (tokenType == SEMICOLON)
+      else if (tokenType == SEMICOLON)
        {
         errorHandler.flag(token, MISSING_RIGHT_BRACKET, this);
        }
 
-      if (tokenType == COMMA)
+      else if (tokenType == COMMA)
        {
         token = nextToken(); // Consume the comma
         tokenType = token.getType();
