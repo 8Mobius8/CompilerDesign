@@ -3,7 +3,7 @@ package wci.frontend.pascal.parsers;
 import wci.frontend.*;
 import wci.frontend.pascal.*;
 import wci.intermediate.*;
-
+import wci.intermediate.symtabimpl.SymTabKeyImpl;
 import static wci.frontend.pascal.PascalTokenType.*;
 import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
@@ -69,7 +69,12 @@ public class AssignmentStatementParser extends StatementParser
         // Parse the expression.  The ASSIGN node adopts the expression's
         // node as its second child.
         ExpressionParser expressionParser = new ExpressionParser(this);
-        assignNode.addChild(expressionParser.parse(token));
+        ICodeNode tempNode = expressionParser.parse(token);
+        
+        if (tempNode.getType() == INTEGER_CONSTANT || tempNode.getType() == REAL_CONSTANT){
+        	targetId.setAttribute(SymTabKeyImpl.CONSTANT_VALUE, tempNode.getAttribute(VALUE));
+        }
+        assignNode.addChild(tempNode);
 
         return assignNode;
     }

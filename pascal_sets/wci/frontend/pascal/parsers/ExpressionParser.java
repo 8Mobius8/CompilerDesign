@@ -7,9 +7,8 @@ import wci.frontend.*;
 import wci.frontend.pascal.*;
 import wci.intermediate.*;
 import wci.intermediate.icodeimpl.*;
-
+import wci.intermediate.symtabimpl.SymTabKeyImpl;
 import static wci.frontend.pascal.PascalTokenType.*;
-import static wci.frontend.pascal.PascalTokenType.NOT;
 import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
 import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
@@ -316,10 +315,19 @@ public class ExpressionParser extends StatementParser
           errorHandler.flag(token, IDENTIFIER_UNDEFINED, this);
           id = symTabStack.enterLocal(name);
          }
+        
+        Integer symTabConstValue = (Integer) id.getAttribute(SymTabKeyImpl.CONSTANT_VALUE);
 
-        rootNode = ICodeFactory.createICodeNode(VARIABLE);
-        rootNode.setAttribute(ID, id);
-        id.appendLineNumber(token.getLineNumber());
+        if (symTabConstValue != null) {
+        	rootNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+        	rootNode.setAttribute(VALUE, symTabConstValue);
+        }
+        else {
+        	rootNode = ICodeFactory.createICodeNode(VARIABLE);
+        	rootNode.setAttribute(ID, id);
+        	id.appendLineNumber(token.getLineNumber());
+        }
+        
 
         token = nextToken();  // consume the identifier
         break;
@@ -428,7 +436,7 @@ public class ExpressionParser extends StatementParser
 
     while (tokenType != RIGHT_BRACKET)
      {
-      Token old = token;
+      ICodeNode oldNode = null;
       boolean isConstantSubrange = false; //If it's a constant we can parse it now
       
       ICodeNode newNode = parseExpression(token);
@@ -437,6 +445,7 @@ public class ExpressionParser extends StatementParser
         break;
        }
       ICodeNodeType newNodeType = newNode.getType();
+      oldNode = newNode;
 
       if (!(SET_TYPES_AND_OPS.contains(newNodeType)))
        {
@@ -467,12 +476,12 @@ public class ExpressionParser extends StatementParser
 
         
         //Integer constant subrange. Add all the range's values to rootNode
-        if(old.getType() == INTEGER && tokenType == INTEGER)
+        if(oldNode.getType() == INTEGER_CONSTANT && tempNodeType == INTEGER_CONSTANT)
          { //they are both integers, so the cast should not fail
           isConstantSubrange = true;
-          if((int)old.getValue() < (int)token.getValue())
+          if((int)oldNode.getAttribute(VALUE) < (int)tempNode.getAttribute(VALUE))
            {
-            for(int i = (int)old.getValue(); i < (int)token.getValue(); i++)
+            for(int i = (int)oldNode.getAttribute(VALUE); i < (int)tempNode.getAttribute(VALUE); i++)
              {
               ICodeNode rangeValue = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
               rangeValue.setAttribute(VALUE, i);
