@@ -105,8 +105,6 @@ public class ExpressionParser extends StatementParser
 //      // TODO: not sure if this should be here...
 //     }
 
-    token = currentToken();
-    tokenType = token.getType();
 
     // Look for a relational operator.
     if (REL_OPS.contains(tokenType))
@@ -215,7 +213,7 @@ public class ExpressionParser extends StatementParser
 
             // Parse another term.  The operator node adopts
       // the term's tree as its second child.
-      opNode.addChild(parseExpression(token));
+      opNode.addChild(parseSimpleExpression(token));
 
       // The operator node becomes the new root node.
       rootNode = opNode;
@@ -390,6 +388,14 @@ public class ExpressionParser extends StatementParser
 
         break;
        }
+      
+      case LEFT_BRACKET:
+       {
+        token = nextToken(); //eat [
+        rootNode = parseSet(token);
+        
+        
+       }
 
       default:
        {
@@ -427,24 +433,25 @@ public class ExpressionParser extends StatementParser
     while (tokenType != RIGHT_BRACKET)
      {
       Token old = currentToken();
-      ICodeNode oldNode = null;
+      ICodeNode oldNode;
       boolean isConstantSubrange = false; //If it's a constant we can parse it now
       
       ICodeNode newNode = parseExpression(token);
       if(newNode == null)
        {
-        break;
+        break; //error
        }
       else if (newNode.getType() == VARIABLE) {
-    	  String targetName = token.getText().toLowerCase();
+    	  /*String targetName = token.getText().toLowerCase();
           SymTabEntry targetId = symTabStack.lookup(targetName);
           
           Integer symTabConstValue = (Integer) targetId.getAttribute(SymTabKeyImpl.CONSTANT_VALUE);
           
-          if (symTabConstValue != null) {
+          if (symTabConstValue != null) 
+          {
           	newNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
           	newNode.setAttribute(VALUE, symTabConstValue);
-          }
+          }*/
       }
       
       ICodeNodeType newNodeType = newNode.getType();
