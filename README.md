@@ -1,6 +1,18 @@
 # Compiler Design
 SJSU CS 153
 
+## Assignment 4
+#### Pascal Set definitions and variable declarations
+Our task, if we choose to accept it, is to implement type definitions and declarations for Pascal sets. Also type checking of set operations.
+* Set type declarations (named and unnamed types)
+* Set declarations of a particular type
+* Set operations and type checking thereof
+* Modify the cross-reference table to include these type sets
+
+Mak warned us that this assignment is challenging, so we should start soon.
+
+WHOOOOOOO!
+
 ## Assignment 3
 #### Pascal Sets
 We gotta implement Pascal Sets in this here code provided by Ron Mak.
