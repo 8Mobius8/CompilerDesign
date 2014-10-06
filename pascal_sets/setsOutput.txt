@@ -1,0 +1,350 @@
+java -classpath /Users/mo/Documents/workspaces/eclipse/CS153Assign3/bin Pascal execute -i sets.txt 
+001 BEGIN
+002     low := 15;
+003     mid := 45;
+004     high := 50;
+005 
+006     evens  := [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+007     odds   := [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
+008     primes := [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+009     teens  := [13..19];
+010 
+011     s1 := evens*odds;
+012     s2 := evens - teens + [high, mid..47, 2*low];
+013     s3 := evens*primes + teens;
+014     s4 := s3 - odds;
+015     s5 := evens + odds + primes + teens;
+016     s6 := (primes - teens)*odds;
+017 
+018     b1 := odds - primes = [15, 9, 21, 1];
+019     b2 := teens <= evens + odds;
+020     b3 := primes >= teens;
+021     b4 := odds - teens*primes <> [21, 7, 9, 1, 11, 5, 15, 3];
+022     b5 := 15 IN teens - primes;
+023 
+024     s7 := [];
+025     i := 1;
+026 
+027     WHILE i <= 50 DO BEGIN
+028         s7 := s7 + [i];
+029         i := 2*i;
+030 
+031         IF 8 IN s7 THEN s7 := s7 + [10]
+032                    ELSE s7 := s7 - [4]
+033     END
+034 END.
+
+                  34 source lines.
+                   0 syntax errors.
+                0.03 seconds total parsing time.
+
+===== INTERMEDIATE CODE =====
+
+<COMPOUND line="1">
+    <ASSIGN line="2">
+        <VARIABLE id="low" level="0" />
+        <INTEGER_CONSTANT value="15" />
+    </ASSIGN>
+    <ASSIGN line="3">
+        <VARIABLE id="mid" level="0" />
+        <INTEGER_CONSTANT value="45" />
+    </ASSIGN>
+    <ASSIGN line="4">
+        <VARIABLE id="high" level="0" />
+        <INTEGER_CONSTANT value="50" />
+    </ASSIGN>
+    <ASSIGN line="6">
+        <VARIABLE id="evens" level="0" />
+        <SET>
+            <INTEGER_CONSTANT value="0" />
+            <INTEGER_CONSTANT value="2" />
+            <INTEGER_CONSTANT value="4" />
+            <INTEGER_CONSTANT value="6" />
+            <INTEGER_CONSTANT value="8" />
+            <INTEGER_CONSTANT value="10" />
+            <INTEGER_CONSTANT value="12" />
+            <INTEGER_CONSTANT value="14" />
+            <INTEGER_CONSTANT value="16" />
+            <INTEGER_CONSTANT value="18" />
+            <INTEGER_CONSTANT value="20" />
+        </SET>
+    </ASSIGN>
+    <ASSIGN line="7">
+        <VARIABLE id="odds" level="0" />
+        <SET>
+            <INTEGER_CONSTANT value="1" />
+            <INTEGER_CONSTANT value="3" />
+            <INTEGER_CONSTANT value="5" />
+            <INTEGER_CONSTANT value="7" />
+            <INTEGER_CONSTANT value="9" />
+            <INTEGER_CONSTANT value="11" />
+            <INTEGER_CONSTANT value="13" />
+            <INTEGER_CONSTANT value="15" />
+            <INTEGER_CONSTANT value="17" />
+            <INTEGER_CONSTANT value="19" />
+            <INTEGER_CONSTANT value="21" />
+        </SET>
+    </ASSIGN>
+    <ASSIGN line="8">
+        <VARIABLE id="primes" level="0" />
+        <SET>
+            <INTEGER_CONSTANT value="2" />
+            <INTEGER_CONSTANT value="3" />
+            <INTEGER_CONSTANT value="5" />
+            <INTEGER_CONSTANT value="7" />
+            <INTEGER_CONSTANT value="11" />
+            <INTEGER_CONSTANT value="13" />
+            <INTEGER_CONSTANT value="17" />
+            <INTEGER_CONSTANT value="19" />
+            <INTEGER_CONSTANT value="23" />
+            <INTEGER_CONSTANT value="29" />
+        </SET>
+    </ASSIGN>
+    <ASSIGN line="9">
+        <VARIABLE id="teens" level="0" />
+        <SET>
+            <INTEGER_CONSTANT value="13" />
+            <INTEGER_CONSTANT value="14" />
+            <INTEGER_CONSTANT value="15" />
+            <INTEGER_CONSTANT value="16" />
+            <INTEGER_CONSTANT value="17" />
+            <INTEGER_CONSTANT value="18" />
+        </SET>
+    </ASSIGN>
+    <ASSIGN line="11">
+        <VARIABLE id="s1" level="0" />
+        <MULTIPLY>
+            <VARIABLE id="evens" level="0" />
+            <VARIABLE id="odds" level="0" />
+        </MULTIPLY>
+    </ASSIGN>
+    <ASSIGN line="12">
+        <VARIABLE id="s2" level="0" />
+        <SUBTRACT>
+            <VARIABLE id="evens" level="0" />
+            <ADD>
+                <VARIABLE id="teens" level="0" />
+                <SET>
+                    <VARIABLE id="high" level="0" />
+                    <RANGE value="DOT_DOT">
+                        <VARIABLE id="mid" level="0" />
+                        <INTEGER_CONSTANT value="47" />
+                    </RANGE>
+                    <MULTIPLY>
+                        <INTEGER_CONSTANT value="2" />
+                        <VARIABLE id="low" level="0" />
+                    </MULTIPLY>
+                </SET>
+            </ADD>
+        </SUBTRACT>
+    </ASSIGN>
+    <ASSIGN line="13">
+        <VARIABLE id="s3" level="0" />
+        <ADD>
+            <MULTIPLY>
+                <VARIABLE id="evens" level="0" />
+                <VARIABLE id="primes" level="0" />
+            </MULTIPLY>
+            <VARIABLE id="teens" level="0" />
+        </ADD>
+    </ASSIGN>
+    <ASSIGN line="14">
+        <VARIABLE id="s4" level="0" />
+        <SUBTRACT>
+            <VARIABLE id="s3" level="0" />
+            <VARIABLE id="odds" level="0" />
+        </SUBTRACT>
+    </ASSIGN>
+    <ASSIGN line="15">
+        <VARIABLE id="s5" level="0" />
+        <ADD>
+            <VARIABLE id="evens" level="0" />
+            <ADD>
+                <VARIABLE id="odds" level="0" />
+                <ADD>
+                    <VARIABLE id="primes" level="0" />
+                    <VARIABLE id="teens" level="0" />
+                </ADD>
+            </ADD>
+        </ADD>
+    </ASSIGN>
+    <ASSIGN line="16">
+        <VARIABLE id="s6" level="0" />
+        <MULTIPLY>
+            <SUBTRACT>
+                <VARIABLE id="primes" level="0" />
+                <VARIABLE id="teens" level="0" />
+            </SUBTRACT>
+            <VARIABLE id="odds" level="0" />
+        </MULTIPLY>
+    </ASSIGN>
+    <ASSIGN line="18">
+        <VARIABLE id="b1" level="0" />
+        <EQ>
+            <SUBTRACT>
+                <VARIABLE id="odds" level="0" />
+                <VARIABLE id="primes" level="0" />
+            </SUBTRACT>
+            <SET>
+                <INTEGER_CONSTANT value="15" />
+                <INTEGER_CONSTANT value="9" />
+                <INTEGER_CONSTANT value="21" />
+                <INTEGER_CONSTANT value="1" />
+            </SET>
+        </EQ>
+    </ASSIGN>
+    <ASSIGN line="19">
+        <VARIABLE id="b2" level="0" />
+        <LE>
+            <VARIABLE id="teens" level="0" />
+            <ADD>
+                <VARIABLE id="evens" level="0" />
+                <VARIABLE id="odds" level="0" />
+            </ADD>
+        </LE>
+    </ASSIGN>
+    <ASSIGN line="20">
+        <VARIABLE id="b3" level="0" />
+        <GE>
+            <VARIABLE id="primes" level="0" />
+            <VARIABLE id="teens" level="0" />
+        </GE>
+    </ASSIGN>
+    <ASSIGN line="21">
+        <VARIABLE id="b4" level="0" />
+        <NE>
+            <SUBTRACT>
+                <VARIABLE id="odds" level="0" />
+                <MULTIPLY>
+                    <VARIABLE id="teens" level="0" />
+                    <VARIABLE id="primes" level="0" />
+                </MULTIPLY>
+            </SUBTRACT>
+            <SET>
+                <INTEGER_CONSTANT value="21" />
+                <INTEGER_CONSTANT value="7" />
+                <INTEGER_CONSTANT value="9" />
+                <INTEGER_CONSTANT value="1" />
+                <INTEGER_CONSTANT value="11" />
+                <INTEGER_CONSTANT value="5" />
+                <INTEGER_CONSTANT value="15" />
+                <INTEGER_CONSTANT value="3" />
+            </SET>
+        </NE>
+    </ASSIGN>
+    <ASSIGN line="22">
+        <VARIABLE id="b5" level="0" />
+        <SET_IN>
+            <INTEGER_CONSTANT value="15" />
+            <SUBTRACT>
+                <VARIABLE id="teens" level="0" />
+                <VARIABLE id="primes" level="0" />
+            </SUBTRACT>
+        </SET_IN>
+    </ASSIGN>
+    <ASSIGN line="24">
+        <VARIABLE id="s7" level="0" />
+        <SET />
+    </ASSIGN>
+    <ASSIGN line="25">
+        <VARIABLE id="i" level="0" />
+        <INTEGER_CONSTANT value="1" />
+    </ASSIGN>
+    <LOOP line="27">
+        <TEST>
+            <NOT>
+                <LE>
+                    <VARIABLE id="i" level="0" />
+                    <INTEGER_CONSTANT value="50" />
+                </LE>
+            </NOT>
+        </TEST>
+        <COMPOUND line="27">
+            <ASSIGN line="28">
+                <VARIABLE id="s7" level="0" />
+                <ADD>
+                    <VARIABLE id="s7" level="0" />
+                    <SET>
+                        <VARIABLE id="i" level="0" />
+                    </SET>
+                </ADD>
+            </ASSIGN>
+            <ASSIGN line="29">
+                <VARIABLE id="i" level="0" />
+                <MULTIPLY>
+                    <INTEGER_CONSTANT value="2" />
+                    <VARIABLE id="i" level="0" />
+                </MULTIPLY>
+            </ASSIGN>
+            <IF line="31">
+                <SET_IN>
+                    <INTEGER_CONSTANT value="8" />
+                    <VARIABLE id="s7" level="0" />
+                </SET_IN>
+                <ASSIGN line="31">
+                    <VARIABLE id="s7" level="0" />
+                    <ADD>
+                        <VARIABLE id="s7" level="0" />
+                        <SET>
+                            <INTEGER_CONSTANT value="10" />
+                        </SET>
+                    </ADD>
+                </ASSIGN>
+                <ASSIGN line="32">
+                    <VARIABLE id="s7" level="0" />
+                    <SUBTRACT>
+                        <VARIABLE id="s7" level="0" />
+                        <SET>
+                            <INTEGER_CONSTANT value="4" />
+                        </SET>
+                    </SUBTRACT>
+                </ASSIGN>
+            </IF>
+        </COMPOUND>
+    </LOOP>
+</COMPOUND>
+
+===== OUTPUT =====
+
+>>> LINE 002: low = 15
+>>> LINE 003: mid = 45
+>>> LINE 004: high = 50
+>>> LINE 006: evens = [0, 16, 2, 18, 4, 20, 6, 8, 10, 12, 14]
+>>> LINE 007: odds = [1, 17, 3, 19, 5, 21, 7, 9, 11, 13, 15]
+>>> LINE 008: primes = [17, 2, 3, 19, 5, 7, 23, 11, 13, 29]
+>>> LINE 009: teens = [16, 17, 18, 13, 14, 15]
+>>> LINE 011: s1 = []
+>>> LINE 012: s2 = [0, 2, 4, 20, 6, 8, 10, 12]
+>>> LINE 013: s3 = [16, 17, 2, 18, 13, 14, 15]
+>>> LINE 014: s4 = [16, 2, 18, 14]
+>>> LINE 015: s5 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 29]
+>>> LINE 016: s6 = [3, 19, 5, 7, 11]
+>>> LINE 018: b1 = true
+>>> LINE 019: b2 = false
+>>> LINE 020: b3 = true
+>>> LINE 021: b4 = true
+>>> LINE 022: b5 = false
+>>> LINE 024: s7 = []
+>>> LINE 025: i = 1
+>>> LINE 028: s7 = [1]
+>>> LINE 029: i = 2
+>>> LINE 032: s7 = [1]
+>>> LINE 028: s7 = [1, 2]
+>>> LINE 029: i = 4
+>>> LINE 032: s7 = [1, 2]
+>>> LINE 028: s7 = [1, 2, 4]
+>>> LINE 029: i = 8
+>>> LINE 032: s7 = [1, 2]
+>>> LINE 028: s7 = [1, 2, 8]
+>>> LINE 029: i = 16
+>>> LINE 032: s7 = [1, 2, 8]
+>>> LINE 028: s7 = [16, 1, 2, 8]
+>>> LINE 029: i = 32
+>>> LINE 032: s7 = [16, 1, 2, 8]
+>>> LINE 028: s7 = [16, 32, 1, 2, 8]
+>>> LINE 029: i = 64
+>>> LINE 032: s7 = [16, 32, 1, 2, 8]
+
+                  51 statements executed.
+                   0 runtime errors.
+                0.02 seconds total execution time.

@@ -1,0 +1,56 @@
+Ijava -classpath /Users/mo/Documents/workspaces/eclipse/CS153Assign3/bin Pascal execute -i seterrors.txt 
+001 BEGIN
+002     error1 := [1, 2  3];           {missing comma}
+                         ^
+*** Missing , [at "3"]
+003     error2 := [1,, 2, 3,];         {extra commas}
+                     ^
+*** Too many commas in the set declaration [at ","]
+004     error3 := [1, 2, 3;            {missing close square bracket}
+                          ^
+*** Missing ] [at ";"]
+                          ^
+*** Unexpected token [at ";"]
+005     error4 := [2, 1, 3, 1];        {non-unique members}
+                            ^
+*** Non-unique member(s) in set [at "1"]
+006     error4 := [10..20, 15];        {non-unique members}
+                           ^
+*** Non-unique member(s) in set [at "15"]
+007     error4 := [15, 10..20];        {non-unique members}
+                       ^
+*** Non-unique member(s) in set [at "10"]
+008     error4 := [15..25, 10..20];    {non-unique members}
+                           ^
+*** Non-unique member(s) in set [at "10"]
+                           ^
+*** Non-unique member(s) in set [at "10"]
+                           ^
+*** Non-unique member(s) in set [at "10"]
+                           ^
+*** Non-unique member(s) in set [at "10"]
+                           ^
+*** Non-unique member(s) in set [at "10"]
+009     error5 := [2, 5.., 8];         {invalid range of values}
+                         ^
+*** Unexpected token [at ","]
+                         ^
+*** Unexpected token [at ","]
+010     error6 := [1, 2, 3] OR [4];    {invalid operator}
+                            ^
+*** Unexpected token [at "OR"]
+011     error6 := [1, 2, 3]/[4, 5];    {invalid operator}
+                           ^
+*** Unexpected token [at "/"]
+012     error7 := [1, 2, 3] < [4, 5];  {invalid operator}
+                            ^
+*** Invalid operator [at "<"]
+013     error8 := [1, 2, 3] IN [4];    {invalid operator}
+                            ^
+*** Invalid operator [at "IN"]
+014     error9 := 1 IN 2;              {invalid operator}
+015 END.
+
+                  15 source lines.
+                  18 syntax errors.
+                0.02 seconds total parsing time.
