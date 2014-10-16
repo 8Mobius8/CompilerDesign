@@ -154,12 +154,14 @@ public class TypeChecker
 
         type1 = type1.baseType();
         type2 = type2.baseType();
-        TypeForm form = type1.getForm();
+        TypeForm form1 = type1.getForm();
+        TypeForm form2 = type1.getForm();
+        
 
         boolean compatible = false;
 
         // Two identical scalar or enumeration types.
-        if ((type1 == type2) && ((form == SCALAR) || (form == ENUMERATION))) {
+        if ((type1 == type2) && ((form1 == SCALAR) || (form1 == ENUMERATION))) {
             compatible = true;
         }
 
@@ -167,7 +169,9 @@ public class TypeChecker
         else if (isAtLeastOneReal(type1, type2)) {
             compatible = true;
         }
-
+        else if (form1 == SET && form2 == SET) {
+        	compatible = true;
+        }
         // Two strings.
         else {
             compatible = type1.isPascalString() && type2.isPascalString();

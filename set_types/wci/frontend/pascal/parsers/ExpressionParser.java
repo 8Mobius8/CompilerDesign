@@ -597,14 +597,7 @@ public class ExpressionParser extends StatementParser
     	// Don't think we need to check for non-unique values -MO
     	// ArrayList<Integer> currChildren = new ArrayList<>(); // Used for checking for unique values
     	
-    	while(){
-    		
-    	}
     	
-    	if (tokenType == RIGHT_BRACKET)
-    	{
-    		token = nextToken(); // consume the ]
-    	}
 
     	return setNode;
 	}
