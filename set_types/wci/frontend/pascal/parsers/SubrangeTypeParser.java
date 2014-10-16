@@ -109,7 +109,7 @@ public class SubrangeTypeParser extends TypeSpecificationParser
      * Check a value of a type specification.
      * @param token the current token.
      * @param value the value.
-     * @param type the type specifiction.
+     * @param type the type specification.
      * @return the value.
      */
     private Object checkValueType(Token token, Object value, TypeSpec type)

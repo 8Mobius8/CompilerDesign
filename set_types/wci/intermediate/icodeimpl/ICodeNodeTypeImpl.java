@@ -35,4 +35,11 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
 
     // WRITE parameter
     WRITE_PARM,
+    
+    // SET data type
+    SET,
+    
+    // SET operators
+    SET_UNION, SET_DIFFERENCE, SET_INTERSECTION, SET_CONTAINS,
+    SET_INCLUDE, SET_EXCLUDE, SET_IN
 }

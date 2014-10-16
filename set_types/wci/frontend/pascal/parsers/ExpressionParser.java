@@ -1,5 +1,6 @@
 package wci.frontend.pascal.parsers;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 
@@ -9,7 +10,6 @@ import wci.intermediate.symtabimpl.*;
 import wci.intermediate.*;
 import wci.intermediate.icodeimpl.*;
 import wci.intermediate.typeimpl.*;
-
 import static wci.frontend.pascal.PascalTokenType.*;
 import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.symtabimpl.SymTabKeyImpl.*;
@@ -566,4 +566,46 @@ public class ExpressionParser extends StatementParser
 
         return rootNode;
     }
+    
+    // Provides easy collection of TokenTypes and ICodeTypes
+    private static final EnumSet<PascalTokenType> SET_OPS = 
+  		  EnumSet.of(EQUALS, PLUS, MINUS, LESS_EQUALS, GREATER_EQUALS, STAR, NOT_EQUALS, IN);
+    private static final EnumSet<ICodeNodeTypeImpl> SET_TYPES
+  	= EnumSet.of(ICodeNodeTypeImpl.VARIABLE, INTEGER_CONSTANT, REAL_CONSTANT, MULTIPLY, 
+  			INTEGER_DIVIDE, ICodeNodeTypeImpl.MOD, ADD, SUBTRACT, NEGATE);
+    // Had to remove ICodeNodeTypeImpl.Range since it wasn't defined initially. 
+    // Do we need it? What did we use it for last assignment? -MO
+    
+    /**
+     * Parse a Set type.
+     * @param token
+     * @return the root node of the generated parse tree.
+     * @throws Exception
+     */
+    private ICodeNode parseSet(Token token)
+    	throws Exception
+    {
+    	// Should use PascalTokenTypes to control this function. May possibly even use
+    	// parseExpression(), parseTerm(), parseSimpleExpression
+    	// Map additive operator tokens to node types.
+
+    	TokenType tokenType = token.getType();
+
+    	// SET type
+    	ICodeNode setNode = ICodeFactory.createICodeNode(ICodeNodeTypeImpl.SET);
+    	
+    	// Don't think we need to check for non-unique values -MO
+    	// ArrayList<Integer> currChildren = new ArrayList<>(); // Used for checking for unique values
+    	
+    	while(){
+    		
+    	}
+    	
+    	if (tokenType == RIGHT_BRACKET)
+    	{
+    		token = nextToken(); // consume the ]
+    	}
+
+    	return setNode;
+	}
 }
