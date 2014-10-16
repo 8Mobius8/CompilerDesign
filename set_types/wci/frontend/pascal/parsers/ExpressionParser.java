@@ -151,9 +151,15 @@ public class ExpressionParser extends StatementParser
     {
         Token signToken = null;
         TokenType signType = null;  // type of leading sign (if any)
-
-        // Look for a leading + or - sign.
         TokenType tokenType = token.getType();
+
+        if ((tokenType == LEFT_BRACKET)) {
+        	ICodeNode setNode = parseSet(token);
+        }
+        
+        // Look for a leading + or - sign.
+        token = currentToken();
+        tokenType = token.getType();
         if ((tokenType == PLUS) || (tokenType == MINUS)) {
             signType = tokenType;
             signToken = token;
@@ -597,6 +603,7 @@ public class ExpressionParser extends StatementParser
     	// Don't think we need to check for non-unique values -MO
     	// ArrayList<Integer> currChildren = new ArrayList<>(); // Used for checking for unique values
     	
+    	// TODO: more set parsing stuff
     	
 
     	return setNode;
