@@ -152,11 +152,6 @@ public class ExpressionParser extends StatementParser
         Token signToken = null;
         TokenType signType = null;  // type of leading sign (if any)
         TokenType tokenType = token.getType();
-
-        if ((tokenType == LEFT_BRACKET)) {
-        	// TODO: still need to add the setNode as a child to the rootNode
-        	ICodeNode setNode = parseSet(token);
-        }
         
         // Look for a leading + or - sign.
         token = currentToken();
@@ -169,11 +164,7 @@ public class ExpressionParser extends StatementParser
 
         // Parse a term and make the root of its tree the root node.
         token = currentToken();
-        tokenType = token.getType();
-        ICodeNode rootNode = null;
-        if (tokenType != SEMICOLON) {        	
-        	rootNode = parseTerm(token);
-        }
+        ICodeNode rootNode = parseTerm(token);
         TypeSpec resultType = rootNode != null ? rootNode.getTypeSpec()
                                                : Predefined.undefinedType;
 
@@ -207,23 +198,13 @@ public class ExpressionParser extends StatementParser
             opNode.addChild(rootNode);
 
             token = nextToken();  // consume the operator
-            tokenType = token.getType();
             
-            ICodeNode termNode = null;
-            TypeSpec termType = null;
-            
-            if (tokenType == LEFT_BRACKET) {
-            	termNode = parseSet(token);
-            	opNode.addChild(termNode);
-            }
-            else {
-            	// Parse another term.  The operator node adopts
-            	// the term's tree as its second child.
-            	termNode = parseTerm(token);
-            	opNode.addChild(termNode);
-            	termType = termNode != null ? termNode.getTypeSpec()
-            										: Predefined.undefinedType;
-            }
+            // Parse another term.  The operator node adopts
+            // the term's tree as its second child.
+            ICodeNode termNode = parseTerm(token);
+            opNode.addChild(termNode);
+            TypeSpec termType = termNode != null ? termNode.getTypeSpec()
+                                                 : Predefined.undefinedType;
 
             // The operator node becomes the new root node.
             rootNode = opNode;
@@ -414,7 +395,10 @@ public class ExpressionParser extends StatementParser
         ICodeNode rootNode = null;
 
         switch ((PascalTokenType) tokenType) {
-
+        	case LEFT_BRACKET: {
+        		rootNode = parseSet(token);
+        		break;
+        	}
             case IDENTIFIER: {
                 return parseIdentifier(token);
             }
