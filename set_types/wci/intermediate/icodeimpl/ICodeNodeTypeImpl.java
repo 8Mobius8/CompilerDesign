@@ -39,7 +39,8 @@ public enum ICodeNodeTypeImpl implements ICodeNodeType
     // SET data type
     SET,
     
-    // SET operators
-    SET_UNION, SET_DIFFERENCE, SET_INTERSECTION, SET_CONTAINS,
-    SET_INCLUDE, SET_EXCLUDE, SET_IN
+    // Actually don't need these since we use the same ops as above
+//    // SET operators
+//    SET_UNION, SET_DIFFERENCE, SET_INTERSECTION, SET_CONTAINS,
+//    SET_INCLUDE, SET_EXCLUDE, SET_IN
 }

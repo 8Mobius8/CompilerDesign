@@ -21,13 +21,6 @@ public class SetTypeParser extends TypeSpecificationParser {
 		nextToken(); // Nom
 		token = nextToken(); // Nom
 		
-		// IF an previously defined Type
-		// (Look at Symbol Table)
-		// 		Create a new Set TypeSpec to return
-		//		Assign TypeSpec attr SET_ELEMENT_TYPE to typespec saved in prev Identifier
-		//		return TypeSpec
-		// ELSE 
-		
 		SimpleTypeParser newParser = new SimpleTypeParser(this);
 		TypeSpec aType = newParser.parse(token);
 		

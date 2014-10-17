@@ -16,6 +16,7 @@ public enum PascalErrorCode
     IDENTIFIER_UNDEFINED("Undefined identifier"),
     INCOMPATIBLE_ASSIGNMENT("Incompatible assignment"),
     INCOMPATIBLE_TYPES("Incompatible types"),
+    INCOMPATIBLE_SET_ELEMENT_TYPES("Incompatible set element types"),
     INVALID_ASSIGNMENT("Invalid assignment statement"),
     INVALID_CHARACTER("Invalid character"),
     INVALID_CONSTANT("Invalid constant"),
@@ -95,7 +96,12 @@ public enum PascalErrorCode
         this.status = status;
         this.message = message;
     }
-
+    
+    public void setErrorMessageTypes(String ttStr1, String ttStr2)
+    {
+    	this.message += " " + ttStr1 + " is incompatible with type " + ttStr2;
+    }
+    
     /**
      * Getter.
      * @return the exit status.

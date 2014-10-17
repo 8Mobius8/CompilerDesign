@@ -115,8 +115,8 @@ public class TypeChecker
             return false;
         }
 
-        targetType = targetType.baseType();
-        valueType  = valueType.baseType();
+        targetType = targetType.baseType(); // Built SetTypes to have basetype
+        valueType  = valueType.baseType();  // of whatever elements are inside sets
 
         boolean compatible = false;
 
@@ -170,7 +170,12 @@ public class TypeChecker
             compatible = true;
         }
         else if (form1 == SET && form2 == SET) {
-        	compatible = true;
+        	if(type1 != type2) {
+        		compatible = false;
+        	} else {
+        		compatible = true;
+        	}
+        	
         }
         // Two strings.
         else {
