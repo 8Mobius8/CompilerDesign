@@ -154,6 +154,7 @@ public class ExpressionParser extends StatementParser
         TokenType tokenType = token.getType();
 
         if ((tokenType == LEFT_BRACKET)) {
+        	// TODO: still need to add the setNode as a child to the rootNode
         	ICodeNode setNode = parseSet(token);
         }
         
@@ -167,7 +168,12 @@ public class ExpressionParser extends StatementParser
         }
 
         // Parse a term and make the root of its tree the root node.
-        ICodeNode rootNode = parseTerm(token);
+        token = currentToken();
+        tokenType = token.getType();
+        ICodeNode rootNode = null;
+        if (tokenType != SEMICOLON) {        	
+        	rootNode = parseTerm(token);
+        }
         TypeSpec resultType = rootNode != null ? rootNode.getTypeSpec()
                                                : Predefined.undefinedType;
 
@@ -639,6 +645,7 @@ public class ExpressionParser extends StatementParser
     			else {
     				// TODO: EXPECTED COMMA, GOT SOMETHING ELSE
     				errorHandler.flag(token, MISSING_COMMA, this);
+    				break;
     			}
     		}
     		
