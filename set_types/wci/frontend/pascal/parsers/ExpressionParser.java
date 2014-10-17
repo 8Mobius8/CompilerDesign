@@ -201,13 +201,23 @@ public class ExpressionParser extends StatementParser
             opNode.addChild(rootNode);
 
             token = nextToken();  // consume the operator
-
-            // Parse another term.  The operator node adopts
-            // the term's tree as its second child.
-            ICodeNode termNode = parseTerm(token);
-            opNode.addChild(termNode);
-            TypeSpec termType = termNode != null ? termNode.getTypeSpec()
-                                                 : Predefined.undefinedType;
+            tokenType = token.getType();
+            
+            ICodeNode termNode = null;
+            TypeSpec termType = null;
+            
+            if (tokenType == LEFT_BRACKET) {
+            	termNode = parseSet(token);
+            	opNode.addChild(termNode);
+            }
+            else {
+            	// Parse another term.  The operator node adopts
+            	// the term's tree as its second child.
+            	termNode = parseTerm(token);
+            	opNode.addChild(termNode);
+            	termType = termNode != null ? termNode.getTypeSpec()
+            										: Predefined.undefinedType;
+            }
 
             // The operator node becomes the new root node.
             rootNode = opNode;
@@ -604,6 +614,34 @@ public class ExpressionParser extends StatementParser
     	// ArrayList<Integer> currChildren = new ArrayList<>(); // Used for checking for unique values
     	
     	// TODO: more set parsing stuff
+    	if (tokenType == LEFT_BRACKET) {
+    		token = nextToken();
+    		tokenType = token.getType();
+    		
+    		while (tokenType != RIGHT_BRACKET) {
+    			ICodeNode newNode = parseSimpleExpression(token);
+    			setNode.addChild(newNode);
+    			
+    			token = currentToken();
+    			tokenType = token.getType();
+    			
+    			if (tokenType == RIGHT_BRACKET) {
+    				token = nextToken(); // Consume the ]
+    			}
+    			else if (tokenType == COMMA) {
+    				token = nextToken();
+    				tokenType = token.getType();
+    			}
+    			else if (tokenType == SEMICOLON) {
+    				errorHandler.flag(token, UNEXPECTED_TOKEN, this);
+    			}
+    			else {
+    				// TODO: EXPECTED COMMA, GOT SOMETHING ELSE
+    				errorHandler.flag(token, MISSING_COMMA, this);
+    			}
+    		}
+    		
+    	}
     	
 
     	return setNode;
