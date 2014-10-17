@@ -627,6 +627,7 @@ public class ExpressionParser extends StatementParser
     			
     			if (tokenType == RIGHT_BRACKET) {
     				token = nextToken(); // Consume the ]
+    				break;
     			}
     			else if (tokenType == COMMA) {
     				token = nextToken();
