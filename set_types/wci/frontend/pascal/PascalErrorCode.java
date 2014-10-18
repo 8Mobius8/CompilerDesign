@@ -16,7 +16,7 @@ public enum PascalErrorCode
     IDENTIFIER_UNDEFINED("Undefined identifier"),
     INCOMPATIBLE_ASSIGNMENT("Incompatible assignment"),
     INCOMPATIBLE_TYPES("Incompatible types"),
-    INCOMPATIBLE_SET_ELEMENT_TYPES("Incompatible set element types BITCH!"),
+    INCOMPATIBLE_SET_ELEMENT_TYPES("Incompatible set element types"),
     INVALID_ASSIGNMENT("Invalid assignment statement"),
     INVALID_CHARACTER("Invalid character"),
     INVALID_CONSTANT("Invalid constant"),

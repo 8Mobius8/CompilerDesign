@@ -80,6 +80,7 @@ public class AssignmentStatementParser extends StatementParser
                                              : Predefined.undefinedType;
         if (!TypeChecker.areAssignmentCompatible(targetType, exprType)) {
         	if(targetType.getForm() == TypeFormImpl.SET || exprType.getForm() == TypeFormImpl.SET) {
+        		//if(exprType.)
         		errorHandler.flag(token, INCOMPATIBLE_SET_ELEMENT_TYPES, this);
         	} else {
         		errorHandler.flag(token, INCOMPATIBLE_TYPES, this);
