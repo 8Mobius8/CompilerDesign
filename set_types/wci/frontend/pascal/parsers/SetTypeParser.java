@@ -27,22 +27,15 @@ public class SetTypeParser extends TypeSpecificationParser {
 		nextToken(); // Consume SET
 		token = nextToken(); // Consume of
 		
-		setType.setAttribute(TypeKeyImpl.SET_ELEMENT_TYPE, symTabStack.push());
 		
 		SimpleTypeParser newParser = new SimpleTypeParser(this);
 		TypeSpec aType = newParser.parse(token);
 		
-		VariableDeclarationsParser variableDeclarationsParser =
-	            new VariableDeclarationsParser(this);
-	        variableDeclarationsParser.setDefinition(DefinitionImpl.SET);
-	        variableDeclarationsParser.parse(token);
-		
 		TypeSpec aSetType = TypeFactory.createType(TypeFormImpl.SET);
-		aSetType.setAttribute(TypeKeyImpl.SET_ELEMENT_TYPE, setType);
+		aSetType.setAttribute(TypeKeyImpl.SET_ELEMENT_TYPE, aType);
 		
-		symTabStack.pop();
 		
-		return setType;
+		return aSetType;
 	}
 
 }
