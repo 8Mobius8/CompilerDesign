@@ -277,6 +277,13 @@ public class CrossReferencer
                 recordTypes.add(type);
                 break;
             }
+			case SET:{
+				TypeSpec setElementType = 
+						(TypeSpec) type.getAttribute(SET_ELEMENT_TYPE);
+				System.out.println(INDENT + "--- SET TYPE ---");
+				printType(setElementType);
+				break;
+			}
         }
     }
 
