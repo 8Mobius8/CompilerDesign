@@ -1,6 +1,20 @@
 # Compiler Design
 SJSU CS 153
 
+## Assignment 5
+#### Using JavaCC to tokenize java input files
+Welcome welcome to horror of programming where our greatest fear is the doom of not graduating! Our horrific experience has been set to implement a Scanner for Java files using JavaCC. The way is dangerous take these ideas with you:
+* Do NOT need to recognize special meaning of '\'
+* Output should simply include type of token and the token's text
+* Skip over comments
+* Can assume file contains no errors
+* Identifiers can contain any word, digit chars, and underscore of any length, but may NOT start with a digit.
+* Integers can be decimal( [0-9]* ), hexadecimal ( 0x[0-9A-Fa-f]* ), or octal ( [0-7]* )
+* Real Numbers are the typical real number, feel free to correct my expression if its incorrect: ( [0-9]*.[0-9]*[eE][+-]\?[0-9] )
+* Special symbols specified in our TokensToRecongize.txt
+
+Happy Coding Halloween!
+
 ## Assignment 4
 #### Pascal Set definitions and variable declarations
 Our task, if we choose to accept it, is to implement type definitions and declarations for Pascal sets. Also type checking of set operations.
