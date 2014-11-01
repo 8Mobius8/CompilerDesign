@@ -25,13 +25,6 @@ public class FileParser
 		parser.parse();
     } while (parser.token.kind != EOF);
 
-//    try {
-//	    parser.parse();
-//	    
-//    } 
-//    catch (ParseException ex) {
-//      ex.printStackTrace();
-//    }
   }
 }
 
@@ -44,10 +37,11 @@ void parse() : {
   <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
 | <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
 | <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
-| <CHARACTER> {buf.append("(").append(token.image).append(") ");}
-| <CONSTANT> {buf.append("(").append(token.image).append(") ");}
-| <INTEGER> {buf.append("(").append(token.image).append(") ");}
-| <REAL> {buf.append("(").append(token.image).append(") ");}
+| <CHARACTER> 		{buf.append("(").append(token.image).append(") ");}
+| <CONSTANT> 		{buf.append("(").append(token.image).append(") ");}
+| <INTEGER> 		{buf.append("(").append(token.image).append(") ");}
+| <REAL> 			{buf.append("(").append(token.image).append(") ");}
+| <STRING> 			{buf.append("(").append(token.image).append(") ");}
 | < EOF >
 }
 
@@ -102,19 +96,22 @@ TOKEN :
 | < #EXP: ["e","E"] (["+","-"])? (< DIGIT >)+ >
 
 // CHARACTER
-| < CHARACTER : ["'"] < ALPHABET > ["'"] >
+| < CHARACTER : ["'"] (< ALPHABET > | < SPECIAL_SYMBOL >) ["'"] >
 
 // INTEGER
 | < INTEGER : < NATURAL > (< DIGIT >)*
 	| "0" (["0" - "7"])*
 	| "0" ["X", "x"] (< DIGIT > | ["A" - "F"])*>
 
+// STRING
+| < STRING : "\"" (< ALPHABET > | < SPECIAL_SYMBOL > | < DIGIT > | " ")* "\"" >
+
 // Special Symbol Tokens
 | < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
 | "|" | "/" | ":" | ";" | "?" | "< " | " >" | "." | ","
 | "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
 | "++" | "--" | "<<" | " >>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
-|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >
+|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>=" | "\\" >
 
 
 
