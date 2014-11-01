@@ -4,3 +4,10 @@ nbproject/
 build.xml
 manifest.mf
 /bin
+/EG1.java
+/EG1Constants.java
+/EG1TokenManager.java
+/ParseException.java
+/SimpleCharStream.java
+/Token.java
+/TokenMgrError.java
