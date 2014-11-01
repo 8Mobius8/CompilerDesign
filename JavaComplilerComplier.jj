@@ -18,8 +18,6 @@ void parse() : {
 | <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
 | <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
 | < EOF >}
-
-//void comment() : {}//{//  //}
 SKIP :{
   < "//" (~["\n"])* "\n" >
 | "/*" : COMMENT_OPEN| " "| "\r"| "\t"| "\n"}
