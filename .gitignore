@@ -11,3 +11,9 @@ manifest.mf
 /SimpleCharStream.java
 /Token.java
 /TokenMgrError.java
+/JavaCCHW.java
+/JavaCCHWConstants.java
+/JavaCCHWTokenManager.java
+/FileParser.java
+/FileParserConstants.java
+/FileParserTokenManager.java
