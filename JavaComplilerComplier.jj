@@ -9,18 +9,30 @@ public class FileParser{  public static void main(String args []) throws Parse
 	FileParser parser = new FileParser(sr);
 
 
-    while (parser.getNextToken().kind != EOF){
-    }
-    
+    do    {		parser.parse();    } while (parser.token.kind != EOF);
+
 //    try {//	    parser.parse();//	    //    } //    catch (ParseException ex) {//      ex.printStackTrace();//    }  }}PARSER_END(FileParser)
 void parse() : {
   StringBuffer buf = new StringBuffer();}{
-  <COMMENT_OPEN>	{buf.append("(").append(token.image).append(") ");}
-| <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
+  <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
 | <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
 | <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
 | < EOF >}
-SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :{  < CONSTANT : (< DIGIT >)+ >| <#DIGIT  : ["0"-"9"]>
+
+//void comment() : {}//{//  //}
+SKIP :{
+  < "//" (~["\n"])* "\n" >
+| "/*" : COMMENT_OPEN| " "| "\r"| "\t"| "\n"}
+
+< COMMENT_OPEN > SKIP :
+{  "*/" : DEFAULT
+}
+
+< COMMENT_OPEN > MORE:
+{  < ~[] >
+}
+TOKEN :{  < CONSTANT : (< DIGIT >)+ >| <#DIGIT  : ["0"-"9"]>
+| <#NATURAL: ["1"-"9"]>
 | <#LETTER : ["a"-"z"]>
 | <#UPPER_LETTER : ["A" - "Z"] >
 
@@ -41,7 +53,7 @@ void parse() : {
 
 // Comment Tokens
 | < SINGLE_LINE_COMMENT : "//" >
-| < COMMENT_OPEN : "/*" >
+//| < COMMENT_OPEN : "/*" >
 | < COMMENT_CLOSE : "*/" >
 
 // Special Symbol Tokens
@@ -49,4 +61,12 @@ void parse() : {
 | "|" | "/" | ":" | ";" | "?" | "< " | " >" | "." | ","
 | "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
 | "++" | "--" | "<<" | " >>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
-|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >}
+|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >
+
+// REAL
+| <REAL : < DECIMAL > < FRAC > (< EXP >)? >
+| < #DECIMAL : < NATURAL > (< DIGIT >)* >
+| < #FRAC : ("." (< DIGIT >)+)? >
+| < #EXP: ["e","E"] (["+","-"])? (< DIGIT >)+ >
+
+// Still within TOKEN}
