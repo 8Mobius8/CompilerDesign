@@ -2,30 +2,30 @@
  * CS 153 Compiler Design : Fall 2014
  * The Almost Donerz
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */options{  JDK_VERSION = "1.5";  OUTPUT_DIRECTORY = "src";
-  DEBUG_PARSER = true;}PARSER_BEGIN(FileParser)import java.io.*;
+ */options {    OUTPUT_DIRECTORY = "src";
+  DEBUG_PARSER = true;
+  STATIC = false;}PARSER_BEGIN(FileParser)import java.io.*;
 public class FileParser{  public static void main(String args []) throws ParseException, FileNotFoundException  {    Reader sr = new FileReader("input.txt");
 	FileParser parser = new FileParser(sr);
+
+
+    while (parser.getNextToken().kind != EOF){
+    }
     
-    try {
-	    parser.parse();
-	    
-    } 
-    catch (ParseException ex) {
-      ex.printStackTrace();
-    }  }}PARSER_END(FileParser)
+//    try {//	    parser.parse();//	    //    } //    catch (ParseException ex) {//      ex.printStackTrace();//    }  }}PARSER_END(FileParser)
 void parse() : {
   StringBuffer buf = new StringBuffer();}{
   <COMMENT_OPEN>	{buf.append("(").append(token.image).append(") ");}
-  <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
-  <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
-  <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
-  < EOF >}
-SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
-| < UPPERCASE : ["A" - "Z"] >
-| < LOWERCASE : ["a" - "z"] >}
-TOKEN : /* RESERVED WORD TOKENS */
-{	< RESERVED_WORD : "abstract" | "assert" | "boolean" | "break" | "byte" | "case"
+| <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
+| <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
+| <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
+| < EOF >}
+SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :{  < CONSTANT : (< DIGIT >)+ >| <#DIGIT  : ["0"-"9"]>
+| <#LETTER : ["a"-"z"]>
+| <#UPPER_LETTER : ["A" - "Z"] >
+
+// Reserved Word Tokens
+| < RESERVED_WORD : "abstract" | "assert" | "boolean" | "break" | "byte" | "case"
 | "catch" | "char" | "class" | "const" | "continue" | "default" | "do" | "double"
 | "else" | "enum" | "extends" | "false" | "final" | "finally" | "float" | "for" | "goto"
 |  "if" | "implements" | "import" | "instanceof" | "int" | "interface" | "long" | "native"
@@ -33,23 +33,20 @@ TOKEN : /* RESERVED WORD TOKENS */
 | "static" | "strictfp" | "super" | "switch" | "synchronized" | "this" | "throw"
 | "throws" | "transient" | "true" | "try" | "void" | "volatile" | "while">
 
-}
 
-TOKEN : /* IDENTIFIER */
-{	< ALPHABET : < UPPERCASE > | < LOWERCASE > >
-| 	< IDENTIFIER : (< ALPHABET >)+ (< ALPHABET > < DIGIT >)* >
-}
+| < ALPHABET : < LETTER > | < UPPER_LETTER > >
 
-TOKEN : /* COMMENT TOKENS */
-{	< SINGLE_LINE_COMMENT : "//" >
-| 	< COMMENT_OPEN : "/*" >
-| 	< COMMENT_CLOSE : "*/" >
-}
+// Identifier
+| <IDENTIFIER : <ALPHABET> (<ALPHABET> | <DIGIT> | "_")*>
 
-TOKEN : /* SPECIAL SYMBOL TOKENS */
-{	< SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
+// Comment Tokens
+| < SINGLE_LINE_COMMENT : "//" >
+| < COMMENT_OPEN : "/*" >
+| < COMMENT_CLOSE : "*/" >
+
+// Special Symbol Tokens
+| < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
 | "|" | "/" | ":" | ";" | "?" | "< " | " >" | "." | ","
 | "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
 | "++" | "--" | "<<" | " >>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
-|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >
-}
+|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >}
