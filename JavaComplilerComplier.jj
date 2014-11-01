@@ -2,34 +2,79 @@
  * CS 153 Compiler Design : Fall 2014
  * The Almost Donerz
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */options {    OUTPUT_DIRECTORY = "src";
+ */
+options {
+  
+  OUTPUT_DIRECTORY = "src";
   DEBUG_PARSER = true;
-  STATIC = false;}PARSER_BEGIN(FileParser)import java.io.*;
-public class FileParser{  public static void main(String args []) throws ParseException, FileNotFoundException  {    Reader sr = new FileReader("input.txt");
+  STATIC = false;
+}
+
+PARSER_BEGIN(FileParser)
+import java.io.*;
+public class FileParser
+{
+  public static void main(String args []) throws ParseException, FileNotFoundException
+  {
+    Reader sr = new FileReader("input.txt");
 	FileParser parser = new FileParser(sr);
 
 
-    do    {		parser.parse();    } while (parser.token.kind != EOF);
+    do
+    {
+		parser.parse();
+    } while (parser.token.kind != EOF);
 
-//    try {//	    parser.parse();//	    //    } //    catch (ParseException ex) {//      ex.printStackTrace();//    }  }}PARSER_END(FileParser)
+//    try {
+//	    parser.parse();
+//	    
+//    } 
+//    catch (ParseException ex) {
+//      ex.printStackTrace();
+//    }
+  }
+}
+
+PARSER_END(FileParser)
+
 void parse() : {
-  StringBuffer buf = new StringBuffer();}{
+  StringBuffer buf = new StringBuffer();
+}
+{
   <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
 | <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
 | <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
-| < EOF >}
-SKIP :{
+| <CHARACTER> {buf.append("(").append(token.image).append(") ");}
+| <CONSTANT> {buf.append("(").append(token.image).append(") ");}
+| <INTEGER> {buf.append("(").append(token.image).append(") ");}
+| <REAL> {buf.append("(").append(token.image).append(") ");}
+| < EOF >
+}
+
+SKIP :
+{
   < "//" (~["\n"])* "\n" >
-| "/*" : COMMENT_OPEN| " "| "\r"| "\t"| "\n"}
+| "/*" : COMMENT_OPEN
+| " "
+| "\r"
+| "\t"
+| "\n"
+}
 
 < COMMENT_OPEN > SKIP :
-{  "*/" : DEFAULT
+{
+  "*/" : DEFAULT
 }
 
 < COMMENT_OPEN > MORE:
-{  < ~[] >
+{
+  < ~[] >
 }
-TOKEN :{  < CONSTANT : (< DIGIT >)+ >| <#DIGIT  : ["0"-"9"]>
+
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| <#DIGIT  : ["0"-"9"]>
 | <#NATURAL: ["1"-"9"]>
 | <#LETTER : ["a"-"z"]>
 | <#UPPER_LETTER : ["A" - "Z"] >
@@ -73,4 +118,6 @@ void parse() : {
 
 
 
-// Still within TOKEN}
+// Still within TOKEN
+}
+
