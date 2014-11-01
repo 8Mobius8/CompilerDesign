@@ -49,10 +49,20 @@ void parse() : {
 // Identifier
 | <IDENTIFIER : <ALPHABET> (<ALPHABET> | <DIGIT> | "_")*>
 
-// Comment Tokens
-| < SINGLE_LINE_COMMENT : "//" >
-//| < COMMENT_OPEN : "/*" >
-| < COMMENT_CLOSE : "*/" >
+
+// REAL
+| <REAL : < DECIMAL > < FRAC > (< EXP >)? >
+| < #DECIMAL : < NATURAL > (< DIGIT >)* >
+| < #FRAC : ("." (< DIGIT >)+)? >
+| < #EXP: ["e","E"] (["+","-"])? (< DIGIT >)+ >
+
+// CHARACTER
+| < CHARACTER : ["'"] < ALPHABET > ["'"] >
+
+// INTEGER
+| < INTEGER : < NATURAL > (< DIGIT >)*
+	| "0" (["0" - "7"])*
+	| "0" ["X", "x"] (< DIGIT > | ["A" - "F"])*>
 
 // Special Symbol Tokens
 | < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
@@ -61,10 +71,6 @@ void parse() : {
 | "++" | "--" | "<<" | " >>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
 |  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >
 
-// REAL
-| <REAL : < DECIMAL > < FRAC > (< EXP >)? >
-| < #DECIMAL : < NATURAL > (< DIGIT >)* >
-| < #FRAC : ("." (< DIGIT >)+)? >
-| < #EXP: ["e","E"] (["+","-"])? (< DIGIT >)+ >
+
 
 // Still within TOKEN}
