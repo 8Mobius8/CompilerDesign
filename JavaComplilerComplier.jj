@@ -19,7 +19,21 @@ TOKEN : /* RESERVED WORD TOKENS */
 
 TOKEN : /* IDENTIFIER */
 {	< ALPHABET : < UPPERCASE > | < LOWERCASE > >
-//| 	< IDENTIFIER : (< ALPHABET >)+ (< ALPHABET >, < DIGIT >)* >
+| 	< IDENTIFIER : (< ALPHABET >)+ (< ALPHABET > < DIGIT >)* >
+}
+
+TOKEN : /* COMMENT TOKENS */
+{	< SINGLE_LINE_COMMENT : "//" >
+| 	< COMMENT_OPEN : "/*" >
+| 	< COMMENT_CLOSE : "*/" >
+}
+
+TOKEN : /* SPECIAL SYMBOL TOKENS */
+{	< SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
+| "|" | "/" | ":" | ";" | "?" | "< " | " >" | "." | ","
+| "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
+| "++" | "--" | "<<" | " >>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
+|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>="  >
 }
 int one_line() :{}{  sum() ";"  {    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < PLUS >    | < MINUS >    )    term()  )*}void term() :{}{  unary()  (    (      < MULTIPLY >    | < DIVIDE >    )    unary()  )*}void unary() :{}{  < MINUS > element()| element()}void element() :{}{  < CONSTANT >| "(" sum() ")"}
 
