@@ -16,30 +16,6 @@ Mak's Language Requirements
 ## Assign #6
 We need to implement the first three items on the list above. Secondly, it must print out informative messages about language constructs, but it does not need to fancy, just readable.
 
-## Basic Data Suggested Structures
-### Notes
- 	 Length
- 	 Pitch
-### Chords
- 	 Any number of Notes
- 	 Refenrence note/ root note/ somthing
-### Melody ?
-	 Any number of sequential notes
-	 Tempo, starting pitch, key, things
-## Control Statements Suggested
-### Repeats
-	 Different repeated ending
-	 Times to repeat
-### Codas
-	 Goes to a complete different part of teh song (like a Goto)
-## Procedures and Function Calls
-### Custom Note/Chord modulation
-	 Changes pitch
-	 Add another note to chord
-### Custom Note length modulation
-	 Change length through some function
-		(Double Time, Triplet feel, anything else?)
-(Both these types of functions should pass params by value)
-## Arithemtic operations with operator precedence
-### Accedients
-	 Flats verus sharps 
+## Python Compiler
+I found the offical link to the language specs:
+http://docs.python.org/3/reference/index.html
