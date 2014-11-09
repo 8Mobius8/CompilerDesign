@@ -1,0 +1,114 @@
+/**
+ * CS 153 Compiler Design : Fall 2014
+ * The Almost Donerz
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */
+options {
+  
+  OUTPUT_DIRECTORY = "src";
+  DEBUG_PARSER = true;
+  STATIC = false;
+}
+
+PARSER_BEGIN(FileParser)
+import java.io.*;
+public class FileParser
+{
+  public static void main(String args []) throws ParseException, FileNotFoundException
+  {
+    Reader sr = new FileReader("input.txt");
+	FileParser parser = new FileParser(sr);
+
+
+    do
+    {
+		parser.parse();
+    } while (parser.token.kind != EOF);
+
+  }
+}
+
+PARSER_END(FileParser)
+
+void parse() : {
+  StringBuffer buf = new StringBuffer();
+}
+{
+  <RESERVED_WORD> 	{buf.append("(").append(token.image).append(") ");}
+| <IDENTIFIER>		{buf.append("(").append(token.image).append(") ");}
+| <SPECIAL_SYMBOL> 	{buf.append("(").append(token.image).append(") ");}
+| <CHARACTER> 		{buf.append("(").append(token.image).append(") ");}
+| <CONSTANT> 		{buf.append("(").append(token.image).append(") ");}
+| <INTEGER> 		{buf.append("(").append(token.image).append(") ");}
+| <REAL> 			{buf.append("(").append(token.image).append(") ");}
+| <STRING> 			{buf.append("(").append(token.image).append(") ");}
+| < EOF >
+}
+
+SKIP :
+{
+  < "#" (~["\n"])* "\n" >
+| "\"\"\"" : COMMENT_OPEN
+| " "
+| "\r"
+| "\t" // The tab is very important in python, so I don't think we want to skip it
+| "\n"
+}
+
+< COMMENT_OPEN > SKIP :
+{
+  "\"\"\"" : DEFAULT
+}
+
+< COMMENT_OPEN > MORE:
+{
+  < ~[] >
+}
+
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| <#DIGIT  : ["0"-"9"]>
+| <#NATURAL: ["1"-"9"]>
+| <#LETTER : ["a"-"z"]>
+| <#UPPER_LETTER : ["A" - "Z"] >
+
+// Reserved Word Tokens
+| < RESERVED_WORD : "and" | "as" | "assert" | "break" | "class" | "continue"
+| "def" | "del" | "elif" | "else" | "except" | "exec" | "finally" | "for"
+| "from" | "global" | "if" | "import" | "in" | "is" | "lambda" | "not" | "or"
+|  "pass" | "print" | "raise" | "return" | "try" | "while" | "with" | "yield">
+
+
+| < ALPHABET : < LETTER > | < UPPER_LETTER > >
+
+// Identifier
+| <IDENTIFIER : <ALPHABET> (<ALPHABET> | <DIGIT> | "_")*>
+
+
+// REAL
+| <REAL : (["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D"])? | "." (["0"-"9"])+ (<DECIMAL_EXPONENT>)? (["f","F","d","D"])? | (["0"-"9"])+ <DECIMAL_EXPONENT> (["f","F","d","D"])? | (["0"-"9"])+ (<DECIMAL_EXPONENT>)? ["f","F","d","D"]>
+| <#DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+
+// CHARACTER
+| < CHARACTER : ["'"] (< ALPHABET > | < SPECIAL_SYMBOL >) ["'"] >
+
+// INTEGER
+| < INTEGER : < NATURAL > (< DIGIT >)*
+	| "0" (["0" - "7"])*
+	| "0" ["X", "x"] (< DIGIT > | ["A" - "F"] | ["a" - "f"])*>
+
+// STRING
+| < STRING : "\"" (< ALPHABET > | < SPECIAL_SYMBOL > | < DIGIT > | " ")* "\"" >
+
+// Special Symbol Tokens
+| < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
+| "|" | "/" | ":" | ";" | "?" | "<" | ">" | "." | ","
+| "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
+| "++" | "--" | "<<" | ">>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
+|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>=" | "\\" >
+
+
+
+// Still within TOKEN
+}
