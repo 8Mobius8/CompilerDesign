@@ -52,8 +52,11 @@ SKIP :
 | < ALPHABET : < LETTER > | < UPPER_LETTER > >
 
 // Identifier
-| <IDENTIFIER : <ALPHABET> (<ALPHABET> | <DIGIT> | "_")*>
+| <IDENTIFIER : <ID_BEGIN> (<ID_THE_REST >)*>
+| <#ID_BEGIN    : ["A"-"Z" , "a"-"z", "_"]>
+| <#ID_THE_REST : (<ID_BEGIN> | ["0"-"9"])* >
 
+// ------- LITERALS --------- //
 // INTEGER
 | < INTEGER :
 	< DEC_INT > 
@@ -78,7 +81,27 @@ SKIP :
 | <I_FLOATS : (<FLOAT>|<INT_PART>) ("j"|"J") >
 
 // STRING
-| < STRING : "\"" (< ALPHABET > | < SPECIAL_SYMBOL > | < DIGIT > | " ")* "\"" >
+| <STRING : (<STR_PREFIX>)?(<SHORT_STR>) >
+| <#STR_PREFIX : ["r","u","R","U"]>
+| <#SHORT_STR  : "'" (<STRING_CHAR>)* "'" | "\""(<STRING_CHAR>)* "\"" >
+// Need to add support for multi-quoted strings
+//| <#LONG_STR   : "''" (<STRING_CHAR>)* "''" | "\""(<STRING_CHAR>)* "\"" >
+| <#STRING_CHAR: <ALPHABET> | ("\\" <ALPHABET>)>
+
+
+// ----- END OF LITERALS ------ //
+
+// Arithmetic Operators
+| <OPERATOR : "+" |"-" |"*" |"**"|"/" |"//"|"%"|
+			  "<<"|">>"|"&" |"|" |"^" |"~"|
+			  "<" |">" |"<="|">="|"=="|"!=" >
+
+// Delimiters for Python like structures
+| <DELIMITERS:
+	"("  | ")"  | "["  | "]"   | "{"   | "}" 
+	| ","  | ":"  | "."  | ";"   | "@"   | "="  | "->" 
+	| "+=" | "-=" | "*=" | "/="  | "//=" | "%=" 
+	| "&=" | "|=" | "^=" | ">>=" | "<<=" | "**=" >
 
 // Special Symbol Tokens
 | < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
