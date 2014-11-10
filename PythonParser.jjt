@@ -1,0 +1,93 @@
+/**
+ * JJTree template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */options{  VISITOR=true;
+  MULTI=true;
+  DEBUG_PARSER=false;}PARSER_BEGIN(PythonParser)
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+
+public class PythonParser{  public static void main(String args [])  {
+    try    {  
+	    if(args.length >= 1) {			System.out.println("Reading from file: " +args[0]);
+			new PythonParser(new FileReader(args[0]));
+	    } else {			System.out.println("Reading from standard input...");
+			new PythonParser(System.in);
+	    }
+	} catch (FileNotFoundException fnfe) {		System.out.println(args[0] + " was not able to be found.");
+	}        try    {      SimpleNode n = PythonParser.parse();      n.dump("");      System.out.println("Thank you.");    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(PythonParser)
+SimpleNode parse() :
+{}
+{
+  Expression()
+  {return jjtThis;}
+}
+
+SimpleNode Expression() : {}
+{
+  < IDENTIFIER >
+  {return jjtThis;}
+}
+SKIP :
+{
+  " "
+| < COMMENT :
+	"#" (~["\n"])* "\n"
+	>
+}
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| <#DIGIT   : ["0"-"9"]>
+| <#NATURAL : ["1"-"9"]>
+| <#LETTER  : ["a"-"z"]>
+| <#UPPER_LETTER : ["A" - "Z"] >
+
+// Reserved Word Tokens
+| < RESERVED_WORD : "False" | "None" | "True" | "and" | "as" | "assert" | "break"
+	| "class" | "continue" | "def" | "del" | "elif" | "else" | "except" | "exec"
+	| "finally" | "for" | "from" | "global" | "if" | "import" | "in" | "is" | "lambda"
+	| "nonlocal" | "not" | "or" | "pass" | "print" | "raise" | "return" | "try"
+	| "while" | "with" | "yield">
+
+| < ALPHABET : < LETTER > | < UPPER_LETTER > >
+
+// Identifier
+| <IDENTIFIER : <ALPHABET> (<ALPHABET> | <DIGIT> | "_")*>
+
+// INTEGER
+| < INTEGER :
+	< DEC_INT > 
+  | < OCTAL_INT >
+  | < HEX_INT >
+  | < BINARY_INT >
+  >
+| <#DEC_INT    : < NATURAL > (< DIGIT >)* >
+| <#OCTAL_INT  : "0" ("o" | "O") (["0"-"7"])+ >
+| <#HEX_INT    : "0" ("x" | "X") (< DIGIT > | ["a"-"f"] | ["A"-"F"]) >
+| <#BINARY_INT : "0" | "1" >
+
+// FLOATS
+| <FLOAT : < FLOAT_EXP > | < FLOAT_POINT > >
+| <#FLOAT_EXP  : (<INT_PART> | <FLOAT_POINT>) <EXPONENT> >
+| <#FLOAT_POINT: (<INT_PART>)? <FRACTION> | <INT_PART>"." >
+| <#INT_PART: (<DIGIT>)+ >
+| <#EXPONENT: ["e","E"] ["+","-"] (<DIGIT>)+ >
+| <#FRACTION: "." (<DIGIT>)+ >
+
+//IMAGINARY
+| <I_FLOATS : (<FLOAT>|<INT_PART>) ("j"|"J") >
+
+// STRING
+| < STRING : "\"" (< ALPHABET > | < SPECIAL_SYMBOL > | < DIGIT > | " ")* "\"" >
+
+// Special Symbol Tokens
+| < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
+| "|" | "/" | ":" | ";" | "?" | "<" | ">" | "." | ","
+| "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
+| "++" | "--" | "<<" | ">>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
+|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>=" | "\\" >
+
+
+// Still within TOKEN
+}
+
