@@ -22,12 +22,19 @@ public class PythonParser{  public static void main(String args [])  {
 }
 void Expression() : {}
 {
+  SimpleStatement() "\n"
   //{return jjtThis;}
 }
 
 void SimpleStatment() : {}{
   AssignmentStatement()
  |ReturnStatement() 	  }
+
+void AssignmentStatement():{}
+{
+  {System.out.print("<Assignment>\n");}
+  < IDENTIFIER >< ASSIGN >Expression()
+  {System.out.print("</Assignment>\n");} }
 
 void CompoundStatement() : {}
 {
@@ -99,25 +106,54 @@ SKIP :
 
 // ----- END OF LITERALS ------ //
 
-// Arithmetic Operators
-| <OPERATOR : "+" |"-" |"*" |"**"|"/" |"//"|"%"|
-			  "<<"|">>"|"&" |"|" |"^" |"~"|
-			  "<" |">" |"<="|">="|"=="|"!=" >
+// Operators
+| <PLUS :"+">
+| <MINUS :"-">
+| <STAR :"*">
+| <DOUBLE_STAR :"**">
+| <FORWARD_SLASH :"/" >
+| <DOUBLE_FORWARD_SLASH :"//">
+| <PERCENT :"%">
+| <DOUBLE_L_THAN :"<<">
+| <DOUBLE_G_THAN :">>">
+| <AMPERSAND :"&">
+| <PIPE :"|">
+| <CAROT :"^">
+| <TILDE :"~">
+| <L_THAN :"<">
+| <G_THAN :">" >
+| <L_EQUAL :"<=">
+| <G_EQUAL :">=">
+| <DOUBLE_EQUAL :"==">
+| <NOT_EQUAL :"!=">
 
 // Delimiters for Python like structures
-| <DELIMITERS:
-	"("  | ")"  | "["  | "]"   | "{"   | "}" 
-	| ","  | ":"  | "."  | ";"   | "@"   | "="  | "->" 
-	| "+=" | "-=" | "*=" | "/="  | "//=" | "%=" 
-	| "&=" | "|=" | "^=" | ">>=" | "<<=" | "**=" >
 
-// Special Symbol Tokens
-| < SPECIAL_SYMBOL : "~" | "!" | "@" | "%" | "^" | "&" | "*" | "-" | "+" | "="
-| "|" | "/" | ":" | ";" | "?" | "<" | ">" | "." | ","
-| "'" | "\"" | "(" | ")" | "[" | "]" | "{" | "}" 
-| "++" | "--" | "<<" | ">>" | "<=" | ">=" | "+=" | "-=" | "*=" | "/="
-|  "==" | "|=" | "%=" | "&=" | "^=" | "||" | "&&" | "!=" | "<<=" | ">>=" | "\\" >
-
+| <L_PAREN :"(" >
+| <R_PAREN :")" >
+| <L_BRACKET :"[" >
+| <R_BRACKET :"]">
+| <L_BRACE :"{"  >
+| <R_BRACE :"}" >
+| <COMA :"," >
+| <COLON :":" >
+| <PERIOD :"." >
+| <SEMICOLON :";"  >
+| <AT :"@"  >
+| <ASSIGN :"=">
+| <POINTER :"->">
+| <ASSIGN_INCREMENT :"+=">
+| <ASSIGN_DECREMENT :"-=">
+| <ASSIGN_MUTIPLY :"*=">
+| <ASSIGN_DIVIDE :"/=">
+| <ASSIGN_FLOOR_DIVIDE :"//=">
+| <ASSIGN_MODULO :"%=">
+| <ASSIGN_BIT_AND :"&=">
+| <ASSIGN_BIT_OR :"|=">
+| <ASSIGN_BIT_XOR :"^=">
+| <ASSIGN_BIT_RIGHT_SHIFT :">>=">
+| <ASSIGN_BIT_LEFT_SHIFT :"<<=">
+| <ASSIGN_EXPOENTATION :"**=">
 
 // Still within TOKEN
 }
