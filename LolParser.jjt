@@ -44,8 +44,10 @@ public class LolParser
 }
 PARSER_END(LolParser)
 
-void parse(): {}{
-  block()}
+void parse(): {}
+{
+  block()
+}
 
 void block():{}
 {
@@ -53,13 +55,14 @@ void block():{}
 }
 void statement():{}
 {
-  (< IDENTIFIER >)*
+  < ASSIGNMENT_STMT : <I> <HAS> <A> <IDENT> <EOL>>
+ | (< IDENTIFIER >)*
 }
 SKIP :
 {
   " "
 | < COMMENT :
-	"#" (~["\n"])* "\n"
+	"BTW" (~["\n"])* "\n"
 	>
 }
 
