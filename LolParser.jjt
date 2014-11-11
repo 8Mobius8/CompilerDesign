@@ -60,7 +60,7 @@ void statement():{}
 {
   AssignmentStatement()
 | FlowControlStatement() 
-
+| ArithemticExpression()
 }
 
 void AssignmentStatement():{}
@@ -74,44 +74,44 @@ void FlowControlStatement():{}
 }
 
 // vvv Arithemic Operations vvv \\
-//void ArthemticExpression():{}
-//{
-//  SUM() 	// Add
-//| DIFF() 	// Subtract
-//| PRODUKT() // Product
-//| QUOSHUNT()// Quotient
-//| MOD() 	// Modulous
-//| BIGGR() 	// Max
-//| SMALLR() 	// Min
-//}
-//void SUM(): {} 	// Add
-//{
-//	
-//}
-//void DIFF(): {} // Subtract
-//{
-//	
-//}
-//void PRODUKT(): {} // Product
-//{
-//	
-//}
-//void QUOSHUNT(): {} // Quotient
-//{
-//	
-//}
-//void MOD(): {} // Modulous
-//{
-//	
-//}
-//void BIGGR(): {} // Max
-//{
-//	
-//}
-//void SMALLR(): {} // Min
-//{
-//	
-//}
+void ArthemticExpression():{}
+{
+  SUM() 	// Add
+| DIFF() 	// Subtract
+| PRODUKT() // Product
+| QUOSHUNT()// Quotient
+| MOD() 	// Modulous
+| BIGGR() 	// Max
+| SMALLR() 	// Min
+}
+void SUM(): {} 	// Add
+{
+	<SUM> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+}
+void DIFF(): {} // Subtract
+{
+  <DIFF> <OF> <INTEGER> <AN> <INTEGER> <EOL>	
+}
+void PRODUKT(): {} // Product
+{
+	<PRODUKT> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+}
+void QUOSHUNT(): {} // Quotient
+{
+  <QUOSHUNT> <OF> <INTEGER> <AN> <INTEGER> <EOL>	
+}
+void MOD(): {} // Modulous
+{
+	<MOD> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+}
+void BIGGR(): {} // Max
+{
+	<BIGGR> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+}
+void SMALLR(): {} // Min
+{
+	<SMALLR> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+}
 // ^^^ Arithemic Expressions ^^^ \\
 
 // vvv Boolean Expressions vvv \\
@@ -177,6 +177,15 @@ TOKEN :
 | < VISIBLE : "VISIBLE" >
 | < INVISIBLE : "INVISIBLE" >
 | < BANG : "!!" >
+| < OF : "OF" >
+| < AN : "AN" >
+| < SUM : "SUM" >
+| < DIFF : "DIFF" >
+| < PRODUKT : "PRODUKT" >
+| < QUOSHUNT : "QUOSHUNT" >
+| < MOD : "MOD" >
+| < BIGGR : "BIGGR" >
+| < SMALLR : "SMALLR" >
 | < QUOTED_STRING : "\"" (~["\""])+ "\"" >
 | < INTEGER : ["1"-"9"] (["0"-"9"])* >
 | < IDENT : (["A"-"Z"])+ >
