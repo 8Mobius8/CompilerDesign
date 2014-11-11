@@ -173,9 +173,7 @@ SKIP :
   " "
 | <EOLIGNORE:<EOL>>
 | < COMMENT :
-	("BTW" (~["\n"])* "\n")
-|   ("OBTW" (~("TLDR"))* "TLDR")
-	>
+	("BTW" (~["\n"])* "\n") >
 //| < MULTI_LINE_COMMENT:        "OBTW" (~[<TLDR>])* <TLDR>        >
 }
 
