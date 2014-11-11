@@ -138,9 +138,9 @@ void SMALLR(): {} // Min
 void loop(): {}
 {
   {System.out.println("<LOOP>");}    
-     <IM><IN><YR> <LOOP_LABEL> //(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
+     <IM><IN><YR> <LOOP_LABEL> <EOL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
      	Block()
-  <IM><OUTTA><YR> <LOOP_LABEL>
+  <IM><OUTTA><YR> <LOOP_LABEL> <EOL>
   {System.out.println("<LOOP>");}
 }
 
