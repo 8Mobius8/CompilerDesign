@@ -64,18 +64,61 @@ void statement():{}
 }
 
 void AssignmentStatement():{}
-{  < ASSIGNMENT_STMT : <I> <HAS> <A> <IDENT> <EOL>>	
+{
+  < ASSIGNMENT_STMT : <I> <HAS> <A> <IDENT> <EOL>>	
 }
 
-void FlowControlStatement():{}{  loop()
+void FlowControlStatement():{}
+{
+  loop()
 }
 
 // vvv Arithemic Operations vvv \\
-//void ArthemticExpression():{}//{//  SUM() 	// Add//| DIFF() 	// Subtract//| PRODUKT() // Product//| QUOSHUNT()// Quotient//| MOD() 	// Modulous//| BIGGR() 	// Max//| SMALLR() 	// Min//}//void SUM(): {} 	// Add//{//	//}//void DIFF(): {} // Subtract//{//	//}//void PRODUKT(): {} // Product//{//	//}//void QUOSHUNT(): {} // Quotient//{//	//}//void MOD(): {} // Modulous//{//	//}//void BIGGR(): {} // Max//{//	//}//void SMALLR(): {} // Min//{//	//}
+//void ArthemticExpression():{}
+//{
+//  SUM() 	// Add
+//| DIFF() 	// Subtract
+//| PRODUKT() // Product
+//| QUOSHUNT()// Quotient
+//| MOD() 	// Modulous
+//| BIGGR() 	// Max
+//| SMALLR() 	// Min
+//}
+//void SUM(): {} 	// Add
+//{
+//	
+//}
+//void DIFF(): {} // Subtract
+//{
+//	
+//}
+//void PRODUKT(): {} // Product
+//{
+//	
+//}
+//void QUOSHUNT(): {} // Quotient
+//{
+//	
+//}
+//void MOD(): {} // Modulous
+//{
+//	
+//}
+//void BIGGR(): {} // Max
+//{
+//	
+//}
+//void SMALLR(): {} // Min
+//{
+//	
+//}
 // ^^^ Arithemic Expressions ^^^ \\
 
 // vvv Boolean Expressions vvv \\
-//void BooleanOperation():{}//{////}
+//void BooleanOperation():{}
+//{
+//
+//}
  
 // ^^^ Boolean Expressions ^^^ \\
 
@@ -86,7 +129,8 @@ void loop(): {}
      <IM><IN><YR> <LOOP_LABEL> //(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
      	block()
   <IM><OUTTA><YR> <LOOP_LABEL>
-  {System.out.println("<LOOP>");}}
+  {System.out.println("<LOOP>");}
+}
 // ^^^ LOOP ^^^ \\
 
 SKIP :
@@ -113,7 +157,9 @@ TOKEN :
 | < KTHX : "KTHX" >
 | < KTHXBYE : "KTHXBYE" >
 | < LOOP_LABEL : "LOOP" >
-| < LOOP_OP : "UPPIN" | "NERFIN" | "DOWNIN">
+| < LOOP_OP : "UPPIN" | "NERFIN">
+| < TROOF : "TROOF">
+| < FAIL : "FAIL">
 | < TIL : "TIL" >
 | < WILE : "WILE" > 
 | < THAN : "THAN" >
