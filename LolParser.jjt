@@ -47,18 +47,16 @@ PARSER_END(LolParser)
 void parse(): {StringBuffer buf = new StringBuffer();}
 {
   < HAI >(<EOL>)+
-   (block())?
+   (Statement())*
   < KTHXBYE > (<EOL>)*
   < EOF >
 }
-
-void block():{}
+void Block():{}
 {
-  (Statement())+
-}
+  (LOOKAHEAD(Statement()) Statement() )+}
 
 void Statement():{}
-{  Expression() <EOL>
+{  Expression()
 }
 void Expression():{}
 {
@@ -138,7 +136,7 @@ void loop(): {}
 {
   {System.out.println("<LOOP>");}    
      <IM><IN><YR> <LOOP_LABEL> //(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
-     	block()
+     	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
   {System.out.println("<LOOP>");}
 }
@@ -146,11 +144,11 @@ void loop(): {}
 void ifThen():{}
 {  < O_RLY ><QUESTION> < EOL >
   	< YA_RLY ><QUESTION> < EOL >
-  		block()
+  		Block()
   	(<MEBBE> Expression() <EOL>
-  		block())*
+  		Block())*
     (< NO_WAI > <EOL>
-    	block())
+    	Block())
   < OIC >
 }
 // ^^^ LOOP ^^^ \\
