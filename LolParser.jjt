@@ -141,12 +141,37 @@ void UP():{}
 
 
 // vvv Boolean Expressions vvv \\
-//void BooleanOperation():{}
-//{
-//		
-//}
- 
+void BooleanOperation():{}{  BOTH() // And
+| EITHER() // Or
+| WON() // Xor
+| NOT() // Not	}
+void BOTH():{} // And
+{
+  <BOTH> <OF> Expression() (<AN>)? Expression()
+}
+void EITHER():{} // Or
+{
+  <EITHER> <OF> Expression() (<AN>)? Expression()
+}
+void WON():{} // Xor
+{
+  <WON> <OF> Expression() (<AN>)? Expression()
+}
+void NOT():{} // Not
+{
+  <NOT> Expression()
+}
 // ^^^ Boolean Expressions ^^^ \\
+
+void ComparisionOperation():{}{
+  BOTHSAEM() // Equals
+| DIFFRINT() // Not Equals}
+void BOTHSAEM():{}
+{
+  <BOTH> <SAEM> Expression() (<AN>)? Expression()}
+void DIFFRINT():{}
+{	<DIFFRINT> Expression() (<AN>)? Expression()
+}
 
 // vvv Flow Expressions vvv \\
 
@@ -165,9 +190,10 @@ void ifThen():{}
   	< YA_RLY >
   		Block()
     < NO_WAI >
-    	Block()
+    	Block()	
   < OIC >
 }
+
 // ^^^ LOOP ^^^ \\
 
 SKIP :
@@ -211,6 +237,12 @@ TOKEN :
 | < LOOP_OP : "UPPIN" | "NERFIN">
 | < TROOF : "TROOF">
 | < FAIL : "FAIL">
+| < BOTH : "BOTH" >
+| < EITHER : "EITHER" >
+| < SAEM : "SAEM" >
+| < DIFFRINT : "DIFFRINT" >
+| < WON: "WON" >
+| < NOT: "NOT" >
 | < TIL : "TIL" >
 | < WILE : "WILE" > 
 | < THAN : "THAN" >

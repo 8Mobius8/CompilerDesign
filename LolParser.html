@@ -1,0 +1,382 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for LolParser.jjt</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for LolParser.jjt</H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// ^^^ LOOP ^^^ \\
+</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SKIP : {
+" "
+| &lt;EOLIGNORE: &lt;EOL&gt;&gt;
+| &lt;COMMENT: "BTW" (~["\n"])* "\n"&gt;
+| "OBTW" : COMMENT_OPEN
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;COMMENT_OPEN&gt; SKIP : {
+"TLDR" : DEFAULT
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;COMMENT_OPEN&gt; MORE : {
+&lt;~[]&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;HAI: "HAI"&gt;
+| &lt;CAN: "CAN"&gt;
+| &lt;HAS: "HAS"&gt;
+| &lt;ITZ: "ITZ"&gt;
+| &lt;A: "A"&gt;
+| &lt;I: "I"&gt;
+| &lt;N: "N"&gt;
+| &lt;IM: "IM"&gt;
+| &lt;IN: "IN"&gt;
+| &lt;IZ: "IZ"&gt;
+| &lt;YR: "YR"&gt;
+| &lt;UP: "UP"&gt;
+| &lt;KTHX: "KTHX"&gt;
+| &lt;KTHXBYE: "KTHXBYE"&gt;
+| &lt;LOOP_LABEL: "LOOP"&gt;
+| &lt;LOOP_OP: "UPPIN" | "NERFIN"&gt;
+| &lt;TROOF: "TROOF"&gt;
+| &lt;FAIL: "FAIL"&gt;
+| &lt;BOTH: "BOTH"&gt;
+| &lt;EITHER: "EITHER"&gt;
+| &lt;SAEM: "SAEM"&gt;
+| &lt;DIFFRINT: "DIFFRINT"&gt;
+| &lt;WON: "WON"&gt;
+| &lt;NOT: "NOT"&gt;
+| &lt;TIL: "TIL"&gt;
+| &lt;WILE: "WILE"&gt;
+| &lt;THAN: "THAN"&gt;
+| &lt;OUTTA: "OUTTA"&gt;
+| &lt;BIGGER: "BIGGER"&gt;
+| &lt;GIMMEH: "GIMMEH"&gt;
+| &lt;PLZ: "PLZ"&gt;
+| &lt;AWSUM_THX: "AWSUM THX"&gt;
+| &lt;O_NOES: "O NOES"&gt;
+| &lt;O_RLY: "O RLY"&gt;
+| &lt;YA_RLY: "YA RLY"&gt;
+| &lt;MEBBE: "MEBBE"&gt;
+| &lt;NO_WAI: "NO WAI"&gt;
+| &lt;OIC: "OIC"&gt;
+| &lt;OPEN: "OPEN"&gt;
+| &lt;QUESTION: "?"&gt;
+| &lt;VISIBLE: "VISIBLE"&gt;
+| &lt;INVISIBLE: "INVISIBLE"&gt;
+| &lt;BANG: "!!"&gt;
+| &lt;OF: "OF"&gt;
+| &lt;AN: "AN"&gt;
+| &lt;SUM: "SUM"&gt;
+| &lt;DIFF: "DIFF"&gt;
+| &lt;PRODUKT: "PRODUKT"&gt;
+| &lt;QUOSHUNT: "QUOSHUNT"&gt;
+| &lt;MOD: "MOD"&gt;
+| &lt;BIGGR: "BIGGR"&gt;
+| &lt;SMALLR: "SMALLR"&gt;
+| &lt;QUOTED_STRING: "\"" (~["\""])+ "\""&gt;
+| &lt;INTEGER: ["1"-"9"] (["0"-"9"])*&gt;
+| &lt;IDENT: (["A"-"Z"] | ["a"-"z"])+&gt;
+| &lt;EOL: "\n" | "\r" | "\r\n"&gt;
+| &lt;TLDR: "TLDR"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">parse</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;HAI&gt; ( &lt;EOL&gt; )* ( <A HREF="#prod2">Statement</A> )* &lt;KTHXBYE&gt; ( &lt;EOL&gt; )* &lt;EOF&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">Block</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod2">Statement</A> )+</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">Statement</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod4">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">Expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod5">AssignmentExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod6">FlowControlExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod7">ArithemticExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod8">VarDeclareExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod9">ConstLiteralExpression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">ConstLiteralExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;QUOTED_STRING&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">AssignmentExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IDENT&gt; "R" <A HREF="#prod4">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">VarDeclareExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;I&gt; &lt;HAS&gt; &lt;A&gt; &lt;IDENT&gt; ( &lt;ITZ&gt; <A HREF="#prod9">ConstLiteralExpression</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">FlowControlExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod10">loop</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod11">ifThen</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// vvv Arithemic Operations vvv \\
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">ArithemticExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod12">SUM</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">DIFF</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod14">PRODUKT</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod15">QUOSHUNT</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod16">MOD</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod17">BIGGR</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">SMALLR</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod19">UP</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">SUM</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SUM&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">DIFF</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DIFF&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">PRODUKT</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;PRODUKT&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">QUOSHUNT</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;QUOSHUNT&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">MOD</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;MOD&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">BIGGR</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BIGGR&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">SMALLR</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;SMALLR&gt; &lt;OF&gt; &lt;INTEGER&gt; &lt;AN&gt; &lt;INTEGER&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">UP</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;UP&gt; &lt;IDENT&gt; &lt;BANG&gt; &lt;INTEGER&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// ^^^ Arithemic Expressions ^^^ \\
+
+
+
+// vvv Boolean Expressions vvv \\
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">BooleanOperation</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod21">BOTH</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod22">EITHER</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod23">WON</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod24">NOT</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">BOTH</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BOTH&gt; &lt;OF&gt; <A HREF="#prod4">Expression</A> ( &lt;AN&gt; )? <A HREF="#prod4">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">EITHER</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EITHER&gt; &lt;OF&gt; <A HREF="#prod4">Expression</A> ( &lt;AN&gt; )? <A HREF="#prod4">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">WON</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;WON&gt; &lt;OF&gt; <A HREF="#prod4">Expression</A> ( &lt;AN&gt; )? <A HREF="#prod4">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">NOT</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NOT&gt; <A HREF="#prod4">Expression</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// ^^^ Boolean Expressions ^^^ \\
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">ComparisionOperation</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod26">BOTHSAEM</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod27">DIFFRINT</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">BOTHSAEM</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BOTH&gt; &lt;SAEM&gt; <A HREF="#prod4">Expression</A> ( &lt;AN&gt; )? <A HREF="#prod4">Expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">DIFFRINT</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DIFFRINT&gt; <A HREF="#prod4">Expression</A> ( &lt;AN&gt; )? <A HREF="#prod4">Expression</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// vvv Flow Expressions vvv \\
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">loop</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IM&gt; &lt;IN&gt; &lt;YR&gt; &lt;LOOP_LABEL&gt; <A HREF="#prod3">Block</A> &lt;IM&gt; &lt;OUTTA&gt; &lt;YR&gt; &lt;LOOP_LABEL&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">ifThen</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;O_RLY&gt; &lt;QUESTION&gt; &lt;YA_RLY&gt; <A HREF="#prod3">Block</A> &lt;NO_WAI&gt; <A HREF="#prod3">Block</A> &lt;OIC&gt;</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
