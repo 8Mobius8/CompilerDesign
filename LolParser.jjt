@@ -44,8 +44,19 @@ public class LolParser
 }
 PARSER_END(LolParser)
 
+void parse(): {}{
+  "HAI"
+  block()
+  "KTHXBYE"}
 
-
+void block():{}
+{
+  statement()
+}
+void statement():{}
+{
+  (< IDENTIFIER >)*
+}
 SKIP :
 {
   " "
