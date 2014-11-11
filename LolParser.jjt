@@ -74,7 +74,7 @@ void FlowControlStatement():{}
 }
 
 // vvv Arithemic Operations vvv \\
-void ArthemticExpression():{}
+void ArithemticExpression():{}
 {
   SUM() 	// Add
 | DIFF() 	// Subtract
