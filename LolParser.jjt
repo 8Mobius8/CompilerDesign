@@ -72,7 +72,8 @@ void Expression():{}
 void ConstLiteralExpression():{}
 {
   < QUOTED_STRING >
-| < INTEGER >}
+| < INTEGER >
+}
 
 void AssignmentExpression():{}
 {
@@ -140,7 +141,10 @@ void UP():{}
 
 
 // vvv Boolean Expressions vvv \\
-//void BooleanOperation():{}//{//		//}
+//void BooleanOperation():{}
+//{
+//		
+//}
  
 // ^^^ Boolean Expressions ^^^ \\
 
@@ -172,10 +176,22 @@ SKIP :
 {
   " "
 | <EOLIGNORE:<EOL>>
-| < COMMENT :
-	("BTW" (~["\n"])* "\n") >
+| < COMMENT : ("BTW" (~["\n"])* "\n") >
+| "OBTW" : COMMENT_OPEN
+
 //| < MULTI_LINE_COMMENT:        "OBTW" (~[<TLDR>])* <TLDR>        >
 }
+
+< COMMENT_OPEN > SKIP :
+{
+ "TLDR" : DEFAULT
+}
+
+< COMMENT_OPEN > MORE:
+{
+ < ~[] >
+}
+
 
 TOKEN :
 {
