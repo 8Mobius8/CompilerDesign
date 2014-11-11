@@ -53,16 +53,19 @@ void parse(): {StringBuffer buf = new StringBuffer();}
 }
 void Block():{}
 {
-  (LOOKAHEAD(Statement()) Statement() )+}
+  (LOOKAHEAD(Statement()) Statement() )+
+}
 
 void Statement():{}
-{  Expression()
+{
+  Expression()
 }
 void Expression():{}
 {
   AssignmentExpression()
 | FlowControlExpression() 
 | ArithemticExpression()
+| VarDeclareExpression()
 }
 
 void AssignmentExpression():{}
@@ -142,7 +145,8 @@ void loop(): {}
 }
 
 void ifThen():{}
-{  < O_RLY ><QUESTION> < EOL >
+{
+  < O_RLY ><QUESTION> < EOL >
   	< YA_RLY ><QUESTION> < EOL >
   		Block()
   	(<MEBBE> Expression() <EOL>
