@@ -53,14 +53,23 @@ void block():{}
 }
 void statement():{}
 {
-  // Need to define different statements here. 
+  AssignmentStatement()
+| FlowControlStatement() 
 }
 
+void AssignmentStatement():{}
+{	
+}
+
+void FlowControlStatement():{}{	loop()
+}
 void loop(): {}
 {
+  {System.out.println("<LOOP>");}    
      <IM><IN><YR> <LOOP_LABEL> (<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) expression() )?)?
      	block()
-  <IM><OUTTA><YR> <LOOP_LABEL>}
+  <IM><OUTTA><YR> <LOOP_LABEL>
+  {System.out.println("<LOOP>");}}
 
 SKIP :
 {
@@ -86,7 +95,7 @@ TOKEN :
 | < KTHX : "KTHX" >
 | < KTHXBYE : "KTHXBYE" >
 | < LOOP_LABEL : "LOOP" >
-| < LOOP_OP : "UPPIN" | "NERFIN">
+| < LOOP_OP : "UPPIN" | "NERFIN" | "DOWNIN">
 | < TIL : "TIL" >
 | < WILE : "WILE" > 
 | < THAN : "THAN" >
