@@ -46,7 +46,7 @@ PARSER_END(LolParser)
 
 void parse(): {StringBuffer buf = new StringBuffer();}
 {
-  < HAI >(<EOL>)+
+  < HAI >(<EOL>)*
    (Statement())*
   < KTHXBYE > (<EOL>)*
   < EOF >
@@ -75,7 +75,7 @@ void AssignmentExpression():{}
 
 void VarDeclareExpression():{}
 {
-  <I> <HAS> <A> <IDENT>	<EOL>
+  <I> <HAS> <A> <IDENT>
 }
 
 void FlowControlExpression():{}
@@ -97,31 +97,31 @@ void ArithemticExpression():{}
 }
 void SUM(): {} 	// Add
 {
-	<SUM> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+	<SUM> <OF> <INTEGER> <AN> <INTEGER>
 }
 void DIFF(): {} // Subtract
 {
-  <DIFF> <OF> <INTEGER> <AN> <INTEGER> <EOL>	
+  <DIFF> <OF> <INTEGER> <AN> <INTEGER>	
 }
 void PRODUKT(): {} // Product
 {
-	<PRODUKT> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+	<PRODUKT> <OF> <INTEGER> <AN> <INTEGER>
 }
 void QUOSHUNT(): {} // Quotient
 {
-  <QUOSHUNT> <OF> <INTEGER> <AN> <INTEGER> <EOL>	
+  <QUOSHUNT> <OF> <INTEGER> <AN> <INTEGER>	
 }
 void MOD(): {} // Modulous
 {
-	<MOD> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+	<MOD> <OF> <INTEGER> <AN> <INTEGER>
 }
 void BIGGR(): {} // Max
 {
-	<BIGGR> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+	<BIGGR> <OF> <INTEGER> <AN> <INTEGER>
 }
 void SMALLR(): {} // Min
 {
-	<SMALLR> <OF> <INTEGER> <AN> <INTEGER> <EOL>
+	<SMALLR> <OF> <INTEGER> <AN> <INTEGER>
 }
 // ^^^ Arithemic Expressions ^^^ \\
 
@@ -138,20 +138,20 @@ void SMALLR(): {} // Min
 void loop(): {}
 {
   {System.out.println("<LOOP>");}    
-     <IM><IN><YR> <LOOP_LABEL> <EOL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
+     <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
      	Block()
-  <IM><OUTTA><YR> <LOOP_LABEL> <EOL>
+  <IM><OUTTA><YR> <LOOP_LABEL>
   {System.out.println("<LOOP>");}
 }
 
 void ifThen():{}
 {
-  < O_RLY ><QUESTION> < EOL >
-  	< YA_RLY ><QUESTION> < EOL >
+  < O_RLY ><QUESTION>
+  	< YA_RLY ><QUESTION>
   		Block()
-  	(<MEBBE> Expression() <EOL>
+  	(<MEBBE> Expression()
   		Block())*
-    (< NO_WAI > <EOL>
+    (< NO_WAI >
     	Block())
   < OIC >
 }
@@ -160,6 +160,7 @@ void ifThen():{}
 SKIP :
 {
   " "
+| <EOLIGNORE:<EOL>>
 | < COMMENT :
 	"BTW" (~["\n"])* "\n"
 	>
