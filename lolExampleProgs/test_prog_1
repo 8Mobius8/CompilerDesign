@@ -15,11 +15,11 @@ TLDR
 
 O RLY?
   YA RLY
-    VISIBLE TROOF
+    STR R "Too much lolz!"
   MEBBE WIN
-    VISIBLE FAIL
+    FISH R 4
   NO WAI
-    VISIBLE FAIL
+    superVar R "made of nuts"
 OIC
 
 I HAS A VAR

@@ -162,7 +162,7 @@ void loop(): {}
 void ifThen():{}
 {
   < O_RLY ><QUESTION>
-  	< YA_RLY ><QUESTION>
+  	< YA_RLY >
   		Block()
   	(<MEBBE> Expression()
   		Block())*
