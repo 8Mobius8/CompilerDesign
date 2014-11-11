@@ -64,44 +64,53 @@ void AssignmentStatement():{}
 void FlowControlStatement():{}{  loop()
 }
 
+// vvv Arithemic Operations vvv \\
 void ArthemticExpression():{}
 {
-  Add()
-| Subtract()
-| Product()
-| Quotient()
-| Modulous()
-| Max()
-| Min()}
+  SUM() 	// Add
+| DIFF() 	// Subtract
+| PRODUKT() // Product
+| QUOSHUNT()// Quotient
+| MOD() 	// Modulous
+| BIGGR() 	// Max
+| SMALLR() 	// Min}
+void SUM(): {} 	// Add
+{
+	
+}
+void DIFF(): {} // Subtract
+{
+	
+}
+void PRODUKT(): {} // Product
+{
+	
+}
+void QUOSHUNT(): {} // Quotient
+{
+	
+}
+void MOD(): {} // Modulous
+{
+	
+}
+void BIGGR(): {} // Max
+{
+	
+}
+void SMALLR(): {} // Min
+{
+	
+}
+// ^^^ Arithemic Expressions ^^^ \\
 
-void Add():{}
-{		
-}
-void Subtract():{}
+// vvv Boolean Expressions vvv \\
+void BooleanOperation():{}
 {
-	
-}
-void Product():{}
-{
-	
-}
-void Quotient():{}
-{
-	
-}
-void Modulous():{}
-{
-	
-}
-void Max():{}
-{
-	
-}
-void Min():{}
-{
-	
-}
 
+}
+ 
+// ^^^ Boolean Expressions ^^^ \\
 void loop(): {}
 {
   {System.out.println("<LOOP>");}    
