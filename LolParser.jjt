@@ -54,21 +54,26 @@ void parse(): {StringBuffer buf = new StringBuffer();}
 
 void block():{}
 {
-  statement()
+  (Expression() (<EOL>)*)+
 }
-void statement():{}
+void Expression():{}
 {
-  AssignmentStatement()
-| FlowControlStatement() 
-| ArithemticExpression()
+  AssignmentExpression()
+| FlowControlExpression() 
+| ArthemticExpression()
 }
 
-void AssignmentStatement():{}
+void AssignmentExpression():{}
 {
-  < ASSIGNMENT_STMT : <I> <HAS> <A> <IDENT> <EOL>>	
+  <IDENT> "R" Expression()
+}	
+
+void VarDeclareExpression():{}
+{
+  <I> <HAS> <A> <IDENT>	
 }
 
-void FlowControlStatement():{}
+void FlowControlExpression():{}
 {
   loop()
 }
@@ -122,7 +127,8 @@ void SMALLR(): {} // Min
  
 // ^^^ Boolean Expressions ^^^ \\
 
-// vvv LOOP vvv \\
+// vvv Flow Expressions vvv \\
+
 void loop(): {}
 {
   {System.out.println("<LOOP>");}    
@@ -130,6 +136,17 @@ void loop(): {}
      	block()
   <IM><OUTTA><YR> <LOOP_LABEL>
   {System.out.println("<LOOP>");}
+}
+
+void ifThen():{}
+{  < O_RLY ><QUESTION> < EOL >
+  	< YA_RLY ><QUESTION> < EOL >
+  		block()
+  	(<MEBBE> Expression() <EOL>
+  		block())*
+    (< NO_WAI > <EOL>
+    	block())
+  < OIC > <EOL>
 }
 // ^^^ LOOP ^^^ \\
 
@@ -171,7 +188,9 @@ TOKEN :
 | < O_NOES : "O NOES" >
 | < O_RLY : "O RLY" >
 | < YA_RLY : "YA RLY" >
+| < MEBBE : "MEBBE" >
 | < NO_WAI : "NO WAI" >
+| < OIC : "OIC" >
 | < OPEN : "OPEN" >
 | < QUESTION : "?" >
 | < VISIBLE : "VISIBLE" >
