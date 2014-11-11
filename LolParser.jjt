@@ -44,36 +44,7 @@ public class LolParser
 }
 PARSER_END(LolParser)
 
-void parse() :{}
-{
-  Expression()
-  //{return jjtThis;}
-}
-void Expression() : {}
-{
-  SimpleStatement() "\n"
-  //{return jjtThis;}
-}
 
-void SimpleStatment() : {}
-{
-  AssignmentStatement()
- |ReturnStatement() 	  
-}
-
-void AssignmentStatement():{}
-{
-  {System.out.print("<Assignment>\n");}
-  < IDENTIFIER >< ASSIGN >Expression()
-  {System.out.print("</Assignment>\n");} 
-}
-
-void CompoundStatement() : {}
-{
-  IfStatement()
- |WhileStatement()
- |ForStatement() 
-}
 
 SKIP :
 {
