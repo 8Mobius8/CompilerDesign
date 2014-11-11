@@ -45,9 +45,7 @@ public class LolParser
 PARSER_END(LolParser)
 
 void parse(): {}{
-  "HAI"
-  block()
-  "KTHXBYE"}
+  block()}
 
 void block():{}
 {
@@ -67,111 +65,39 @@ SKIP :
 
 TOKEN :
 {
-  < CONSTANT : (< DIGIT >)+ >
-| <#DIGIT   : ["0"-"9"]>
-| <#NATURAL : ["1"-"9"]>
-| <#LETTER  : ["a"-"z"]>
-| <#UPPER_LETTER : ["A" - "Z"] >
-
-// Reserved Word Tokens
-| < RESERVED_WORD : "False" | "None" | "True" | "and" | "as" | "assert" | "break"
-	| "class" | "continue" | "def" | "del" | "elif" | "else" | "except" | "exec"
-	| "finally" | "for" | "from" | "global" | "if" | "import" | "in" | "is" | "lambda"
-	| "nonlocal" | "not" | "or" | "pass" | "print" | "raise" | "return" | "try"
-	| "while" | "with" | "yield">
-
-| < ALPHABET : < LETTER > | < UPPER_LETTER > >
-
-// Identifier
-| <IDENTIFIER : <ID_BEGIN> (<ID_THE_REST >)*>
-| <#ID_BEGIN    : ["A"-"Z" , "a"-"z", "_"]>
-| <#ID_THE_REST : (<ID_BEGIN> | ["0"-"9"])* >
-
-// ------- LITERALS --------- //
-// INTEGER
-| < INTEGER :
-	< DEC_INT > 
-  | < OCTAL_INT >
-  | < HEX_INT >
-  | < BINARY_INT >
-  >
-| <#DEC_INT    : < NATURAL > (< DIGIT >)* >
-| <#OCTAL_INT  : "0" ("o" | "O") (["0"-"7"])+ >
-| <#HEX_INT    : "0" ("x" | "X") (< DIGIT > | ["a"-"f"] | ["A"-"F"]) >
-| <#BINARY_INT : "0" | "1" >
-
-// FLOATS
-| <FLOAT : < FLOAT_EXP > | < FLOAT_POINT > >
-| <#FLOAT_EXP  : (<INT_PART> | <FLOAT_POINT>) <EXPONENT> >
-| <#FLOAT_POINT: (<INT_PART>)? <FRACTION> | <INT_PART>"." >
-| <#INT_PART: (<DIGIT>)+ >
-| <#EXPONENT: ["e","E"] ["+","-"] (<DIGIT>)+ >
-| <#FRACTION: "." (<DIGIT>)+ >
-
-//IMAGINARY
-| <I_FLOATS : (<FLOAT>|<INT_PART>) ("j"|"J") >
-
-// STRING
-| <STRING : (<STR_PREFIX>)?(<SHORT_STR>) >
-| <#STR_PREFIX : ["r","u","R","U"]>
-| <#SHORT_STR  : "'" (<STRING_CHAR>)* "'" | "\""(<STRING_CHAR>)* "\"" >
-// Need to add support for multi-quoted strings
-//| <#LONG_STR   : "''" (<STRING_CHAR>)* "''" | "\""(<STRING_CHAR>)* "\"" >
-| <#STRING_CHAR: <ALPHABET> | ("\\" <ALPHABET>)>
-
-
-// ----- END OF LITERALS ------ //
-
-// Operators
-| <PLUS :"+">
-| <MINUS :"-">
-| <STAR :"*">
-| <DOUBLE_STAR :"**">
-| <FORWARD_SLASH :"/" >
-| <DOUBLE_FORWARD_SLASH :"//">
-| <PERCENT :"%">
-| <DOUBLE_L_THAN :"<<">
-| <DOUBLE_G_THAN :">>">
-| <AMPERSAND :"&">
-| <PIPE :"|">
-| <CAROT :"^">
-| <TILDE :"~">
-| <L_THAN :"<">
-| <G_THAN :">" >
-| <L_EQUAL :"<=">
-| <G_EQUAL :">=">
-| <DOUBLE_EQUAL :"==">
-| <NOT_EQUAL :"!=">
-
-// Delimiters for Python like structures
-
-| <L_PAREN :"(" >
-| <R_PAREN :")" >
-| <L_BRACKET :"[" >
-| <R_BRACKET :"]">
-| <L_BRACE :"{"  >
-| <R_BRACE :"}" >
-| <COMA :"," >
-| <COLON :":" >
-| <PERIOD :"." >
-| <SEMICOLON :";"  >
-| <AT :"@"  >
-| <ASSIGN :"=">
-| <POINTER :"->">
-| <ASSIGN_INCREMENT :"+=">
-| <ASSIGN_DECREMENT :"-=">
-| <ASSIGN_MUTIPLY :"*=">
-| <ASSIGN_DIVIDE :"/=">
-| <ASSIGN_FLOOR_DIVIDE :"//=">
-| <ASSIGN_MODULO :"%=">
-| <ASSIGN_BIT_AND :"&=">
-| <ASSIGN_BIT_OR :"|=">
-| <ASSIGN_BIT_XOR :"^=">
-| <ASSIGN_BIT_RIGHT_SHIFT :">>=">
-| <ASSIGN_BIT_LEFT_SHIFT :"<<=">
-| <ASSIGN_EXPOENTATION :"**=">
-
-// Still within TOKEN
+  < HAI : "HAI" >
+| < CAN : "CAN" >
+| < HAS : "HAS" >
+| < A : "A" >
+| < I : "I" >
+| < N : "N" >
+| < IM : "IM" >
+| < IN : "IN" >
+| < IZ : "IZ" >
+| < YR : "YR" >
+| < UP : "UP" >
+| < KTHX : "KTHX" >
+| < KTHXBYE : "KTHXBYE" >
+| < LOOP : "LOOP" >
+| < THAN : "THAN" >
+| < OUTTA : "OUTTA" >
+| < BIGGER : "BIGGER" >
+| < GIMMEH : "GIMMEH" >
+| < PLZ : "PLZ" >
+| < AWSUM_THX : "AWSUM THX" >
+| < O_NOES : "O NOES" >
+| < O_RLY : "O RLY" >
+| < YA_RLY : "YA RLY" >
+| < NO_WAI : "NO WAI" >
+| < OPEN : "OPEN" >
+| < QUESTION : "?" >
+| < VISIBLE : "VISIBLE" >
+| < INVISIBLE : "INVISIBLE" >
+| < BANG : "!!" >
+| < QUOTED_STRING : "\"" (~["\""])+ "\"" >
+| < INTEGER : ["1"-"9"] (["0"-"9"])* >
+| < IDENT : (["A"-"Z"])+ >
+| < EOL : "\n" | "\r" | "\r\n" >
 }
 
 
