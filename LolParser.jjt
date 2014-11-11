@@ -53,8 +53,15 @@ void block():{}
 }
 void statement():{}
 {
-  (< IDENTIFIER >)*
+  // Need to define different statements here. 
 }
+
+void loop(): {}
+{
+     <IM><IN><YR> <LOOP_LABEL> (<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) expression() )?)?
+     	block()
+  <IM><OUTTA><YR> <LOOP_LABEL>}
+
 SKIP :
 {
   " "
@@ -78,7 +85,10 @@ TOKEN :
 | < UP : "UP" >
 | < KTHX : "KTHX" >
 | < KTHXBYE : "KTHXBYE" >
-| < LOOP : "LOOP" >
+| < LOOP_LABEL : "LOOP" >
+| < LOOP_OP : "UPPIN" | "NERFIN">
+| < TIL : "TIL" >
+| < WILE : "WILE" > 
 | < THAN : "THAN" >
 | < OUTTA : "OUTTA" >
 | < BIGGER : "BIGGER" >
