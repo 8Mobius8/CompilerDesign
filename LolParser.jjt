@@ -94,6 +94,7 @@ void ArithemticExpression():{}
 | MOD() 	// Modulous
 | BIGGR() 	// Max
 | SMALLR() 	// Min
+| UP()          // Increment
 }
 void SUM(): {} 	// Add
 {
@@ -123,7 +124,14 @@ void SMALLR(): {} // Min
 {
 	<SMALLR> <OF> <INTEGER> <AN> <INTEGER>
 }
+void UP():{}
+{
+        <UP> <IDENT> <BANG> <INTEGER>
+}
+
 // ^^^ Arithemic Expressions ^^^ \\
+
+
 
 // vvv Boolean Expressions vvv \\
 //void BooleanOperation():{}
@@ -164,6 +172,7 @@ SKIP :
 | < COMMENT :
 	"BTW" (~["\n"])* "\n"
 	>
+//| < MULTI_LINE_COMMENT:        "OBTW" (~[<TLDR>])* <TLDR>        >
 }
 
 TOKEN :
@@ -217,6 +226,7 @@ TOKEN :
 | < INTEGER : ["1"-"9"] (["0"-"9"])* >
 | < IDENT : (["A"-"Z"] | ["a"-"z"])+ >
 | < EOL : "\n" | "\r" | "\r\n" >
+| < TLDR : "TLDR">
 }
 
 
