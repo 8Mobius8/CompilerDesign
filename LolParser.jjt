@@ -164,10 +164,8 @@ void ifThen():{}
   < O_RLY ><QUESTION>
   	< YA_RLY >
   		Block()
-  	(<MEBBE> Expression()
-  		Block())*
-    (< NO_WAI >
-    	Block())
+    < NO_WAI >
+    	Block()
   < OIC >
 }
 // ^^^ LOOP ^^^ \\
