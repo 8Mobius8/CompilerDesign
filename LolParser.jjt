@@ -61,8 +61,47 @@ void AssignmentStatement():{}
 {	
 }
 
-void FlowControlStatement():{}{	loop()
+void FlowControlStatement():{}{  loop()
 }
+
+void ArthemticExpression():{}
+{
+  Add()
+| Subtract()
+| Product()
+| Quotient()
+| Modulous()
+| Max()
+| Min()}
+
+void Add():{}
+{		
+}
+void Subtract():{}
+{
+	
+}
+void Product():{}
+{
+	
+}
+void Quotient():{}
+{
+	
+}
+void Modulous():{}
+{
+	
+}
+void Max():{}
+{
+	
+}
+void Min():{}
+{
+	
+}
+
 void loop(): {}
 {
   {System.out.println("<LOOP>");}    
