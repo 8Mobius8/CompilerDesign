@@ -54,13 +54,17 @@ void parse(): {StringBuffer buf = new StringBuffer();}
 
 void block():{}
 {
-  (Expression() (<EOL>)*)+
+  (Statement())+
+}
+
+void Statement():{}
+{  Expression() <EOL>
 }
 void Expression():{}
 {
   AssignmentExpression()
 | FlowControlExpression() 
-| ArthemticExpression()
+| ArithemticExpression()
 }
 
 void AssignmentExpression():{}
@@ -76,6 +80,7 @@ void VarDeclareExpression():{}
 void FlowControlExpression():{}
 {
   loop()
+| ifThen()
 }
 
 // vvv Arithemic Operations vvv \\
@@ -146,7 +151,7 @@ void ifThen():{}
   		block())*
     (< NO_WAI > <EOL>
     	block())
-  < OIC > <EOL>
+  < OIC >
 }
 // ^^^ LOOP ^^^ \\
 
