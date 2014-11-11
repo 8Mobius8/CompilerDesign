@@ -5,7 +5,7 @@ options
 {
   VISITOR=true;
   MULTI=true;
-  DEBUG_PARSER=false;
+  DEBUG_PARSER=true;
 }
 
 PARSER_BEGIN(LolParser)
@@ -33,7 +33,7 @@ public class LolParser
     {
       LolParser.parse();
       //n.dump("");
-      System.out.println("Thank you.");
+      System.out.println("---Finished Parsing!---");
     }
     catch (Exception e)
     {
@@ -44,9 +44,9 @@ public class LolParser
 }
 PARSER_END(LolParser)
 
-void parse(): {}
+void parse(): {StringBuffer buf = new StringBuffer();}
 {
-  < HAI > (<EOL>)*
+  < HAI >(<EOL>)+
    (block())?
   < KTHXBYE > (<EOL>)*
   < EOF >
