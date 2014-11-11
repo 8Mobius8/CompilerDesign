@@ -16,6 +16,6 @@ Mak's Language Requirements
 ## Assign #6
 We need to implement the first three items on the list above. Secondly, it must print out informative messages about language constructs, but it does not need to fancy, just readable.
 
-## Python Compiler
-I found the offical link to the language specs:
-http://docs.python.org/3/reference/index.html
+## lolcode Compiler
+Specs from their website:
+http://lolcode.org/1.2_spec.html
