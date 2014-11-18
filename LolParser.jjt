@@ -1,6 +1,8 @@
-/**
- * JJTree template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */
+/** * * * * * * * * *  * * * * * * * * * * * * **\
+| * The_Almost_Donerz : CS 153 Compiler Design * |
+| * 				 Fall 2014                 * |
+\** * * * * * * * * *  * * * * * * * * * * * * **/
+
 options
 {
   VISITOR=true;
