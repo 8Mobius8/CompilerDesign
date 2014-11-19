@@ -1,13 +1,13 @@
-/** * * * * * * * * *  * * * * * * * * * * * * **\
-| * The_Almost_Donerz : CS 153 Compiler Design * |
-| * 				 Fall 2014                 * |
-\** * * * * * * * * *  * * * * * * * * * * * * **/
+/**  *  *  *  *  *  *  *  *  *  *  *  *  *  *  **\
+|   The_Almost_Donerz : CS 153 Compiler Design   |
+|   				 Fall 2014                   |
+\**  *  *  *  *  *  *  *  *  *  *  *  *  *  *  **/
 
 options
 {
   VISITOR=true;
   MULTI=true;
-  DEBUG_PARSER=true;
+  DEBUG_PARSER=false;
 }
 
 PARSER_BEGIN(LolParser)
@@ -33,10 +33,12 @@ public class LolParser
     
     try
     {
-      LolParser.parse();
-      //n.dump("");
+      SimpleNode n = LolParser.parse();
+      n.dump("< >");
       System.out.println("---Finished Parsing!---");
     }
+    catch (ParseException pe)    {
+      pe.printStackTrace();    }
     catch (Exception e)
     {
       System.out.println("Oops.");
@@ -46,21 +48,24 @@ public class LolParser
 }
 PARSER_END(LolParser)
 
-void parse(): {StringBuffer buf = new StringBuffer();}
+SimpleNode parse(): {}
 {
   < HAI >(<EOL>)*
    (Statement())*
   < KTHXBYE > (<EOL>)*
   < EOF >
+  {return jjtThis;}
 }
-void Block():{}
+SimpleNode Block():{}
 {
   (LOOKAHEAD(Statement()) Statement() )+
+  {return jjtThis;}
 }
 
-void Statement():{}
+SimpleNode Statement():{}
 {
   Expression()
+  {return jjtThis;}
 }
 void Expression():{}
 {
@@ -80,7 +85,7 @@ void ConstLiteralExpression():{}
 void AssignmentExpression():{}
 {
   <IDENT> "R" Expression()
-}	
+}
 
 void VarDeclareExpression():{}
 {
@@ -100,10 +105,10 @@ void ArithemticExpression():{}
 | DIFF() 	// Subtract
 | PRODUKT() // Product
 | QUOSHUNT()// Quotient
-| MOD() 	// Modulous
+| MOD() 	// Modulus
 | BIGGR() 	// Max
 | SMALLR() 	// Min
-| UP()          // Increment
+| UP()      // Increment
 }
 void SUM(): {} 	// Add
 {
@@ -135,18 +140,20 @@ void SMALLR(): {} // Min
 }
 void UP():{}
 {
-        <UP> <IDENT> <BANG> <INTEGER>
+    <UP> <IDENT> <BANG> <INTEGER>
 }
-
 // ^^^ Arithemic Expressions ^^^ \\
 
 
 
 // vvv Boolean Expressions vvv \\
-void BooleanOperation():{}{  BOTH() // And
+void BooleanOperation():{}
+{
+  BOTH()   // And
 | EITHER() // Or
-| WON() // Xor
-| NOT() // Not	}
+| WON()    // Xor
+| NOT()    // Not	
+}
 void BOTH():{} // And
 {
   <BOTH> <OF> Expression() (<AN>)? Expression()
@@ -165,25 +172,26 @@ void NOT():{} // Not
 }
 // ^^^ Boolean Expressions ^^^ \\
 
-void ComparisionOperation():{}{
+void ComparisionOperation():{}
+{
   BOTHSAEM() // Equals
-| DIFFRINT() // Not Equals}
+| DIFFRINT() // Not Equals
+}
 void BOTHSAEM():{}
 {
-  <BOTH> <SAEM> Expression() (<AN>)? Expression()}
+  <BOTH> <SAEM> Expression() (<AN>)? Expression()
+}
 void DIFFRINT():{}
-{	<DIFFRINT> Expression() (<AN>)? Expression()
+{
+  <DIFFRINT> Expression() (<AN>)? Expression()
 }
 
 // vvv Flow Expressions vvv \\
-
 void loop(): {}
 {
-  {System.out.println("<LOOP>");}    
-     <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
+  <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
      	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
-  {System.out.println("<LOOP>");}
 }
 
 void ifThen():{}
@@ -195,7 +203,6 @@ void ifThen():{}
     	Block()	
   < OIC >
 }
-
 // ^^^ LOOP ^^^ \\
 
 SKIP :
