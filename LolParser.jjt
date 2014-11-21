@@ -5,10 +5,11 @@
 
 options
 {
-  VISITOR=true;
+  VISITOR=false;
   MULTI=false;
   DEBUG_PARSER=false;
   JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
+  NODE_PACKAGE="lolparser.frontend";
 }
 
 PARSER_BEGIN(LolParser)
@@ -78,6 +79,8 @@ void Expression() #void:{}
 | ConstLiteralExpression()
 }
 
+//void OperationExpression() :{Token t;}//{//  t=Operator()//  (//    Expression()//  | Expression() < AN > Expression()//  | Expression() (< AN > Expression())+ < MKAY > //  ) //}////void Operator() :{}//{//  //Insert operator syntax rules//  ArithemticExpression()//}
+  
 void ConstLiteralExpression() #void:{}
 {
   < QUOTED_STRING >
