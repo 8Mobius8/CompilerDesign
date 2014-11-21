@@ -6,8 +6,9 @@
 options
 {
   VISITOR=true;
-  MULTI=true;
+  MULTI=false;
   DEBUG_PARSER=false;
+  JJTREE_OUTPUT_DIRECTORY="src";
 }
 
 PARSER_BEGIN(LolParser)
@@ -33,8 +34,9 @@ public class LolParser
     
     try
     {
+      System.out.printf("/--- Parsing %s ---\\\n", args[0]); 
       SimpleNode n = LolParser.parse();
-      n.dump("< >");
+      n.dump("");
       System.out.println("---Finished Parsing!---");
     }
     catch (ParseException pe)    {
@@ -48,26 +50,24 @@ public class LolParser
 }
 PARSER_END(LolParser)
 
-SimpleNode parse(): {}
+SimpleNode parse() :{}
 {
   < HAI >(<EOL>)*
    (Statement())*
   < KTHXBYE > (<EOL>)*
   < EOF >
-  {return jjtThis;}
+  { return jjtThis;}
 }
-SimpleNode Block():{}
+void Block() #void:{}
 {
-  (LOOKAHEAD(Statement()) Statement() )+
-  {return jjtThis;}
+ (LOOKAHEAD(2) Statement())+  
 }
 
-SimpleNode Statement():{}
+void Statement()#void:{}
 {
-  Expression()
-  {return jjtThis;}
+  Expression() 
 }
-void Expression():{}
+void Expression() #void:{}
 {
   AssignmentExpression()
 | FlowControlExpression() 
@@ -76,7 +76,7 @@ void Expression():{}
 | ConstLiteralExpression()
 }
 
-void ConstLiteralExpression():{}
+void ConstLiteralExpression() #void:{}
 {
   < QUOTED_STRING >
 | < INTEGER >
@@ -92,14 +92,14 @@ void VarDeclareExpression():{}
   <I> <HAS> <A> <IDENT> (<ITZ> ConstLiteralExpression())?
 }
 
-void FlowControlExpression():{}
+void FlowControlExpression() #void:{}
 {
   loop()
 | ifThen()
 }
 
 // vvv Arithemic Operations vvv \\
-void ArithemticExpression():{}
+void ArithemticExpression() #void:{}
 {
   SUM() 	// Add
 | DIFF() 	// Subtract
@@ -110,7 +110,8 @@ void ArithemticExpression():{}
 | SMALLR() 	// Min
 | UP()      // Increment
 }
-void SUM(): {} 	// Add
+void SUM():  	// Add
+{}
 {
 	<SUM> <OF> <INTEGER> <AN> <INTEGER>
 }
@@ -231,7 +232,7 @@ TOKEN :
   < HAI : "HAI" >
 | < CAN : "CAN" >
 | < HAS : "HAS" >
-| <ITZ : "ITZ">
+| < ITZ : "ITZ">
 | < A : "A" >
 | < I : "I" >
 | < N : "N" >
