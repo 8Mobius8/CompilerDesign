@@ -9,6 +9,7 @@ options
   MULTI=false;
   DEBUG_PARSER=false;
   JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
+  NODE_EXTENDS="lolparser.intermediate.icodeimpl.ICodeNodeImpl";
   NODE_PACKAGE="lolparser.frontend";
 }
 
