@@ -8,10 +8,12 @@ options
   VISITOR=true;
   MULTI=false;
   DEBUG_PARSER=false;
-  JJTREE_OUTPUT_DIRECTORY="src";
+  JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
 }
 
 PARSER_BEGIN(LolParser)
+package lolparser.frontend;
+
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 
