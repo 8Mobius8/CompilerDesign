@@ -2,7 +2,6 @@ HAI
 
 BTW Testing Assignment and Consts
 I HAS A superVar
-I HAS alsdkjg
 superVar R "SIX"
 superVar R 5
 I HAS A FISH ITZ 12

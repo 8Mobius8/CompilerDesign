@@ -67,6 +67,15 @@ public class LolParser
       System.out.printf("/--- Parsing %s ---\\\n", args[0]);
       SimpleNode n = LolParser.parse();
       System.out.println("\\---Finished Parsing!---/");
+
+//      Create and initialize the ICode wrapper for the parse tree.
+      ICode iCode = ICodeFactory.createICode();
+      iCode.setRoot(n);
+      programId.setAttribute(ROUTINE_ICODE, iCode);
+
+      // Print the cross-reference table.
+        CrossReferencer crossReferencer = new CrossReferencer();
+        crossReferencer.print(symTabStack);
       
       printer.print(symTabStack);
     }
