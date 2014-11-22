@@ -39,7 +39,7 @@ public class LolParser
     private static SymTabStack symTabStack;
     private static SymTabEntry programId;
   
-  public static void main(String args [])
+  public static void main(String args []) throws Exception
   {
 		// Create and initialize the symbol table stack.
         symTabStack = SymTabFactory.createSymTabStack();
@@ -131,10 +131,13 @@ void VarDeclareExpression() :
   int index = 0;
 }
 {
-  <I> <HAS> <A> <IDENT> {
+  try  {  	<I> <HAS> <A> <IDENT> {
 	processVariableDecl(token, index++, symTabStack.getLocalSymTab());
+	}
+	(<ITZ> ConstLiteralExpression())?
   }
-  (<ITZ> ConstLiteralExpression())?
+  catch (ParseException pe)  {	handleError(pe);
+  }
 }
 
 void FlowControlExpression() #void:{}
@@ -352,7 +355,7 @@ String handleError(ParseException ex) #void
 
     do {
     	token = getNextToken();
-    } while (token.kind != SEMICOLON);
+    } while (token.kind != EOL);
 
 	jjtree.popNode();
     return token.image;
