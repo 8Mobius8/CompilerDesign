@@ -86,10 +86,9 @@ SimpleNode parse() :{}
 {
   < HAI >  {
     programId = symTabStack.enterLocal(token.image);
-    programId.setIndex(0);
     programId.setDefinition(DefinitionImpl.PROGRAM);
-    programId.appendLineNumber(token.beginLine);
-    symTabStack.getLocalSymTab().enter(token.image);
+    programId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
+    symTabStack.setProgramId(programId);
   }
   (<EOL>)*
    (Statement())*
