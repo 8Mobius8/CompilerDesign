@@ -45,9 +45,9 @@ public class LolParser
         symTabStack = SymTabFactory.createSymTabStack();
         Predefined.initialize(symTabStack);
 
-        ArrayList<SymTabEntry> variableList;
+        SymTab variableList;
 	    int index = 0;
-    	variableList = new ArrayList<SymTabEntry>();
+    	variableList = SymTabFactory.createSymTab(0);
     
     try
     {  
@@ -124,9 +124,9 @@ void AssignmentExpression():{}
   "R" Expression() 
 }
 
-void VarDeclareExpression() : {ArrayList<SymTabEntry> variableList;
+void VarDeclareExpression() : {SymTab variableList;
 	    int index = 0;
-    	variableList = new ArrayList<SymTabEntry>();}
+    	variableList = SymTabFactory.createSymTab(0);}
 {
   <I> <HAS> <A>
   <IDENT>{
@@ -137,6 +137,8 @@ void VarDeclareExpression() : {ArrayList<SymTabEntry> variableList;
     	variableId.appendLineNumber(token.beginLine);
     	jjtThis.setAttribute(ID, variableId);
   })?
+  {
+    symTabStack.push(variableList);  }
 }
 
 void FlowControlExpression() #void:{}
@@ -337,12 +339,12 @@ TOKEN :
 
 JAVACODE
 void processVariableDecl(Token token, int index,
-                         ArrayList<SymTabEntry> variableList) #void
+                         SymTab variableList) #void
 {
     SymTabEntry variableId = symTabStack.enterLocal(token.image);
     variableId.setIndex(index);
     variableId.setDefinition(DefinitionImpl.VARIABLE);
     variableId.appendLineNumber(token.beginLine);
-    variableList.add(variableId);
+    variableList.enter(token.image);
 }
 
