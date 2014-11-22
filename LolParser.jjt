@@ -343,3 +343,17 @@ void processVariableDecl(Token token, int index,
     variableId.appendLineNumber(token.beginLine);
     variableList.enter(token.image);
 }
+
+JAVACODE
+String handleError(ParseException ex) #void
+{
+    Token token = ex.currentToken;
+    System.out.println(ex.getMessage());
+
+    do {
+    	token = getNextToken();
+    } while (token.kind != SEMICOLON);
+
+	jjtree.popNode();
+    return token.image;
+}

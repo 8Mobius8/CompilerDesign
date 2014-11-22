@@ -36,27 +36,27 @@ public class Predefined
     public static SymTabEntry charId;
     public static SymTabEntry falseId;
     public static SymTabEntry trueId;
-    public static SymTabEntry readId;
-    public static SymTabEntry readlnId;
-    public static SymTabEntry writeId;
-    public static SymTabEntry writelnId;
-    public static SymTabEntry absId;
-    public static SymTabEntry arctanId;
-    public static SymTabEntry chrId;
-    public static SymTabEntry cosId;
-    public static SymTabEntry eofId;
-    public static SymTabEntry eolnId;
-    public static SymTabEntry expId;
-    public static SymTabEntry lnId;
-    public static SymTabEntry oddId;
-    public static SymTabEntry ordId;
-    public static SymTabEntry predId;
-    public static SymTabEntry roundId;
-    public static SymTabEntry sinId;
-    public static SymTabEntry sqrId;
-    public static SymTabEntry sqrtId;
-    public static SymTabEntry succId;
-    public static SymTabEntry truncId;
+//    public static SymTabEntry readId;
+//    public static SymTabEntry readlnId;
+//    public static SymTabEntry writeId;
+//    public static SymTabEntry writelnId;
+//    public static SymTabEntry absId;
+//    public static SymTabEntry arctanId;
+//    public static SymTabEntry chrId;
+//    public static SymTabEntry cosId;
+//    public static SymTabEntry eofId;
+//    public static SymTabEntry eolnId;
+//    public static SymTabEntry expId;
+//    public static SymTabEntry lnId;
+//    public static SymTabEntry oddId;
+//    public static SymTabEntry ordId;
+//    public static SymTabEntry predId;
+//    public static SymTabEntry roundId;
+//    public static SymTabEntry sinId;
+//    public static SymTabEntry sqrId;
+//    public static SymTabEntry sqrtId;
+//    public static SymTabEntry succId;
+//    public static SymTabEntry truncId;
 
     /**
      * Initialize a symbol table stack with predefined identifiers.
@@ -76,28 +76,28 @@ public class Predefined
     private static void initializeTypes(SymTabStack symTabStack)
     {
         // Type integer.
-        integerId = symTabStack.enterLocal("integer");
+        integerId = symTabStack.enterLocal("NUMBR");
         integerType = TypeFactory.createType(SCALAR);
         integerType.setIdentifier(integerId);
         integerId.setDefinition(DefinitionImpl.TYPE);
         integerId.setTypeSpec(integerType);
 
         // Type real.
-        realId = symTabStack.enterLocal("real");
+        realId = symTabStack.enterLocal("NUMBAR");
         realType = TypeFactory.createType(SCALAR);
         realType.setIdentifier(realId);
         realId.setDefinition(DefinitionImpl.TYPE);
         realId.setTypeSpec(realType);
 
         // Type boolean.
-        booleanId = symTabStack.enterLocal("boolean");
+        booleanId = symTabStack.enterLocal("TROOF");
         booleanType = TypeFactory.createType(ENUMERATION);
         booleanType.setIdentifier(booleanId);
         booleanId.setDefinition(DefinitionImpl.TYPE);
         booleanId.setTypeSpec(booleanType);
 
         // Type char.
-        charId = symTabStack.enterLocal("char");
+        charId = symTabStack.enterLocal("YARN");
         charType = TypeFactory.createType(SCALAR);
         charType.setIdentifier(charId);
         charId.setDefinition(DefinitionImpl.TYPE);
@@ -114,13 +114,13 @@ public class Predefined
     private static void initializeConstants(SymTabStack symTabStack)
     {
         // Boolean enumeration constant false.
-        falseId = symTabStack.enterLocal("false");
+        falseId = symTabStack.enterLocal("FAIL");
         falseId.setDefinition(DefinitionImpl.ENUMERATION_CONSTANT);
         falseId.setTypeSpec(booleanType);
         falseId.setAttribute(CONSTANT_VALUE, new Integer(0));
 
         // Boolean enumeration constant true.
-        trueId = symTabStack.enterLocal("true");
+        trueId = symTabStack.enterLocal("WIN");
         trueId.setDefinition(DefinitionImpl.ENUMERATION_CONSTANT);
         trueId.setTypeSpec(booleanType);
         trueId.setAttribute(CONSTANT_VALUE, new Integer(1));
@@ -138,28 +138,28 @@ public class Predefined
      */
     private static void initializeStandardRoutines(SymTabStack symTabStack)
     {
-        readId    = enterStandard(symTabStack, PROCEDURE, "read",    READ);
-        readlnId  = enterStandard(symTabStack, PROCEDURE, "readln",  READLN);
-        writeId   = enterStandard(symTabStack, PROCEDURE, "write",   WRITE);
-        writelnId = enterStandard(symTabStack, PROCEDURE, "writeln", WRITELN);
-
-        absId    = enterStandard(symTabStack, FUNCTION, "abs",    ABS);
-        arctanId = enterStandard(symTabStack, FUNCTION, "arctan", ARCTAN);
-        chrId    = enterStandard(symTabStack, FUNCTION, "chr",    CHR);
-        cosId    = enterStandard(symTabStack, FUNCTION, "cos",    COS);
-        eofId    = enterStandard(symTabStack, FUNCTION, "eof",    EOF);
-        eolnId   = enterStandard(symTabStack, FUNCTION, "eoln",   EOLN);
-        expId    = enterStandard(symTabStack, FUNCTION, "exp",    EXP);
-        lnId     = enterStandard(symTabStack, FUNCTION, "ln",     LN);
-        oddId    = enterStandard(symTabStack, FUNCTION, "odd",    ODD);
-        ordId    = enterStandard(symTabStack, FUNCTION, "ord",    ORD);
-        predId   = enterStandard(symTabStack, FUNCTION, "pred",   PRED);
-        roundId  = enterStandard(symTabStack, FUNCTION, "round",  ROUND);
-        sinId    = enterStandard(symTabStack, FUNCTION, "sin",    SIN);
-        sqrId    = enterStandard(symTabStack, FUNCTION, "sqr",    SQR);
-        sqrtId   = enterStandard(symTabStack, FUNCTION, "sqrt",   SQRT);
-        succId   = enterStandard(symTabStack, FUNCTION, "succ",   SUCC);
-        truncId  = enterStandard(symTabStack, FUNCTION, "trunc",  TRUNC);
+//        readId    = enterStandard(symTabStack, PROCEDURE, "read",    READ);
+//        readlnId  = enterStandard(symTabStack, PROCEDURE, "readln",  READLN);
+//        writeId   = enterStandard(symTabStack, PROCEDURE, "write",   WRITE);
+//        writelnId = enterStandard(symTabStack, PROCEDURE, "writeln", WRITELN);
+//
+//        absId    = enterStandard(symTabStack, FUNCTION, "abs",    ABS);
+//        arctanId = enterStandard(symTabStack, FUNCTION, "arctan", ARCTAN);
+//        chrId    = enterStandard(symTabStack, FUNCTION, "chr",    CHR);
+//        cosId    = enterStandard(symTabStack, FUNCTION, "cos",    COS);
+//        eofId    = enterStandard(symTabStack, FUNCTION, "eof",    EOF);
+//        eolnId   = enterStandard(symTabStack, FUNCTION, "eoln",   EOLN);
+//        expId    = enterStandard(symTabStack, FUNCTION, "exp",    EXP);
+//        lnId     = enterStandard(symTabStack, FUNCTION, "ln",     LN);
+//        oddId    = enterStandard(symTabStack, FUNCTION, "odd",    ODD);
+//        ordId    = enterStandard(symTabStack, FUNCTION, "ord",    ORD);
+//        predId   = enterStandard(symTabStack, FUNCTION, "pred",   PRED);
+//        roundId  = enterStandard(symTabStack, FUNCTION, "round",  ROUND);
+//        sinId    = enterStandard(symTabStack, FUNCTION, "sin",    SIN);
+//        sqrId    = enterStandard(symTabStack, FUNCTION, "sqr",    SQR);
+//        sqrtId   = enterStandard(symTabStack, FUNCTION, "sqrt",   SQRT);
+//        succId   = enterStandard(symTabStack, FUNCTION, "succ",   SUCC);
+//        truncId  = enterStandard(symTabStack, FUNCTION, "trunc",  TRUNC);
     }
 
     /**
