@@ -19,10 +19,36 @@ package lolparser.frontend;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 
+import java.util.ArrayList;
+import java.io.*;
+
+import lolparser.intermediate.*;
+import lolparser.intermediate.symtabimpl.*;
+import lolparser.backend.*;
+import lolparser.util.*;
+
+import static lolparser.intermediate.symtabimpl.SymTabKeyImpl.*;
+import static lolparser.intermediate.symtabimpl.DefinitionImpl.*;
+import static lolparser.intermediate.symtabimpl.RoutineCodeImpl.*;
+import static lolparser.intermediate.symtabimpl.SymTabKeyImpl.*;
+import static lolparser.intermediate.icodeimpl.ICodeKeyImpl.*;
+
 public class LolParser
 {
+
+    private static SymTabStack symTabStack;
+    private static SymTabEntry programId;
+  
   public static void main(String args [])
   {
+		// Create and initialize the symbol table stack.
+        symTabStack = SymTabFactory.createSymTabStack();
+        Predefined.initialize(symTabStack);
+
+        ArrayList<SymTabEntry> variableList;
+	    int index = 0;
+    	variableList = new ArrayList<SymTabEntry>();
+    
     try
     {  
 	    if(args.length >= 1) {
@@ -49,6 +75,7 @@ public class LolParser
     {
       System.out.println("Oops.");
       System.out.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 }
@@ -90,12 +117,26 @@ void ConstLiteralExpression() #void:{}
 
 void AssignmentExpression():{}
 {
-  <IDENT> "R" Expression()
+  <IDENT > {		SymTabEntry variableId = symTabStack.lookup(token.image);
+        variableId.appendLineNumber(token.beginLine);
+  }
+
+  "R" Expression() 
 }
 
-void VarDeclareExpression():{}
+void VarDeclareExpression() : {ArrayList<SymTabEntry> variableList;
+	    int index = 0;
+    	variableList = new ArrayList<SymTabEntry>();}
 {
-  <I> <HAS> <A> <IDENT> (<ITZ> ConstLiteralExpression())?
+  <I> <HAS> <A>
+  <IDENT>{
+    	processVariableDecl(token, index++, variableList);
+  }
+  (<ITZ> ConstLiteralExpression(){
+    	SymTabEntry variableId = symTabStack.lookup(token.image);
+    	variableId.appendLineNumber(token.beginLine);
+    	jjtThis.setAttribute(ID, variableId);
+  })?
 }
 
 void FlowControlExpression() #void:{}
@@ -294,5 +335,14 @@ TOKEN :
 | < TLDR : "TLDR">
 }
 
-
+JAVACODE
+void processVariableDecl(Token token, int index,
+                         ArrayList<SymTabEntry> variableList) #void
+{
+    SymTabEntry variableId = symTabStack.enterLocal(token.image);
+    variableId.setIndex(index);
+    variableId.setDefinition(DefinitionImpl.VARIABLE);
+    variableId.appendLineNumber(token.beginLine);
+    variableList.add(variableId);
+}
 
