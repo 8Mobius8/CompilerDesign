@@ -6,8 +6,8 @@
 options
 {
   VISITOR=false;
-  MULTI=false;
-  DEBUG_PARSER=false;
+  MULTI=true;
+  DEBUG_PARSER=true;
   JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
   NODE_EXTENDS="lolparser.intermediate.icodeimpl.ICodeNodeImpl";
   NODE_PACKAGE="lolparser.frontend";
@@ -43,11 +43,11 @@ public class LolParser
   {
 		// Create and initialize the symbol table stack.
         symTabStack = SymTabFactory.createSymTabStack();
-        Predefined.initialize(symTabStack);
+        //Predefined.initialize(symTabStack);
 
         SymTab variableList;
 	    int index = 0;
-    	variableList = SymTabFactory.createSymTab(0);
+    	variableList = SymTabFactory.createSymTab(1);
     
     try
     {  
@@ -91,7 +91,8 @@ SimpleNode parse() :{}
 }
 void Block() #void:{}
 {
- (LOOKAHEAD(2) Statement())+  
+ (LOOKAHEAD(2) Statement())+
+ (< EOL >)*
 }
 
 void Statement()#void:{}
@@ -117,25 +118,27 @@ void ConstLiteralExpression() #void:{}
 
 void AssignmentExpression():{}
 {
-  <IDENT > {		SymTabEntry variableId = symTabStack.lookup(token.image);
-        variableId.appendLineNumber(token.beginLine);
+ <IDENT > {	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)	{
+	  System.err.print("BAD VARIABLE ASSIGNMENT\n");    } else    {      variableId.appendLineNumber(token.beginLine);
+    }
   }
-
   "R" Expression() 
 }
 
-void VarDeclareExpression() : {SymTab variableList;
-	    int index = 0;
-    	variableList = SymTabFactory.createSymTab(0);}
+void VarDeclareExpression() :
 {
-  <I> <HAS> <A>
-  <IDENT>{
-    	processVariableDecl(token, index++, variableList);
+  SymTabEntry variableEntry;
+  int index = 0;
+}
+{
+  <I> <HAS> <A> <IDENT> {
+	processVariableDecl(token, index++, variableList);
   }
   (<ITZ> ConstLiteralExpression(){
-    	SymTabEntry variableId = symTabStack.lookup(token.image);
-    	variableId.appendLineNumber(token.beginLine);
-    	jjtThis.setAttribute(ID, variableId);
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	variableId.appendLineNumber(token.beginLine);
+	jjtThis.setAttribute(ID, variableId);
   })?
   {
     symTabStack.push(variableList);  }
@@ -347,4 +350,3 @@ void processVariableDecl(Token token, int index,
     variableId.appendLineNumber(token.beginLine);
     variableList.enter(token.image);
 }
-
