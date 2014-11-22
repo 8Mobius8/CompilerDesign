@@ -6,8 +6,8 @@
 options
 {
   VISITOR=false;
-  MULTI=true;
-  DEBUG_PARSER=true;
+  MULTI=false;
+  DEBUG_PARSER=false;
   JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
   NODE_EXTENDS="lolparser.intermediate.icodeimpl.ICodeNodeImpl";
   NODE_PACKAGE="lolparser.frontend";
@@ -128,20 +128,13 @@ void AssignmentExpression():{}
 
 void VarDeclareExpression() :
 {
-  SymTabEntry variableEntry;
   int index = 0;
 }
 {
   <I> <HAS> <A> <IDENT> {
-	processVariableDecl(token, index++, variableList);
+	processVariableDecl(token, index++, symTabStack.getLocalSymTab());
   }
-  (<ITZ> ConstLiteralExpression(){
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	variableId.appendLineNumber(token.beginLine);
-	jjtThis.setAttribute(ID, variableId);
-  })?
-  {
-    symTabStack.push(variableList);  }
+  (<ITZ> ConstLiteralExpression())?
 }
 
 void FlowControlExpression() #void:{}
