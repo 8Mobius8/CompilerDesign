@@ -347,9 +347,9 @@ TOKEN :
 | < SMALLR : "SMALLR" >
 | < QUOTED_STRING : "\"" (~["\""])+ "\"" >
 | < INTEGER : ["1"-"9"] (["0"-"9"])* >
+| < TLDR : "TLDR">
 | < IDENT : (["A"-"Z"] | ["a"-"z"])+ >
 | < EOL : "\n" | "\r" | "\r\n" >
-| < TLDR : "TLDR">
 }
 
 JAVACODE
@@ -360,7 +360,7 @@ void processVariableDecl(Token token, int index,
     variableId.setIndex(index);
     variableId.setDefinition(DefinitionImpl.VARIABLE);
     variableId.appendLineNumber(token.beginLine);
-    variableList.enter(token.image);
+//    variableList.enter(token.image);
 }
 
 JAVACODE

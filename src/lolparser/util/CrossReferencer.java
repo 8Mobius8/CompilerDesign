@@ -168,9 +168,9 @@ public class CrossReferencer
             case VARIABLE: {
 
                 // Print the type details only if the type is unnamed.
-                if (type.getIdentifier() == null) {
-                    printTypeDetail(type, recordTypes);
-                }
+//                if (type.getIdentifier() == null) {
+//                    printTypeDetail(type, recordTypes);
+//                }
 
                 break;
             }
