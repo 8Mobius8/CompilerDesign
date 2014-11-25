@@ -79,8 +79,10 @@ public class LolParser
       
       printer.print(symTabStack);
     }
-    catch (ParseException pe)    {
-      pe.printStackTrace();    }
+    catch (ParseException pe)
+    {
+      pe.printStackTrace();
+    }
     catch (Exception e)
     {
       System.out.println("Oops.");
@@ -93,7 +95,8 @@ PARSER_END(LolParser)
 
 SimpleNode parse() :{}
 {
-  < HAI >  {
+  < HAI >
+  {
     programId = symTabStack.enterLocal(token.image);
     programId.setDefinition(DefinitionImpl.PROGRAM);
     programId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
@@ -124,7 +127,21 @@ void Expression() #void:{}
 | ConstLiteralExpression()
 }
 
-//void OperationExpression() :{Token t;}//{//  t=Operator()//  (//    Expression()//  | Expression() < AN > Expression()//  | Expression() (< AN > Expression())+ < MKAY > //  ) //}////void Operator() :{}//{//  //Insert operator syntax rules//  ArithemticExpression()//}
+//void OperationExpression() :{Token t;}
+//{
+//  t=Operator()
+//  (
+//    Expression()
+//  | Expression() < AN > Expression()
+//  | Expression() (< AN > Expression())+ < MKAY > 
+//  ) 
+//}
+//
+//void Operator() :{}
+//{
+//  //Insert operator syntax rules
+//  ArithemticExpression()
+//}
   
 void ConstLiteralExpression() #void:{}
 {
@@ -134,9 +151,14 @@ void ConstLiteralExpression() #void:{}
 
 void AssignmentExpression():{}
 {
- <IDENT > {	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)	{
-	  System.err.print("BAD VARIABLE ASSIGNMENT\n");    } else    {      variableId.appendLineNumber(token.beginLine);
+ <IDENT > {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("BAD VARIABLE ASSIGNMENT\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
     }
   }
   "R" Expression() 
@@ -147,12 +169,16 @@ void VarDeclareExpression() :
   int index = 0;
 }
 {
-  try  {  	<I> <HAS> <A> <IDENT> {
+  try
+  {
+  	<I> <HAS> <A> <IDENT> {
 	processVariableDecl(token, index++, symTabStack.getLocalSymTab());
 	}
 	(<ITZ> ConstLiteralExpression())?
   }
-  catch (ParseException pe)  {	handleError(pe);
+  catch (ParseException pe)
+  {
+	handleError(pe);
   }
 }
 
@@ -273,7 +299,6 @@ void ifThen():{}
 SKIP :
 {
   " "
-| <EOLIGNORE:<EOL>>
 | < COMMENT : ("BTW" (~["\n"])* "\n") >
 | "OBTW" : COMMENT_OPEN
 
@@ -350,6 +375,20 @@ TOKEN :
 | < TLDR : "TLDR">
 | < IDENT : (["A"-"Z"] | ["a"-"z"])+ >
 | < EOL : "\n" | "\r" | "\r\n" >
+}
+
+TOKEN : /* EOL */
+{
+  < EOL : // either newline or comma
+    < HARD_EOL > // newline
+  | < SOFT_EOL >> // comma
+| < #HARD_EOL :
+    (
+      "\n"
+    | "\r"
+    | "\r\n"
+    ) >
+| < #SOFT_EOL : (",") >
 }
 
 JAVACODE
