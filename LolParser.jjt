@@ -95,18 +95,23 @@ PARSER_END(LolParser)
 
 SimpleNode parse() :{}
 {
-  < HAI >
-  {
-    programId = symTabStack.enterLocal(token.image);
-    programId.setDefinition(DefinitionImpl.PROGRAM);
-    programId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
-    symTabStack.setProgramId(programId);
+  try  {	  < HAI >
+	  {
+	    programId = symTabStack.enterLocal(token.image);
+	    programId.setDefinition(DefinitionImpl.PROGRAM);
+	    programId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
+	    symTabStack.setProgramId(programId);
+	  }
+	  (<EOL>)*
+	   (Statement())*
+	  < KTHXBYE > (<EOL>)*
+	  < EOF >
+	  { return jjtThis;}
   }
-  (<EOL>)*
-   (Statement())*
-  < KTHXBYE > (<EOL>)*
-  < EOF >
-  { return jjtThis;}
+  catch (ParseException ex)  {
+		handleError(ex);
+		return null;
+  }
 }
 void Block() #void:{}
 {
@@ -161,7 +166,8 @@ void AssignmentExpression():{}
       variableId.appendLineNumber(token.beginLine);
     }
   }
-  "R" Expression() 
+  "R" Expression()
+  (< EOL >)*
 }
 
 void VarDeclareExpression() :
@@ -175,6 +181,7 @@ void VarDeclareExpression() :
 	processVariableDecl(token, index++, symTabStack.getLocalSymTab());
 	}
 	(<ITZ> ConstLiteralExpression())?
+	(< EOL >)*
   }
   catch (ParseException pe)
   {
@@ -374,7 +381,7 @@ TOKEN :
 | < INTEGER : ["1"-"9"] (["0"-"9"])* >
 | < TLDR : "TLDR">
 | < IDENT : (["A"-"Z"] | ["a"-"z"])+ >
-| < EOL : "\n" | "\r" | "\r\n" >
+//| < EOL : "\n" | "\r" | "\r\n" >
 }
 
 TOKEN : /* EOL */
