@@ -41,43 +41,44 @@ public class LolParser
   
   public static void main(String args []) throws Exception
   {
-        // Create and initialize the symbol table stack.
-        symTabStack = SymTabFactory.createSymTabStack();
-        //Predefined.initialize(symTabStack);
-
-        SymTab variableList;
-        int index = 0;
-        variableList = SymTabFactory.createSymTab(1);
-        ParseTreePrinter printer = new ParseTreePrinter(System.out);
+	// Create and initialize the symbol table stack.
+	symTabStack = SymTabFactory.createSymTabStack();
+	//Predefined.initialize(symTabStack);
+	
+	SymTab variableList;
+	int index = 0;
+	variableList = SymTabFactory.createSymTab(1);
+	ParseTreePrinter printer = new ParseTreePrinter(System.out);
+	
     try
     {
-            if(args.length >= 1) {
-                        System.out.println("Reading from file: " +args[0]);
-                        new LolParser(new FileReader(args[0]));
-            } else {
-                        System.out.println("Reading from standard input...");
-                        new LolParser(System.in);
-            }
-        } catch (FileNotFoundException fnfe) {
-                System.out.println(args[0] + " was not able to be found.");
-        }
+	    if(args.length >= 1) {
+	        System.out.println("Reading from file: " +args[0]);
+	        new LolParser(new FileReader(args[0]));
+	    } else {
+	        System.out.println("Reading from standard input...");
+	        new LolParser(System.in);
+	    }
+	} catch (FileNotFoundException fnfe) {
+    	System.out.println(args[0] + " was not able to be found.");
+	}
 
     try
     {
-      System.out.printf("/--- Parsing %s ---\\\n", args[0]);
-      SimpleNode n = LolParser.parse();
-      System.out.println("\\---Finished Parsing!---/");
-
-//      Create and initialize the ICode wrapper for the parse tree.
-      ICode iCode = ICodeFactory.createICode();
-      iCode.setRoot(n);
-      programId.setAttribute(ROUTINE_ICODE, iCode);
-
-      // Print the cross-reference table.
-        CrossReferencer crossReferencer = new CrossReferencer();
-        crossReferencer.print(symTabStack);
-      
-      printer.print(symTabStack);
+	  System.out.printf("/--- Parsing %s ---\\\n", args[0]);
+	  SimpleNode n = LolParser.parse();
+	  System.out.println("\\---Finished Parsing!---/");
+	
+	  // Create and initialize the ICode wrapper for the parse tree.
+	  ICode iCode = ICodeFactory.createICode();
+	  iCode.setRoot(n);
+	  programId.setAttribute(ROUTINE_ICODE, iCode);
+	
+	  // Print the cross-reference table.
+	  CrossReferencer crossReferencer = new CrossReferencer();
+	  crossReferencer.print(symTabStack);
+	  
+	  printer.print(symTabStack);
     }
     catch (ParseException pe)
     {
@@ -421,4 +422,15 @@ String handleError(ParseException ex) #void
 
 	jjtree.popNode();
     return token.image;
+}
+
+String handleError(ParseExpception pe, HashSet syncSet) #void
+{
+  Token token = pe.currentToken;
+  System.out.println(pe.getMessage());
+
+  while(!syncSet.contains(getToken(1).kind))	token = getNextToken();
+
+
+  return token.image;
 }
