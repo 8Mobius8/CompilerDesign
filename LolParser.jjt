@@ -20,24 +20,22 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
-import java.io.*;
+import java.util.HashSet;
+import java.text.ParseException;
 
 import lolparser.intermediate.*;
+import lolparser.intermediate.icodeimpl.*;
 import lolparser.intermediate.symtabimpl.*;
+import lolparser.intermediate.symtabimpl.SymTabKeyImpl;
+import lolparser.intermediate.typeimpl.*;
 import lolparser.backend.*;
+import lolparser.backend.compiler.*;
 import lolparser.util.*;
-
-import static lolparser.intermediate.symtabimpl.SymTabKeyImpl.*;
-import static lolparser.intermediate.symtabimpl.DefinitionImpl.*;
-import static lolparser.intermediate.symtabimpl.RoutineCodeImpl.*;
-import static lolparser.intermediate.symtabimpl.SymTabKeyImpl.*;
-import static lolparser.intermediate.icodeimpl.ICodeKeyImpl.*;
 
 public class LolParser
 {
-
-    private static SymTabStack symTabStack;
-    private static SymTabEntry programId;
+  private static SymTabStack symTabStack;
+  private static SymTabEntry programId;
   
   public static void main(String args []) throws Exception
   {
@@ -72,7 +70,7 @@ public class LolParser
 	  // Create and initialize the ICode wrapper for the parse tree.
 	  ICode iCode = ICodeFactory.createICode();
 	  iCode.setRoot(n);
-	  programId.setAttribute(ROUTINE_ICODE, iCode);
+	  programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
 	
 	  // Print the cross-reference table.
 	  CrossReferencer crossReferencer = new CrossReferencer();
@@ -84,75 +82,60 @@ public class LolParser
     {
       pe.printStackTrace();
     }
-    catch (Exception e)
-    {
-      System.out.println("Oops.");
-      System.out.println(e.getMessage());
-      e.printStackTrace();
-    }
+    
   }
 }
 PARSER_END(LolParser)
 
-SimpleNode parse() :{}
+SimpleNode parse() : {SimpleNode rootNode;}
 {
-  try  {	  < HAI >
+  try {
+
+    Program_Header()
+	rootNode = Block()
+	< KTHXBYE >
+	< EOF > { return rootNode;}
+  }
+  catch (ParseException ex) {
+	HashSet syncSet = new HashSet();
+	syncSet.add(EOF);
+	
+	handleError(ex, syncSet);
+	return null;
+  }
+}
+
+void Program_Header() #void : {}
+{
+	< HAI >
 	  {
 	    programId = symTabStack.enterLocal(token.image);
 	    programId.setDefinition(DefinitionImpl.PROGRAM);
-	    programId.setAttribute(ROUTINE_SYMTAB, symTabStack.push());
+	    programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
 	    symTabStack.setProgramId(programId);
-	  }
-	  (<EOL>)*
-	   (Statement())*
-	  < KTHXBYE > (<EOL>)*
-	  < EOF >
-	  { return jjtThis;}
-  }
-  catch (ParseException ex)  {
-		handleError(ex);
-		return null;
-  }
+	  }  }
+
+SimpleNode Block() : {
+  HashSet syncSet = new HashSet();
+  syncSet.add(EOL);
+  syncSet.add(KTHXBYE);
+  syncSet.add(EOF);
 }
-void Block() #void:{}
 {
- (LOOKAHEAD(2) Statement())+
- (< EOL >)*
+  (LOOKAHEAD(2) Statement(syncSet))+
+  { return jjtThis;}
 }
 
-void Statement()#void:{}
+void Statement(HashSet syncSet) #void:{}
 {
-  Expression() 
-}
-void Expression() #void:{}
-{
-  AssignmentExpression()
-| FlowControlExpression() 
-| ArithemticExpression()
-| VarDeclareExpression()
-| ConstLiteralExpression()
-}
-
-//void OperationExpression() :{Token t;}
-//{
-//  t=Operator()
-//  (
-//    Expression()
-//  | Expression() < AN > Expression()
-//  | Expression() (< AN > Expression())+ < MKAY > 
-//  ) 
-//}
-//
-//void Operator() :{}
-//{
-//  //Insert operator syntax rules
-//  ArithemticExpression()
-//}
-  
-void ConstLiteralExpression() #void:{}
-{
-  < QUOTED_STRING >
-| < INTEGER >
+  try {      AssignmentExpression()
+	| FlowControlExpression() 
+	| Declarations()
+	| FunctionCalls()
+	| ConstLiteralExpression()
+	| Error() { throw new ParseException("Invalid StatementType");}
+  } catch (ParseException pe) {
+    handleError(pe, syncSet);  }
 }
 
 void AssignmentExpression():{}
@@ -167,10 +150,49 @@ void AssignmentExpression():{}
       variableId.appendLineNumber(token.beginLine);
     }
   }
-  "R" Expression()
+  "R" Statement()
   (< EOL >)*
 }
 
+void FlowControlExpression() #void:{}
+{
+  loop()
+| ifThen()
+}
+
+void ConstLiteralExpression() #void:{}
+{
+  < QUOTED_STRING >
+| < INTEGER >
+}
+
+void Declarations() #void : {}
+{
+  VarDeclareExpression()
+| FunctionDeclare()}
+
+void FunctionCalls() #void : {
+  HashSet paramSyncSet = new HashSet();
+  paramSyncSet.add(AN_YR);
+  paramSyncSet.add(MKAY);
+}
+{
+  < I >< IZ >
+  < IDENT > // Function name needs to go here
+  [
+  	< YR > Statement(paramSyncSet) (< AN >< YR > Statement(paramSyncSet))*
+  ]
+  < MKAY >}
+
+void FunctionDeclare() : {}
+{
+  < HOW_IZ_I >
+  Param() (< YR > Param())*
+  Block()
+  < IF_U_SAY_SO >}
+void Param() #void : {}
+{	< IDENT > // Must add to current symtable
+}
 void VarDeclareExpression() :
 {
   int index = 0;
@@ -188,12 +210,6 @@ void VarDeclareExpression() :
   {
 	handleError(pe);
   }
-}
-
-void FlowControlExpression() #void:{}
-{
-  loop()
-| ifThen()
 }
 
 // vvv Arithemic Operations vvv \\
@@ -246,49 +262,57 @@ void UP():{}
 
 
 // vvv Boolean Expressions vvv \\
-void BooleanOperation():{}
-{
-  BOTH()   // And
-| EITHER() // Or
-| WON()    // Xor
-| NOT()    // Not	
+void BooleanOperation():{
+  HashSet boolOpSet = new HashSet();
+  boolOpSet.add(AN);
+  boolOpSet.add(EOL);
 }
-void BOTH():{} // And
 {
-  <BOTH> <OF> Expression() (<AN>)? Expression()
+  BOTH(boolOpSet)   // And
+| EITHER(boolOpSet) // Or
+| WON(boolOpSet)    // Xor
+| NOT(boolOpSet)    // Not	
 }
-void EITHER():{} // Or
+void BOTH(HashSet syncSet):{} // And
 {
-  <EITHER> <OF> Expression() (<AN>)? Expression()
+  <BOTH> <OF> Statement(syncSet) (<AN>)? Statement(syncSet)
 }
-void WON():{} // Xor
+void EITHER(HashSet syncSet):{} // Or
 {
-  <WON> <OF> Expression() (<AN>)? Expression()
+  <EITHER> <OF> Statement(syncSet) (<AN>)? Statement(syncSet)
 }
-void NOT():{} // Not
+void WON(HashSet syncSet):{} // Xor
 {
-  <NOT> Expression()
+  <WON> <OF> Statement(syncSet) (<AN>)? Statement(syncSet)
+}
+void NOT(HashSet syncSet):{} // Not
+{
+  <NOT> Statement(syncSet)
 }
 // ^^^ Boolean Expressions ^^^ \\
 
-void ComparisionOperation():{}
-{
-  BOTHSAEM() // Equals
-| DIFFRINT() // Not Equals
+void ComparisionOperation():{
+  HashSet boolOpSet = new HashSet();
+  boolOpSet.add(AN);
+  boolOpSet.add(EOL);
 }
-void BOTHSAEM():{}
 {
-  <BOTH> <SAEM> Expression() (<AN>)? Expression()
+  BOTHSAEM(boolOpSet) // Equals
+| DIFFRINT(boolOpSet) // Not Equals
 }
-void DIFFRINT():{}
+void BOTHSAEM(HashSet syncSet):{}
 {
-  <DIFFRINT> Expression() (<AN>)? Expression()
+  <BOTH> <SAEM> Statement(syncSet) (<AN>)? Statement(syncSet)
+}
+void DIFFRINT(HashSet syncSet):{}
+{
+  <DIFFRINT> Statement(syncSet) (<AN>)? Statement(syncSet)
 }
 
 // vvv Flow Expressions vvv \\
 void loop(): {}
 {
-  <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Expression() )?)?
+  <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Statement() )?)?
      	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
 }
@@ -303,6 +327,11 @@ void ifThen():{}
   < OIC >
 }
 // ^^^ LOOP ^^^ \\
+
+void Error() #void : {}
+{
+    <ERROR>
+}
 
 SKIP :
 {
@@ -368,6 +397,8 @@ TOKEN :
 | < QUESTION : "?" >
 | < VISIBLE : "VISIBLE" >
 | < INVISIBLE : "INVISIBLE" >
+| < IF_U_SAY_SO : "IF U SAY SO" >
+| < HOW_IZ_I : "HOW IZ I" >
 | < BANG : "!!" >
 | < OF : "OF" >
 | < AN : "AN" >
@@ -381,13 +412,18 @@ TOKEN :
 | < QUOTED_STRING : "\"" (~["\""])+ "\"" >
 | < INTEGER : ["1"-"9"] (["0"-"9"])* >
 | < TLDR : "TLDR">
+| < MKAY : "MKAY">
 | < IDENT : (["A"-"Z"] | ["a"-"z"])+ >
 //| < EOL : "\n" | "\r" | "\r\n" >
 }
 
 TOKEN : /* EOL */
 {
-  < EOL : // either newline or comma
+  < END_OF_BLOCK:
+      < IF_U_SAY_SO >
+   | (<IM><OUTTA><YR><LOOP_LABEL>) 
+  >
+| < EOL : // either newline or comma
     < HARD_EOL > // newline
   | < SOFT_EOL >> // comma
 | < #HARD_EOL :
@@ -399,6 +435,9 @@ TOKEN : /* EOL */
 | < #SOFT_EOL : (",") >
 }
 
+TOKEN :
+{	< ERROR : ~["\r", "\n"] >
+}
 JAVACODE
 void processVariableDecl(Token token, int index,
                          SymTab variableList) #void
@@ -411,20 +450,7 @@ void processVariableDecl(Token token, int index,
 }
 
 JAVACODE
-String handleError(ParseException ex) #void
-{
-    Token token = ex.currentToken;
-    System.out.println(ex.getMessage());
-
-    do {
-    	token = getNextToken();
-    } while (token.kind != EOL);
-
-	jjtree.popNode();
-    return token.image;
-}
-
-String handleError(ParseExpception pe, HashSet syncSet) #void
+String handleError(ParseException pe, HashSet syncSet) #void
 {
   Token token = pe.currentToken;
   System.out.println(pe.getMessage());
