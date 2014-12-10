@@ -7,7 +7,7 @@ options
 {
   VISITOR=false;
   MULTI=false;
-  DEBUG_PARSER=false;
+  DEBUG_PARSER=true;
   JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
   NODE_EXTENDS="lolparser.intermediate.icodeimpl.ICodeNodeImpl";
   NODE_PACKAGE="lolparser.frontend";
@@ -284,6 +284,9 @@ void DIFFRINT(HashSet syncSet):{}
 void SpecialOps() : {}
 {	Increment()
 |   Decrement()
+|   ArithemticExpression()
+|   LOOKAHEAD(2) (BooleanOperation())
+|   ComparisionOperation()
 }
 void Increment() : {}
 {	< UPPIN > < IDENT > 
