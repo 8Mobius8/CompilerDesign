@@ -20,9 +20,16 @@ O RLY?
     superVar R "made of nuts"
 OIC
 
-I HAS A VAR
+I HAS A VAR ITZ 1
 IM IN YR LOOP
-  UP VAR!!1
+  UPPIN VAR
+
+  BOTH SAEM VAR AN 10
+  O RLY?
+	  YA RLY
+	    GTFO  
+  OIC
+
 IM OUTTA YR LOOP
 
 KTHXBYE

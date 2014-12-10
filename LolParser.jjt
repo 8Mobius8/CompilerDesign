@@ -114,6 +114,7 @@ SimpleNode Block() : {
 
 void Statement(HashSet syncSet) #void:{}
 {      AssignmentExpression(syncSet)	| FlowControlExpression() 	| LOOKAHEAD(2) (Declarations())	| FunctionCalls()	| ConstLiteralExpression()
+	| SpecialOps()
 	| Error()
 }
 
@@ -280,6 +281,18 @@ void DIFFRINT(HashSet syncSet):{}
   <DIFFRINT> Statement(syncSet) (<AN>)? Statement(syncSet)
 }
 
+void SpecialOps() : {}
+{	Increment()
+|   Decrement()
+}
+void Increment() : {}
+{	< UPPIN > < IDENT > 
+}
+void Decrement() : {}
+{
+	< NERFIN > < IDENT > 
+}
+
 // vvv Flow Expressions vvv \\
 void loop(): {}
 {
@@ -338,7 +351,9 @@ TOKEN :
 | < IN : "IN" >
 | < IZ : "IZ" >
 | < YR : "YR" >
-| < UP : "UP" >
+| < UP : "UP">
+| < UPPIN : "UPPIN" >
+| < NERFIN : "NERFIN" >
 | < KTHX : "KTHX" >
 | < KTHXBYE : "KTHXBYE" >
 | < LOOP_LABEL : "LOOP" >
