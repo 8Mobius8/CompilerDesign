@@ -21,7 +21,6 @@ import java.io.FileNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.text.ParseException;
 
 import lolparser.intermediate.*;
 import lolparser.intermediate.icodeimpl.*;
@@ -78,10 +77,7 @@ public class LolParser
 	  
 	  printer.print(symTabStack);
     }
-    catch (ParseException pe)
-    {
-      pe.printStackTrace();
-    }
+    catch (ParseException pe)    {      pe.printStackTrace();    }
     
   }
 }
@@ -89,20 +85,10 @@ PARSER_END(LolParser)
 
 SimpleNode parse() : {SimpleNode rootNode;}
 {
-  try {
-
     Program_Header()
 	rootNode = Block()
 	< KTHXBYE >
 	< EOF > { return rootNode;}
-  }
-  catch (ParseException ex) {
-	HashSet syncSet = new HashSet();
-	syncSet.add(EOF);
-	
-	handleError(ex, syncSet);
-	return null;
-  }
 }
 
 void Program_Header() #void : {}
@@ -127,18 +113,11 @@ SimpleNode Block() : {
 }
 
 void Statement(HashSet syncSet) #void:{}
-{
-  try {      AssignmentExpression()
-	| FlowControlExpression() 
-	| Declarations()
-	| FunctionCalls()
-	| ConstLiteralExpression()
-	| Error() { throw new ParseException("Invalid StatementType");}
-  } catch (ParseException pe) {
-    handleError(pe, syncSet);  }
+{      AssignmentExpression(syncSet)	| FlowControlExpression() 	| LOOKAHEAD(2) (Declarations())	| FunctionCalls()	| ConstLiteralExpression()
+	| Error()
 }
 
-void AssignmentExpression():{}
+void AssignmentExpression(HashSet syncSet):{}
 {
  <IDENT > {
 	SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -150,8 +129,7 @@ void AssignmentExpression():{}
       variableId.appendLineNumber(token.beginLine);
     }
   }
-  "R" Statement()
-  (< EOL >)*
+  "R" Statement(syncSet)
 }
 
 void FlowControlExpression() #void:{}
@@ -173,7 +151,7 @@ void Declarations() #void : {}
 
 void FunctionCalls() #void : {
   HashSet paramSyncSet = new HashSet();
-  paramSyncSet.add(AN_YR);
+  paramSyncSet.add(AN);
   paramSyncSet.add(MKAY);
 }
 {
@@ -198,18 +176,11 @@ void VarDeclareExpression() :
   int index = 0;
 }
 {
-  try
-  {
   	<I> <HAS> <A> <IDENT> {
 	processVariableDecl(token, index++, symTabStack.getLocalSymTab());
 	}
 	(<ITZ> ConstLiteralExpression())?
 	(< EOL >)*
-  }
-  catch (ParseException pe)
-  {
-	handleError(pe);
-  }
 }
 
 // vvv Arithemic Operations vvv \\
@@ -330,7 +301,7 @@ void ifThen():{}
 
 void Error() #void : {}
 {
-    <ERROR>
+     <ERROR>
 }
 
 SKIP :
