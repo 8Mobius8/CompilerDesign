@@ -5,8 +5,8 @@
 
 options
 {
-  VISITOR=false;
-  MULTI=false;
+  VISITOR=true;
+  MULTI=true;
   DEBUG_PARSER=true;
   JJTREE_OUTPUT_DIRECTORY="src/lolparser/frontend";
   NODE_EXTENDS="lolparser.intermediate.icodeimpl.ICodeNodeImpl";

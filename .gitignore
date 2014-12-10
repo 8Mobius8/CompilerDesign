@@ -1,6 +1,10 @@
 *.class
 build/
 nbproject/
+.metadata/
+src/lolparser/frontend/
+.classpath
+.project
 build.xml
 manifest.mf
 /bin
