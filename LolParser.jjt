@@ -288,11 +288,11 @@ void ComparisonOperation():{
 }
 void BOTHSAEM(HashSet syncSet):{}
 {
-  <BOTH> <SAEM> (<IDENT>|ConstLiteralExpression()) (<AN>)? (< IDENT >|ConstLiteralExpression())
+  <BOTH> <SAEM> (Expression(syncSet)|<TROOF>) (<AN>)? (Expression(syncSet)|<TROOF>)
 }
 void DIFFRINT(HashSet syncSet):{}
 {
-  <DIFFRINT> Expression(syncSet) (<AN>)? Expression(syncSet)
+  <DIFFRINT> (Expression(syncSet)|<TROOF>) (<AN>)? (Expression(syncSet)|<TROOF>)
 }
 
 void LOL_STD_OPS(HashSet hashSet) : {}
