@@ -260,19 +260,19 @@ void BooleanOperation():{
 }
 void BOTH(HashSet syncSet):{} // And
 {
-  <BOTH> <OF> Statement(syncSet) (<AN>)? Statement(syncSet)
+  <BOTH> <OF> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
 void EITHER(HashSet syncSet):{} // Or
 {
-  <EITHER> <OF> Statement(syncSet) (<AN>)? Statement(syncSet)
+  <EITHER> <OF> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
 void WON(HashSet syncSet):{} // Xor
 {
-  <WON> <OF> Statement(syncSet) (<AN>)? Statement(syncSet)
+  <WON> <OF> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
 void NOT(HashSet syncSet):{} // Not
 {
-  <NOT> Statement(syncSet)
+  <NOT> Expression(syncSet)
 }
 // ^^^ Boolean Expressions ^^^ \\
 
@@ -292,7 +292,7 @@ void BOTHSAEM(HashSet syncSet):{}
 }
 void DIFFRINT(HashSet syncSet):{}
 {
-  <DIFFRINT> Statement(syncSet) (<AN>)? Statement(syncSet)
+  <DIFFRINT> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
 
 void LOL_STD_OPS(HashSet hashSet) : {}
@@ -336,6 +336,7 @@ void ifThen() #void :{}
 }
 void IfBlock() : {}
 {
+  BoolComparisonOperation()
   < YA_RLY >
     Block()
  (< NO_WAI >
