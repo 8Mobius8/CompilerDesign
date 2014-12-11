@@ -315,8 +315,8 @@ void ifThen():{}
   < O_RLY ><QUESTION>
   	< YA_RLY >
   		Block()
-    < NO_WAI >
-    	Block()	
+    (< NO_WAI >
+    	Block())?	
   < OIC >
 }
 // ^^^ LOOP ^^^ \\
