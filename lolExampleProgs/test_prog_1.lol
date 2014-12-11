@@ -14,6 +14,7 @@ just continuing to test this
 TLDR
 
 O RLY?
+  BOTH SAEM STR AN WIN
   YA RLY
     STR R "Too much lolz!"
   NO WAI
