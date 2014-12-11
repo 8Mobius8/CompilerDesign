@@ -21,16 +21,16 @@ BTW Testing if statement
 
 O RLY? BOTH SAEM 5 AN 3
   YA RLY
-    VISIBLE WIN
+    VISIBLE "We are the Champions"
   NO WAI
-    VISIBLE FAIL
+    VISIBLE "This is the story of the girl."
 OIC
 
 I HAS A test ITZ 5
 
 O RLY? BOTH SAEM test AN test
   YA RLY
-    VISIBLE TROOF
+    VISIBLE WIN
   MEBBE WIN
     VISIBLE FAIL
   NO WAI

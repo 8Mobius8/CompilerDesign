@@ -256,7 +256,7 @@ void BooleanOperation():{
   BOTH(boolOpSet)   // And
 | EITHER(boolOpSet) // Or
 | WON(boolOpSet)    // Xor
-| NOT(boolOpSet)    // Not	
+| NOT(boolOpSet)    // Not
 }
 void BOTH(HashSet syncSet):{} // And
 {
@@ -316,7 +316,7 @@ void Break() #void : {}
 }
 void StdOut(HashSet hs) : {}
 {
-  < VISIBLE > (ConstLiteralExpression()| <IDENT>)}
+  < VISIBLE > (ConstLiteralExpression()| <IDENT> | < TROOF >)}
 void StdIn() :{}
 {
   < GIMMEH > <IDENT>}
@@ -336,9 +336,11 @@ void ifThen() #void :{}
 }
 void IfBlock() : {}
 {
-  BoolComparisonOperation()
+  (BoolComparisonOperation() | <TROOF>)
   < YA_RLY >
     Block()
+    (< MEBBE > (BoolComparisonOperation() | <TROOF>)
+    Block())*
  (< NO_WAI >
     Block() )?}
 
@@ -388,8 +390,9 @@ TOKEN :
 | < KTHXBYE : "KTHXBYE" >
 | < LOOP_LABEL : "LOOP" >
 | < LOOP_OP : "UPPIN" | "NERFIN">
-| < TROOF : "TROOF">
-| < FAIL : "FAIL">
+| < TROOF : < WIN > | < FAIL >>
+| < #FAIL : "FAIL">
+| < #WIN : "WIN" >			
 | < BOTH : "BOTH" >
 | < EITHER : "EITHER" >
 | < SAEM : "SAEM" >
