@@ -85,10 +85,12 @@ PARSER_END(LolParser)
 
 SimpleNode parse() : {SimpleNode rootNode;}
 {
+//  try//  {
     Program_Header()
 	rootNode = Block()
 	< KTHXBYE >
-	< EOF > { return rootNode;}
+	< EOF > { return rootNode;}//  }//  catch (ParseException pe)//  {//	    HashSet syncSet = new HashSet();//        syncSet.add(EOL);//        syncSet.add(KTHXBYE);//        //        handleError(pe, syncSet, false);//        return null;//  }
+
 }
 
 void Program_Header() #void : {}
@@ -441,13 +443,16 @@ void processVariableDecl(Token token, int index,
 }
 
 JAVACODE
-String handleError(ParseException pe, HashSet syncSet) #void
+String handleError(ParseException ex, HashSet syncSet, boolean doPop) #void
 {
-  Token token = pe.currentToken;
-  System.out.println(pe.getMessage());
+    Token token = ex.currentToken;
+    System.out.println(ex.getMessage());
 
-  while(!syncSet.contains(token.kind))	token = getNextToken();
+    // Consume tokens up to but not including a token in the sync set.
+    while (!syncSet.contains(getToken(1).kind)) {
+        token = getNextToken();
+    } 	
 
-
-  return token.image;
+    if (doPop) jjtree.popNode();
+    return token.image;
 }
