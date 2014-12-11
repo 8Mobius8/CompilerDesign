@@ -35,6 +35,7 @@ public class LolParser
 {
   private static SymTabStack symTabStack;
   private static SymTabEntry programId;
+  private static HashSet syncSet;
   
   public static void main(String args []) throws Exception
   {
@@ -77,7 +78,7 @@ public class LolParser
 	  
 	  printer.print(symTabStack);
     }
-    catch (ParseException pe)    {      pe.printStackTrace();    }
+    catch (ParseException pe)    {      handleError(pe, syncSet);     }
     
   }
 }
@@ -104,7 +105,7 @@ void Program_Header() #void : {}
 	  }  }
 
 SimpleNode Block() : {
-  HashSet syncSet = new HashSet();
+  syncSet = new HashSet();
   syncSet.add(EOL);
   syncSet.add(KTHXBYE);
   syncSet.add(EOF);
@@ -115,13 +116,20 @@ SimpleNode Block() : {
 }
 
 void Statement(HashSet syncSet) #void:{}
-{      	 FlowControlExpression()
-	| SpecialOps(syncSet)
-	| ConstLiteralExpression()
-	| AssignmentExpression(syncSet)
-	| LOOKAHEAD(2) (FunctionCalls()) 	| LOOKAHEAD(2) (Declarations())
-	| Error()
+{  FlowControlExpression()
+| SpecialOps(syncSet)
+| ConstLiteralExpression()
+| AssignmentExpression(syncSet)
+| LOOKAHEAD(2) (FunctionCalls()) | LOOKAHEAD(2) (Declarations())
+| Error()
 }
+
+void Expression(HashSet syncSet) : {}
+{
+  SpecialOps(syncSet)
+| ConstLiteralExpression()
+| AssignmentExpression(syncSet)
+| Error()}
 
 void AssignmentExpression(HashSet syncSet):{}
 {
@@ -157,6 +165,7 @@ void Declarations() #void : {}
 
 void FunctionCalls() #void : {
   HashSet paramSyncSet = new HashSet();
+  syncSet = paramSyncSet;
   paramSyncSet.add(AN);
   paramSyncSet.add(MKAY);
 }
@@ -190,7 +199,7 @@ void VarDeclareExpression() :
 }
 
 // vvv Arithemic Operations vvv \\
-void ArithemticExpression() #void:{}
+void ArithemticExpression(HashSet syncSet) #void:{}
 {
   SUM() 	// Add
 | DIFF() 	// Subtract
@@ -204,35 +213,35 @@ void ArithemticExpression() #void:{}
 void SUM():  	// Add
 {}
 {
-	<SUM> <OF> <INTEGER> <AN> <INTEGER>
+	<SUM> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
 void DIFF(): {} // Subtract
 {
-  <DIFF> <OF> <INTEGER> <AN> <INTEGER>	
+  <DIFF> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
 void PRODUKT(): {} // Product
 {
-	<PRODUKT> <OF> <INTEGER> <AN> <INTEGER>
+	<PRODUKT> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
 void QUOSHUNT(): {} // Quotient
 {
-  <QUOSHUNT> <OF> <INTEGER> <AN> <INTEGER>	
+  <QUOSHUNT> <OF> Expression(syncSet) <AN> Expression(syncSet)	
 }
 void MOD(): {} // Modulous
 {
-	<MOD> <OF> <INTEGER> <AN> <INTEGER>
+	<MOD> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
 void BIGGR(): {} // Max
 {
-	<BIGGR> <OF> <INTEGER> <AN> <INTEGER>
+	<BIGGR> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
 void SMALLR(): {} // Min
 {
-	<SMALLR> <OF> <INTEGER> <AN> <INTEGER>
+	<SMALLR> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
 void UP():{}
 {
-    <UP> <IDENT> <BANG> <INTEGER>
+    <UP> <IDENT> <BANG> Expression(syncSet)
 }
 // ^^^ Arithemic Expressions ^^^ \\
 
@@ -241,6 +250,7 @@ void UP():{}
 // vvv Boolean Expressions vvv \\
 void BooleanOperation():{
   HashSet boolOpSet = new HashSet();
+  syncSet = boolOpSet;
   boolOpSet.add(AN);
   boolOpSet.add(EOL);
 }
@@ -270,6 +280,7 @@ void NOT(HashSet syncSet):{} // Not
 
 void ComparisionOperation():{
   HashSet boolOpSet = new HashSet();
+  syncSet = boolOpSet;
   boolOpSet.add(AN);
   boolOpSet.add(EOL);
 }
@@ -290,7 +301,7 @@ void SpecialOps(HashSet hashSet) : {}
 {	Increment()
 |   Decrement()
 |   Break()
-|   ArithemticExpression()
+|   ArithemticExpression(hashSet)
 |   LOOKAHEAD(2) (BooleanOperation())
 |   ComparisionOperation()
 |   PrintOut(hashSet)
