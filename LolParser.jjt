@@ -114,7 +114,7 @@ SimpleNode Block() : {
 
 void Statement(HashSet syncSet) #void:{}
 {      	 FlowControlExpression()
-	| SpecialOps()
+	| SpecialOps(syncSet)
 	| ConstLiteralExpression()
 	| AssignmentExpression(syncSet)
 	| LOOKAHEAD(2) (FunctionCalls()) 	| LOOKAHEAD(2) (Declarations())
@@ -284,13 +284,14 @@ void DIFFRINT(HashSet syncSet):{}
   <DIFFRINT> Statement(syncSet) (<AN>)? Statement(syncSet)
 }
 
-void SpecialOps() : {}
+void SpecialOps(HashSet hashSet) : {}
 {	Increment()
 |   Decrement()
 |   Break()
 |   ArithemticExpression()
 |   LOOKAHEAD(2) (BooleanOperation())
 |   ComparisionOperation()
+|   PrintOut(hashSet)
 }
 void Increment() : {}
 {	< UPPIN > < IDENT > 
@@ -302,7 +303,11 @@ void Decrement() : {}
 void Break() #void : {}
 {	< GTFO : "GTFO" >
 }
+void PrintOut(HashSet hs) : {}
+{
+  < VISIBLE > Statement(hs)}
 // vvv Flow Expressions vvv \\
+
 void loop(): {}
 {
   <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Statement() )?)?
@@ -316,7 +321,7 @@ void ifThen():{}
   	< YA_RLY >
   		Block()
     (< NO_WAI >
-    	Block())?	
+    	Block())?
   < OIC >
 }
 // ^^^ LOOP ^^^ \\
@@ -441,7 +446,7 @@ String handleError(ParseException pe, HashSet syncSet) #void
   Token token = pe.currentToken;
   System.out.println(pe.getMessage());
 
-  while(!syncSet.contains(getToken(1).kind))	token = getNextToken();
+  while(!syncSet.contains(token.kind))	token = getNextToken();
 
 
   return token.image;
