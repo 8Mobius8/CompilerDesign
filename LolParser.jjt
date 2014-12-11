@@ -124,9 +124,8 @@ void Statement(HashSet syncSet) #void:{}
 
 void Expression(HashSet syncSet) : {}
 {
-  LOL_STD_OPS(syncSet)
-| ConstLiteralExpression()
-| AssignmentExpression(syncSet)
+  ConstLiteralExpression()
+| < IDENT >
 | Error()}
 
 void AssignmentExpression(HashSet syncSet):{}
