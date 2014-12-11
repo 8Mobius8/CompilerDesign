@@ -78,7 +78,7 @@ public class LolParser
 	  
 	  printer.print(symTabStack);
     }
-    catch (ParseException pe)    {      handleError(pe, syncSet);     }
+    catch (ParseException pe)    {      handleError(pe, syncSet, false);     }
     
   }
 }
@@ -86,12 +86,10 @@ PARSER_END(LolParser)
 
 SimpleNode parse() : {SimpleNode rootNode;}
 {
-//  try//  {
     Program_Header()
 	rootNode = Block()
 	< KTHXBYE >
-	< EOF > { return rootNode;}//  }//  catch (ParseException pe)//  {//	    HashSet syncSet = new HashSet();//        syncSet.add(EOL);//        syncSet.add(KTHXBYE);//        //        handleError(pe, syncSet, false);//        return null;//  }
-
+	< EOF > { return rootNode;}
 }
 
 void Program_Header() #void : {}
@@ -117,10 +115,10 @@ SimpleNode Block() : {
 
 void Statement(HashSet syncSet) #void:{}
 {  FlowControlExpression()
-| SpecialOps(syncSet)
 | ConstLiteralExpression()
 | AssignmentExpression(syncSet)
 | LOOKAHEAD(2) (FunctionCalls()) | LOOKAHEAD(2) (Declarations())
+| SpecialOps(syncSet)
 | Error()
 }
 
@@ -169,14 +167,12 @@ void FunctionCalls() #void : {
   paramSyncSet.add(AN);
   paramSyncSet.add(MKAY);
 }
-{
-  < I >< IZ >
-  < IDENT > // Function name needs to go here
-  [
-  	< YR > Statement(paramSyncSet) (< AN >< YR > Statement(paramSyncSet))*
-  ]
-  < MKAY >}
-
+{	    < I >< IZ >
+	  < IDENT > // Function name needs to go here
+	  [
+	  	< YR > Statement(paramSyncSet) (< AN >< YR > Statement(paramSyncSet))*
+	  ]
+	  < MKAY >}
 void FunctionDeclare() : {}
 {
   < HOW_IZ_I >
@@ -319,25 +315,26 @@ void Break() #void : {}
 void PrintOut(HashSet hs) : {}
 {
   < VISIBLE > Statement(hs)}
-// vvv Flow Expressions vvv \\
 
 void loop(): {}
 {
-  <IM><IN><YR> <LOOP_LABEL>//(<LOOP_OP> <YR> <IDENT> ((<TIL>|<WILE>) Statement() )?)?
-     	Block()
+  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> <IDENT> ((<TIL>|<WILE>) Statement(syncSet))? )?
+  	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
 }
 
-void ifThen():{}
+void ifThen() #void :{}
 {
   < O_RLY ><QUESTION>
-  	< YA_RLY >
-  		Block()
-    (< NO_WAI >
-    	Block())?
+  	IfBlock()
   < OIC >
 }
-// ^^^ LOOP ^^^ \\
+void IfBlock() : {}
+{
+  < YA_RLY >
+    Block()
+ (< NO_WAI >
+    Block() )?}
 
 void Error() #void : {}
 {
@@ -424,7 +421,7 @@ TOKEN :
 | < BIGGR : "BIGGR" >
 | < SMALLR : "SMALLR" >
 | < QUOTED_STRING : "\"" (~["\""])+ "\"" >
-| < INTEGER : ["1"-"9"] (["0"-"9"])* >
+| < INTEGER : (["1"-"9"] (["0"-"9"])*)|("0") >
 | < TLDR : "TLDR">
 | < MKAY : "MKAY">
 | < IDENT : (["A"-"Z"] | ["a"-"z"])+ >
@@ -460,7 +457,7 @@ String handleError(ParseException ex, HashSet syncSet, boolean doPop) #void
     System.out.println(ex.getMessage());
 
     // Consume tokens up to but not including a token in the sync set.
-    while (!syncSet.contains(getToken(1).kind)) {
+    while (!syncSet.contains(token.kind)) {
         token = getNextToken();
     } 	
 
