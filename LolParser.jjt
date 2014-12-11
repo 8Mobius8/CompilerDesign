@@ -113,8 +113,11 @@ SimpleNode Block() : {
 }
 
 void Statement(HashSet syncSet) #void:{}
-{      AssignmentExpression(syncSet)	| FlowControlExpression() 	| LOOKAHEAD(2) (Declarations())	| FunctionCalls()	| ConstLiteralExpression()
+{      	 FlowControlExpression()
 	| SpecialOps()
+	| ConstLiteralExpression()
+	| AssignmentExpression(syncSet)
+	| LOOKAHEAD(2) (FunctionCalls()) 	| LOOKAHEAD(2) (Declarations())
 	| Error()
 }
 
@@ -274,7 +277,7 @@ void ComparisionOperation():{
 }
 void BOTHSAEM(HashSet syncSet):{}
 {
-  <BOTH> <SAEM> Statement(syncSet) (<AN>)? Statement(syncSet)
+  <BOTH> <SAEM> (<IDENT>|ConstLiteralExpression()) (<AN>)? (< IDENT >|ConstLiteralExpression())
 }
 void DIFFRINT(HashSet syncSet):{}
 {
@@ -284,6 +287,7 @@ void DIFFRINT(HashSet syncSet):{}
 void SpecialOps() : {}
 {	Increment()
 |   Decrement()
+|   Break()
 |   ArithemticExpression()
 |   LOOKAHEAD(2) (BooleanOperation())
 |   ComparisionOperation()
@@ -295,7 +299,9 @@ void Decrement() : {}
 {
 	< NERFIN > < IDENT > 
 }
-
+void Break() #void : {}
+{	< GTFO : "GTFO" >
+}
 // vvv Flow Expressions vvv \\
 void loop(): {}
 {

@@ -26,8 +26,8 @@ IM IN YR LOOP
 
   BOTH SAEM VAR AN 10
   O RLY?
-	  YA RLY
-	    GTFO  
+    YA RLY
+      GTFO
   OIC
 
 IM OUTTA YR LOOP
