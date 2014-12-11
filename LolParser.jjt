@@ -118,13 +118,13 @@ void Statement(HashSet syncSet) #void:{}
 | ConstLiteralExpression()
 | AssignmentExpression(syncSet)
 | LOOKAHEAD(2) (FunctionCalls()) | LOOKAHEAD(2) (Declarations())
-| SpecialOps(syncSet)
+| LOL_STD_OPS(syncSet)
 | Error()
 }
 
 void Expression(HashSet syncSet) : {}
 {
-  SpecialOps(syncSet)
+  LOL_STD_OPS(syncSet)
 | ConstLiteralExpression()
 | AssignmentExpression(syncSet)
 | Error()}
@@ -296,13 +296,14 @@ void DIFFRINT(HashSet syncSet):{}
   <DIFFRINT> Statement(syncSet) (<AN>)? Statement(syncSet)
 }
 
-void SpecialOps(HashSet hashSet) : {}
+void LOL_STD_OPS(HashSet hashSet) : {}
 {	Increment()
 |   Decrement()
 |   Break()
 |   ArithemticExpression(hashSet)
-|   (BoolComparisonOperation())
-|   PrintOut(hashSet)
+|   BoolComparisonOperation()
+|   StdOut(hashSet)
+| 	StdIn()
 }
 void Increment() : {}
 {	< UPPIN > < IDENT > 
@@ -314,13 +315,16 @@ void Decrement() : {}
 void Break() #void : {}
 {	< GTFO : "GTFO" >
 }
-void PrintOut(HashSet hs) : {}
+void StdOut(HashSet hs) : {}
 {
-  < VISIBLE > Statement(hs)}
+  < VISIBLE > (ConstLiteralExpression()| <IDENT>)}
+void StdIn() :{}
+{
+  < GIMMEH > <IDENT>}
 
 void loop(): {}
 {
-  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> <IDENT> ((<TIL>|<WILE>) Statement(syncSet))? )?
+  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> <IDENT> ((<TIL>|<WILE>) BoolComparisonOperation())? )?
   	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
 }
