@@ -5,8 +5,12 @@ BTW Testing loop
 I HAS A VAR
 IM IN YR LOOP
   UP VAR!!1
-  VISIBLE VAR
-  IZ VAR BIGGER THAN 10? KTHX
+  BTW VISIBLE VAR
+  BOTH SAEM VAR AN 10
+  	O RLY?
+  		YA RLY
+  			GTFO
+  	OIC
 IM OUTTA YR LOOP
 
 OBTW multiple lines of comments
@@ -15,12 +19,12 @@ TLDR
 
 BTW Testing if statement
 
-5 < 3
-ORLY?
+5 > 3
+O RLY?
   YA RLY
-    VISIBLE WIN
+    BTW VISIBLE WIN
   NO WAI
-    VISIBLE FAIL
+    BTW VISIBLE FAIL
 OIC
 
 10 < 3

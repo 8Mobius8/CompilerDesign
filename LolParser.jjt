@@ -338,7 +338,7 @@ SKIP :
   " "
 | < COMMENT : ("BTW" (~["\n"])* "\n") >
 | "OBTW" : COMMENT_OPEN
-| "\n" | "\r" | "\r\n"
+| "\n" | "\r" | "\r\n" | "\t"
 
 //| < MULTI_LINE_COMMENT:        "OBTW" (~[<TLDR>])* <TLDR>        >
 }
