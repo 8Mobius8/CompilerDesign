@@ -78,7 +78,7 @@ public class LolParser
 	  
 	  printer.print(symTabStack);
     }
-    catch (ParseException pe)    {      handleError(pe, syncSet);     }
+    catch (ParseException pe)    {      handleError(pe, syncSet, false);     }
     
   }
 }
@@ -245,7 +245,10 @@ void UP():{}
 }
 // ^^^ Arithemic Expressions ^^^ \\
 
-
+void BoolComparisonOperation():{}{
+LOOKAHEAD(2) (ComparisonOperation())
+| BooleanOperation()
+}
 
 // vvv Boolean Expressions vvv \\
 void BooleanOperation():{
@@ -278,7 +281,7 @@ void NOT(HashSet syncSet):{} // Not
 }
 // ^^^ Boolean Expressions ^^^ \\
 
-void ComparisionOperation():{
+void ComparisonOperation():{
   HashSet boolOpSet = new HashSet();
   syncSet = boolOpSet;
   boolOpSet.add(AN);
@@ -302,8 +305,7 @@ void SpecialOps(HashSet hashSet) : {}
 |   Decrement()
 |   Break()
 |   ArithemticExpression(hashSet)
-|   LOOKAHEAD(2) (BooleanOperation())
-|   ComparisionOperation()
+|   (BoolComparisonOperation())
 |   PrintOut(hashSet)
 }
 void Increment() : {}
@@ -330,7 +332,7 @@ void loop(): {}
 
 void ifThen():{}
 {
-  < O_RLY ><QUESTION>
+  < O_RLY ><QUESTION> BooleanOperation()
   	< YA_RLY >
   		Block()
     (< NO_WAI >
