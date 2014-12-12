@@ -61,7 +61,6 @@ public class LolParser
         System.out.println("Reading from file: " + args [0]);
         new LolParser(new FileReader(args [0]));
 
-        
         String sourceFilePath = args[0];
         int truncatedLength = sourceFilePath.length() - SOURCE_SUFFIX.length();
         int suffixIndex = sourceFilePath.lastIndexOf(SOURCE_SUFFIX);
@@ -105,9 +104,9 @@ public class LolParser
       }
 
       // Generate code for function defs
-      ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(ROUTINE_ROUTINES);
+      ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(SymTabKeyImpl.ROUTINE_ROUTINES);
       for (SymTabEntry symTab : symTabEntries) {
-        iCode = (ICode) symTab.getAttribute(ROUTINE_ICODE);
+        iCode = (ICode) symTab.getAttribute(SymTabKeyImpl.ROUTINE_ICODE);
         zehBackend.processFunction(iCode, symTabStack, objectFilePath, symTab);
       }
     } catch (ParseException ex) {
@@ -128,7 +127,7 @@ SimpleNode parse() : {SimpleNode rootNode;}
   {
     Program_Header() 
     rootNode = Block() 
-    {programId.setAttribute(ROUTINE_LOCALS_COUNT, index);}
+    {programId.setAttribute(SymTabKeyImpl.ROUTINE_LOCALS_COUNT, index);}
     Program_Ender()
     {
       return rootNode;
@@ -147,7 +146,7 @@ void Program_Header() #void : {printCaller();}
 	    programId = symTabStack.enterLocal(token.image);
 	    programId.setDefinition(DefinitionImpl.PROGRAM);
 	    programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
-      programId.setAttribute(ROUTINE_ROUTINES, new ArrayList<SymTabEntry>());
+      programId.setAttribute(SymTabKeyImpl.ROUTINE_ROUTINES, new ArrayList<SymTabEntry>());
 	    symTabStack.setProgramId(programId);
 	  }  
 }

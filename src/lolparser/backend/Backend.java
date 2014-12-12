@@ -4,6 +4,7 @@ import java.io.*;
 
 import lolparser.intermediate.ICode;
 import lolparser.intermediate.SymTabStack;
+import lolparser.intermediate.SymTabEntry;
 
 /**
  * <h1>Backend</h1>
