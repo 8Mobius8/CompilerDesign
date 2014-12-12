@@ -7,7 +7,7 @@ superVar R 5
 I HAS A FISH ITZ 12
 
 I HAS A STR
-I HAS A STR ITZ "A YARN"
+STR R "A YARN"
 
 OBTW multiple lines of comments
 just continuing to test this
