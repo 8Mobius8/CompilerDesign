@@ -7,7 +7,6 @@ import lolparser.frontend.ASTBOTHSAEM;
 import lolparser.frontend.ASTBlock;
 import lolparser.frontend.ASTBoolComparisonOperation;
 import lolparser.frontend.ASTBooleanOperation;
-import lolparser.frontend.ASTComparisionOperation;
 import lolparser.frontend.ASTComparisonOperation;
 import lolparser.frontend.ASTDIFF;
 import lolparser.frontend.ASTDIFFRINT;
@@ -24,15 +23,14 @@ import lolparser.frontend.ASTPRODUKT;
 import lolparser.frontend.ASTQUOSHUNT;
 import lolparser.frontend.ASTSMALLR;
 import lolparser.frontend.ASTSUM;
-import lolparser.frontend.ASTSpecialOps;
 import lolparser.frontend.ASTStdIn;
 import lolparser.frontend.ASTStdOut;
 import lolparser.frontend.ASTUP;
 import lolparser.frontend.ASTVarDeclareExpression;
 import lolparser.frontend.ASTWON;
-import lolparser.frontend.ASTifThen;
 import lolparser.frontend.ASTloop;
 import lolparser.frontend.ASTparse;
+import lolparser.frontend.ASTvariable;
 import lolparser.frontend.LolParserVisitor;
 import lolparser.frontend.SimpleNode;
 
@@ -231,5 +229,11 @@ public class LolParserVisitorAdapter implements LolParserVisitor
     // TODO Auto-generated method stub
     return null;
   }
+
+@Override
+public Object visit(ASTvariable node, Object data) {
+	// TODO Auto-generated method stub
+	return null;
+}
 	
 }
