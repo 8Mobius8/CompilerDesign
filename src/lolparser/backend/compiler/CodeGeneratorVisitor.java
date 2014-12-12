@@ -1,6 +1,6 @@
 package lolparser.backend.compiler;
 
-import lolparser.frontend.LolParserTreeConstants;
+import lolparser.frontend.*;
 import lolparser.intermediate.LolParserVisitorAdapter;
 
 public class CodeGeneratorVisitor 
@@ -23,6 +23,14 @@ implements LolParserTreeConstants
    * }
    * 
    */
+	
+	
+	public Object visit(ASTStdOut node, Object data)
+	{
+		
+		
+		return data;
+	}
 	
 	
 }
