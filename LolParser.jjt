@@ -130,6 +130,7 @@ void Expression(HashSet syncSet) : {}
 	if(variableId == null)
 	{
 	  System.err.print("UNDECLARED VARIABLE\n");
+	  
     } else
     {
       variableId.appendLineNumber(token.beginLine);
