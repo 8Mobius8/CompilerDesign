@@ -39,57 +39,29 @@ public class LolParser
   
   public static void main(String args []) throws Exception
   {
-	// Create and initialize the symbol table stack.
-	symTabStack = SymTabFactory.createSymTabStack();
-	//Predefined.initialize(symTabStack);
-	
-	SymTab variableList;
-	int index = 0;
-	variableList = SymTabFactory.createSymTab(1);
-	ParseTreePrinter printer = new ParseTreePrinter(System.out);
-	
-    try
-    {
-	    if(args.length >= 1) {
-	        System.out.println("Reading from file: " +args[0]);
-	        new LolParser(new FileReader(args[0]));
-	    } else {
-	        System.out.println("Reading from standard input...");
-	        new LolParser(System.in);
-	    }
-	} catch (FileNotFoundException fnfe) {
-    	System.out.println(args[0] + " was not able to be found.");
-	}
-
-    try
-    {
-	  System.out.printf("/--- Parsing %s ---\\\n", args[0]);
-	  SimpleNode n = LolParser.parse();
-	  System.out.println("\\---Finished Parsing!---/");
-	
-	  // Create and initialize the ICode wrapper for the parse tree.
-	  ICode iCode = ICodeFactory.createICode();
-	  iCode.setRoot(n);
-	  programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
-	
-	  // Print the cross-reference table.
-	  CrossReferencer crossReferencer = new CrossReferencer();
-	  crossReferencer.print(symTabStack);
-	  
-	  printer.print(symTabStack);
-    }
-    catch (ParseException pe)    {      handleError(pe, syncSet, false);     }
+    Backend zehBackend = BackendFactory.createBackend("compile");
+    ParseTreePrinter printer = new ParseTreePrinter(System.out);
     
+    symTabStack = SymTabFactory.createSymTabStack();    //Predefined.initialize(symTabStack);
+    
+    SymTab variableList;    int index = 0;    variableList = SymTabFactory.createSymTab(0);
+        try    {      if (args.length >= 1)      {        System.out.println("Reading from file: " + args [0]);        new LolParser(new FileReader(args [0]));      }      else      {        System.out.println("Reading from standard input...");        new LolParser(System.in);      }    }    catch (FileNotFoundException fnfe)    {      System.out.println(args [0] + " was not able to be found.");    }
+
+    // Parse our lol    SimpleNode n = LolParser.parse();       // Create and initialize the ICode wrapper for the parse tree.
+    ICode iCode = ICodeFactory.createICode();    iCode.setRoot(n);    programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
+        // Print the cross-reference table.
+    CrossReferencer crossReferencer = new CrossReferencer();    crossReferencer.print(symTabStack);
+	printer.print(symTabStack);
+	
+    // Generate Code
+    zehBackend.process(iCode, symTabStack, "out.j");
   }
 }
 PARSER_END(LolParser)
 
 SimpleNode parse() : {SimpleNode rootNode;}
 {
-    Program_Header()
-	rootNode = Block()
-	< KTHXBYE >
-	< EOF > { return rootNode;}
+  try  {    Program_Header()     rootNode = Block()     < KTHXBYE >     < EOF >    {      return rootNode;    }  }  catch (ParseException pe)  {    handleError(pe, syncSet, false);  }
 }
 
 void Program_Header() #void : {}
@@ -540,7 +512,7 @@ JAVACODE
 void processVariableDecl(Token token, int index,
                          SymTab variableList) #void
 {
-    SymTabEntry variableId = symTabStack.enterLocal(token.image);
+    SymTabEntry variableId = variableList.enter(token.image);
     variableId.setIndex(index);
     variableId.setDefinition(DefinitionImpl.VARIABLE);
     variableId.appendLineNumber(token.beginLine);
