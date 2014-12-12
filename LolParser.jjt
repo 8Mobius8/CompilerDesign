@@ -36,6 +36,7 @@ public class LolParser
 {
   private static SymTabStack symTabStack;
   private static SymTabEntry programId;
+  private static int index = 1; // 0 for this
   private static HashSet syncSet;
 
     private static final String SOURCE_SUFFIX = ".lol";
@@ -47,11 +48,9 @@ public class LolParser
     ParseTreePrinter printer = new ParseTreePrinter(System.out);
     
     symTabStack = SymTabFactory.createSymTabStack();
-    //Predefined.initialize(symTabStack);
+    Predefined.initialize(symTabStack);
     
-    SymTab variableList;
-    int index = 0;
-    variableList = SymTabFactory.createSymTab(0);
+    SymTab variableList = SymTabFactory.createSymTab(0);
 
     String objectFilePath = null;
     
@@ -83,33 +82,42 @@ public class LolParser
     }
 
 
-    // Parse our lol
-    SimpleNode n = LolParser.parse();
+    try {
+      // Parse our lol
+      SimpleNode n = LolParser.parse();
    
-    // Create and initialize the ICode wrapper for the parse tree.
-    ICode iCode = ICodeFactory.createICode();
-    iCode.setRoot(n);
-    programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
+      // Create and initialize the ICode wrapper for the parse tree.
+      ICode iCode = ICodeFactory.createICode();
+      iCode.setRoot(n);
+      programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
     
-    // Print the cross-reference table.
-    CrossReferencer crossReferencer = new CrossReferencer();
-    crossReferencer.print(symTabStack);
-	printer.print(symTabStack);
+      // Print the cross-reference table.
+      CrossReferencer crossReferencer = new CrossReferencer();
+      crossReferencer.print(symTabStack);
+	    printer.print(symTabStack);
 
+      // Generate Code
+      if(objectFilePath==null) {
+        System.err.println("Invalid path for the jasmin file!");
+        zehBackend.process(iCode, symTabStack, "out.j");
+      } else {
+        zehBackend.process(iCode,symTabStack, objectFilePath);
+      }
 
-
-    // Generate Code
-	if(objectFilePath==null)
-	{
-	 System.err.println("Invalid path for the jasmin file!");
-    zehBackend.process(iCode, symTabStack, "out.j");
-	}
-	else
-	{
-	 zehBackend.process(iCode,symTabStack, objectFilePath);
-	}
-
-	
+      // Generate code for function defs
+      ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(ROUTINE_ROUTINES);
+      for (SymTabEntry symTab : symTabEntries) {
+        iCode = (ICode) symTab.getAttribute(ROUTINE_ICODE);
+        zehBackend.processFunction(iCode, symTabStack, objectFilePath, symTab);
+      }
+    } catch (ParseException ex) {
+      ex.printStackTrace();
+    }
+  }
+  public static void printCaller()
+  {
+    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+    System.out.println(stackTraceElements[2].getMethodName());
   }
 }
 PARSER_END(LolParser)
@@ -120,8 +128,8 @@ SimpleNode parse() : {SimpleNode rootNode;}
   {
     Program_Header() 
     rootNode = Block() 
-    < KTHXBYE > 
-    < EOF >
+    {programId.setAttribute(ROUTINE_LOCALS_COUNT, index);}
+    Program_Ender()
     {
       return rootNode;
     }
@@ -132,15 +140,21 @@ SimpleNode parse() : {SimpleNode rootNode;}
   }
 }
 
-void Program_Header() #void : {}
+void Program_Header() #void : {printCaller();}
 {
 	< HAI >
 	  {
 	    programId = symTabStack.enterLocal(token.image);
 	    programId.setDefinition(DefinitionImpl.PROGRAM);
 	    programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
+      programId.setAttribute(ROUTINE_ROUTINES, new ArrayList<SymTabEntry>());
 	    symTabStack.setProgramId(programId);
 	  }  
+}
+
+void Program_Ender() #void : {printCaller();}
+{
+  <KTHXBYE> <EOF>
 }
 
 SimpleNode Block() : {
