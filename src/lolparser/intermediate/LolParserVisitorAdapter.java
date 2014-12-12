@@ -5,14 +5,19 @@ import lolparser.frontend.ASTBIGGR;
 import lolparser.frontend.ASTBOTH;
 import lolparser.frontend.ASTBOTHSAEM;
 import lolparser.frontend.ASTBlock;
+import lolparser.frontend.ASTBoolComparisonOperation;
 import lolparser.frontend.ASTBooleanOperation;
 import lolparser.frontend.ASTComparisionOperation;
+import lolparser.frontend.ASTComparisonOperation;
 import lolparser.frontend.ASTDIFF;
 import lolparser.frontend.ASTDIFFRINT;
 import lolparser.frontend.ASTDecrement;
 import lolparser.frontend.ASTEITHER;
+import lolparser.frontend.ASTExpression;
 import lolparser.frontend.ASTFunctionDeclare;
+import lolparser.frontend.ASTIfBlock;
 import lolparser.frontend.ASTIncrement;
+import lolparser.frontend.ASTLOL_STD_OPS;
 import lolparser.frontend.ASTMOD;
 import lolparser.frontend.ASTNOT;
 import lolparser.frontend.ASTPRODUKT;
@@ -20,6 +25,8 @@ import lolparser.frontend.ASTQUOSHUNT;
 import lolparser.frontend.ASTSMALLR;
 import lolparser.frontend.ASTSUM;
 import lolparser.frontend.ASTSpecialOps;
+import lolparser.frontend.ASTStdIn;
+import lolparser.frontend.ASTStdOut;
 import lolparser.frontend.ASTUP;
 import lolparser.frontend.ASTVarDeclareExpression;
 import lolparser.frontend.ASTWON;
@@ -147,12 +154,6 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 	}
 
 	@Override
-	public Object visit(ASTComparisionOperation node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Object visit(ASTBOTHSAEM node, Object data) {
 		// TODO Auto-generated method stub
 		return null;
@@ -160,12 +161,6 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 
 	@Override
 	public Object visit(ASTDIFFRINT node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object visit(ASTSpecialOps node, Object data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -188,59 +183,53 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 		return null;
 	}
 
-	@Override
-	public Object visit(ASTifThen node, Object data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public Object visit(ASTExpression node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTBoolComparisonOperation node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTComparisonOperation node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTLOL_STD_OPS node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTStdOut node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTStdIn node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTIfBlock node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
 	
-//    public Object visit(SimpleNode node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//    
-//    public Object visit(ASTcompoundStatement node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//    
-//    public Object visit(ASTassignmentStatement node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//    
-//    public Object visit(ASTadd node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//    
-//    public Object visit(ASTsubtract node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//
-//    public Object visit(ASTmultiply node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//
-//    public Object visit(ASTdivide node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//
-//    public Object visit(ASTvariable node, Object data)
-//    {
-//         return node.childrenAccept(this, data);
-//    }
-//
-//    public Object visit(ASTintegerConstant node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
-//
-//    public Object visit(ASTrealConstant node, Object data)
-//    {
-//        return node.childrenAccept(this, data);
-//    }
 }
