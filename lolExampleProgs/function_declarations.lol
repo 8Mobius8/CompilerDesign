@@ -1,4 +1,5 @@
 HAI
+ I HAS A Awesome
 
  HOW IZ I Eat_Food 
    VISIBLE "NOM NOM"

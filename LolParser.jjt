@@ -195,11 +195,9 @@ void FunctionDeclare() : {
 {
   < HOW_IZ_I >
   < IDENT >  {
-    	SymTab newSymTab = new SymTabImpl(1);
-        programId = newSymTab.enter(token.image);
-        programId.setDefinition(DefinitionImpl.FUNCTION);
-        programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push(newSymTab));
-        symTabStack.setProgramId(programId);
+        SymTabEntry funcEntry = symTabStack.enterLocal(token.image);
+        funcEntry.setDefinition(DefinitionImpl.FUNCTION);
+        funcEntry.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
     }
     (< YR > <IDENT>{
 		processVariableDecl(token, index++, symTabStack.getLocalSymTab());
