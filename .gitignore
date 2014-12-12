@@ -4,11 +4,11 @@ build/
 nbproject/
 .metadata/
 src/lolparser/frontend/
+bin/lolparser/
 .classpath
 .project
 build.xml
 manifest.mf
-/bin
 /EG1.java
 /EG1Constants.java
 /EG1TokenManager.java
