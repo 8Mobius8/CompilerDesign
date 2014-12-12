@@ -170,6 +170,9 @@ void ConstLiteralExpression() #Const:{}
 | < INTEGER >{        jjtThis.setTypeSpec(Predefined.integerType);
         jjtThis.setAttribute(ICodeKeyImpl.VALUE, Integer.parseInt(token.image));
       }
+| < NUMBAR > {		jjtThis.setTypeSpec(Predefined.realType);
+		jjtThis.setAttribute(ICodeKeyImpl.VALUE, Float.parseFloat(token.image));
+	}
 }
 
 void Declarations() #void : {}
@@ -537,7 +540,10 @@ TOKEN :
 | < BIGGR : "BIGGR" >
 | < SMALLR : "SMALLR" >
 | < QUOTED_STRING : "\"" (~["\""])+ "\"" >
-| < INTEGER : (["1"-"9"] (["0"-"9"])*)|("0") >
+| < INTEGER : (["1"-"9"] (< DIGITS >)*)|("0") >
+| < NUMBAR : < FLOAT > >
+| < #FLOAT : (< INTEGER >)? "." (< DIGITS >)+ >
+| < #DIGITS : ["0"-"9"]>
 | < TLDR : "TLDR">
 | < MKAY : "MKAY">
 | < IDENT : (["A"-"Z"] | ["a"-"z"] | ["_"])+ >
