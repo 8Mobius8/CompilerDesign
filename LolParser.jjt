@@ -125,32 +125,12 @@ void Statement(HashSet syncSet) #void:{}
 void Expression(HashSet syncSet) : {}
 {
   ConstLiteralExpression()
-| < IDENT >{
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-	  
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }
+| variable()
 | Error()}
 
 void AssignmentExpression(HashSet syncSet):{}
 {
- <IDENT > {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("BAD VARIABLE ASSIGNMENT\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }
-  "R" Statement(syncSet)
+ variable() "R" Statement(syncSet)
 }
 
 void FlowControlExpression() #void:{}
@@ -184,30 +164,20 @@ void FunctionCalls() #void : {
 	  < MKAY >}
 void FunctionDeclare() : {}
 {
-  < HOW_IZ_I >
+  < HOW_IZ_I > < IDENT >
   Param() (< YR > Param())*
   Block()
   < IF_U_SAY_SO >}
-void Param() #void : {}
-{	< IDENT > {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }// Must add to current symtable
+void Param()  : {}
+{	variable()// Must add to current symtable
 }
+
 void VarDeclareExpression() :
 {
   int index = 0;
 }
 {
-  	<I> <HAS> <A> <IDENT> {
-	processVariableDecl(token, index++, symTabStack.getLocalSymTab());
-	}
+  	<I> <HAS> <A> variable()
 	(<ITZ> ConstLiteralExpression())?
 //	(< EOL >)*
 }
@@ -255,17 +225,7 @@ void SMALLR(): {} // Min
 }
 void UP():{}
 {
-    <UP> <IDENT>{
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }
-    <BANG> Expression(syncSet)
+    <UP> variable() <BANG> Expression(syncSet)
 }
 // ^^^ Arithemic Expressions ^^^ \\
 
@@ -334,70 +294,25 @@ void LOL_STD_OPS(HashSet hashSet) : {}
 | 	StdIn()
 }
 void Increment() : {}
-{	< UPPIN > < IDENT > {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }
+{	< UPPIN > variable()
 }
 void Decrement() : {}
 {
-	< NERFIN > < IDENT > {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }
+	< NERFIN > variable()
 }
 void Break() #void : {}
 {	< GTFO : "GTFO" >
 }
 void StdOut(HashSet hs) : {}
 {
-  < VISIBLE > (ConstLiteralExpression()| <IDENT> {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  } | < TROOF >)}
+  < VISIBLE > (ConstLiteralExpression()| variable() | < TROOF >)}
 void StdIn() :{}
 {
-  < GIMMEH > <IDENT> {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }}
+  < GIMMEH > variable()}
 
 void loop(): {}
 {
-  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> <IDENT> {
-	SymTabEntry variableId = symTabStack.lookup(token.image);
-	if(variableId == null)
-	{
-	  System.err.print("UNDECLARED VARIABLE\n");
-    } else
-    {
-      variableId.appendLineNumber(token.beginLine);
-    }
-  }
+  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> variable()
   ((<TIL>|<WILE>) BoolComparisonOperation())? )?
   	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
@@ -418,6 +333,19 @@ void IfBlock() : {}
     Block())*
  (< NO_WAI >
     Block() )?}
+
+void variable():{}
+{
+  < IDENT >  {    SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }
+}
 
 void Error() #void : {}
 {
