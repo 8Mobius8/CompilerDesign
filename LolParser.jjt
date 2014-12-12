@@ -164,10 +164,26 @@ void FunctionCalls() #void : {
 	  < MKAY >}
 void FunctionDeclare() : {}
 {
-  < HOW_IZ_I > < IDENT >
-  Param() (< YR > Param())*
+  < HOW_IZ_I >
+  Param()  {
+        programId = symTabStack.enterLocal(token.image);
+        programId.setDefinition(DefinitionImpl.PROGRAM);
+        programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
+        symTabStack.setProgramId(programId);
+    }
+    (< YR > Param(){
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  })*
   Block()
-  < IF_U_SAY_SO >}
+  < IF_U_SAY_SO >
+}
 void Param()  : {}
 {	variable()// Must add to current symtable
 }
