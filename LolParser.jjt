@@ -541,8 +541,8 @@ TOKEN :
 | < SMALLR : "SMALLR" >
 | < QUOTED_STRING : "\"" (~["\""])+ "\"" >
 | < INTEGER : (["1"-"9"] (< DIGITS >)*)|("0") >
-| < NUMBAR : < FLOAT > >
-| < #FLOAT : (< INTEGER >)? "." (< DIGITS >)+ >
+| < NUMBAR : < REAL > >
+| < #REAL : (< INTEGER >)? "." (< DIGITS >)+ >
 | < #DIGITS : ["0"-"9"]>
 | < TLDR : "TLDR">
 | < MKAY : "MKAY">
