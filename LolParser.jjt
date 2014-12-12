@@ -198,12 +198,14 @@ void FunctionDeclare() : {
         SymTabEntry funcEntry = symTabStack.enterLocal(token.image);
         funcEntry.setDefinition(DefinitionImpl.FUNCTION);
         funcEntry.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
+        funcEntry.appendLineNumber(token.beginLine);
     }
     (< YR > <IDENT>{
 		processVariableDecl(token, index++, symTabStack.getLocalSymTab());
   	})*
   Block()
-  < IF_U_SAY_SO >
+  < IF_U_SAY_SO >  {
+    symTabStack.pop();  }
 }
 
 void VarDeclareExpression() :
