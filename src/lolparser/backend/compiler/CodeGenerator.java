@@ -144,4 +144,46 @@ public class CodeGenerator extends Backend
         CodeGenerator.objectFile.close();
         
     }
+
+    public void processFunction(ICode iCode, SymTabStack symTabStack,
+                                String objectFilePath, SymTabEntry functionId) throws IOException
+    {
+        CodeGenerator.iCode       = iCode;
+        CodeGenerator.symTabStack.push((SymTab) functionId.getAttribute(ROUTINE_SYMTAB));
+        // Open the file in append mode
+        CodeGenerator.objectFile  = new PrintWriter(new BufferedWriter(new FileWriter(objectFilePath, true)));
+
+        // Make the function declaration                
+        objectFile.println();
+        String fName = functionId.getName().toString();
+        objectFile.print(".method private static " + fName + "(");
+
+        ArrayList<SymTabEntry> params = (ArrayList<SymTabEntry>) functionId.getAttribute(ROUTINE_PARMS);
+        for (SymTabEntry param : params)
+            objectFile.print("LVariant;");
+        objectFile.println(")LVariant;");
+        
+        // Visit the parse tree nodes to generate code for this function
+        CodeGeneratorVisitor codeVisitor = new CodeGeneratorVisitor();
+        Node rootNode = iCode.getRoot();
+        rootNode.jjtAccept(codeVisitor, functionId);
+        
+        // approximate the number of slots needed for local variables
+        int localsCount = (Integer) functionId.getAttribute(ROUTINE_LOCALS_COUNT);
+        int localSlots = (localsCount * 2) + 1;
+        
+        // put the IT variable on top of the stack to return
+        objectFile.println("invokestatic Util/getMostRecentExpression()LVariant;");
+        objectFile.println("areturn");
+        
+        // Generate the function epilogue
+        objectFile.println();
+        objectFile.println(".limit locals " + localSlots);
+        objectFile.println(".limit stack  " + STACK_LIMIT);
+        objectFile.println(".end method");
+        objectFile.flush();
+
+        CodeGenerator.objectFile.close();
+        CodeGenerator.symTabStack.pop();
+    }
 }
