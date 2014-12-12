@@ -10,4 +10,11 @@ HAI
    VISIBLE food
  IF U SAY SO
 
+ HOW IZ I Sleep YR All_Day YR Every_Day
+   I HAS A newDream ITZ "Cray Cray"
+   VISIBLE All_Day
+   VISIBLE Every_Day
+   VISIBLE newDream
+ IF U SAY SO
+
 KTHXBYE

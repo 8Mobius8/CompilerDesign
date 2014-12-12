@@ -36,6 +36,9 @@ public class LolParser
   private static SymTabStack symTabStack;
   private static SymTabEntry programId;
   private static HashSet syncSet;
+
+  private static int nestingLevel;
+  private static int variableIndex;
   
   public static void main(String args []) throws Exception
   {
@@ -43,8 +46,7 @@ public class LolParser
     ParseTreePrinter printer = new ParseTreePrinter(System.out);
     
     symTabStack = SymTabFactory.createSymTabStack();    //Predefined.initialize(symTabStack);
-    
-    SymTab variableList;    int index = 0;    variableList = SymTabFactory.createSymTab(0);
+    variableIndex = 0;
         try    {      if (args.length >= 1)      {        System.out.println("Reading from file: " + args [0]);        new LolParser(new FileReader(args [0]));      }      else      {        System.out.println("Reading from standard input...");        new LolParser(System.in);      }    }    catch (FileNotFoundException fnfe)    {      System.out.println(args [0] + " was not able to be found.");    }
 
     // Parse our lol    SimpleNode n = LolParser.parse();       // Create and initialize the ICode wrapper for the parse tree.
@@ -162,33 +164,34 @@ void FunctionCalls() #void : {
 	  ]
 	  < MKAY >}
 void FunctionDeclare() : {
-	int index = 0;
-  }
+  SymTabEntry funcEntry;
+  SymTab functionScope;
+  int currentVarIndex = variableIndex;
+}
 {
   < HOW_IZ_I >
   < IDENT >  {
-        SymTabEntry funcEntry = symTabStack.enterLocal(token.image);
+        funcEntry = symTabStack.enterLocal(token.image);
         funcEntry.setDefinition(DefinitionImpl.FUNCTION);
-        funcEntry.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
+        functionScope = symTabStack.push();
+        funcEntry.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, functionScope);
         funcEntry.appendLineNumber(token.beginLine);
+        variableIndex = 0;
     }
-    (< YR > <IDENT>{
-		processVariableDecl(token, index++, symTabStack.getLocalSymTab());
-  	})*
+ (< YR > <IDENT>{
+		processVariableDecl(token, variableIndex++, functionScope);
+  })* 
   Block()
   < IF_U_SAY_SO >  {
-    symTabStack.pop();  }
+    symTabStack.pop();
+    variableIndex = currentVarIndex;  }
 }
 
-void VarDeclareExpression() :
-{
-  int index = 0;
-}
+void VarDeclareExpression() : {}
 {
   	<I> <HAS> <A> variable(){
-		processVariableDecl(token, index++, symTabStack.getLocalSymTab());  	}
+		processVariableDecl(token, variableIndex++, symTabStack.getLocalSymTab());  	}
 	(<ITZ> ConstLiteralExpression())?
-//	(< EOL >)*
 }
 
 // vvv Arithemic Operations vvv \\
@@ -494,12 +497,10 @@ TOKEN :
 | < TLDR : "TLDR">
 | < MKAY : "MKAY">
 | < IDENT : (["A"-"Z"] | ["a"-"z"] | ["_"])+ >
-//| < EOL : "\n" | "\r" | "\r\n" >
 }
 
 TOKEN : /* EOL */
 {
-//  < END_OF_BLOCK://      < IF_U_SAY_SO >//   | (<IM><OUTTA><YR><LOOP_LABEL>) //  > |
  < EOL : // either newline or comma    < HARD_EOL > // newline  | < SOFT_EOL >> // comma
 | < #HARD_EOL : "\n" | "\r" | "\r\n" >
 | < #SOFT_EOL : (",") >
