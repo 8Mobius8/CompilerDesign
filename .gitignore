@@ -1,3 +1,4 @@
+*.j
 *.class
 build/
 nbproject/

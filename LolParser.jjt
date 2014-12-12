@@ -36,6 +36,9 @@ public class LolParser
   private static SymTabStack symTabStack;
   private static SymTabEntry programId;
   private static HashSet syncSet;
+
+    private static final String SOURCE_SUFFIX = ".lol";
+    private static final String OUTPUT_SUFFIX = ".j";
   
   public static void main(String args []) throws Exception
   {
@@ -45,16 +48,39 @@ public class LolParser
     symTabStack = SymTabFactory.createSymTabStack();    //Predefined.initialize(symTabStack);
     
     SymTab variableList;    int index = 0;    variableList = SymTabFactory.createSymTab(0);
-        try    {      if (args.length >= 1)      {        System.out.println("Reading from file: " + args [0]);        new LolParser(new FileReader(args [0]));      }      else      {        System.out.println("Reading from standard input...");        new LolParser(System.in);      }    }    catch (FileNotFoundException fnfe)    {      System.out.println(args [0] + " was not able to be found.");    }
+
+    String objectFilePath = null;
+        try    {      if (args.length >= 1)      {        System.out.println("Reading from file: " + args [0]);        new LolParser(new FileReader(args [0]));
+
+        
+        String sourceFilePath = args[0];
+        int truncatedLength = sourceFilePath.length() - SOURCE_SUFFIX.length();
+        int suffixIndex = sourceFilePath.lastIndexOf(SOURCE_SUFFIX);
+        objectFilePath = (suffixIndex == truncatedLength)
+            ? sourceFilePath.substring(0, truncatedLength) + OUTPUT_SUFFIX
+            : sourceFilePath + OUTPUT_SUFFIX;
+              }      else      {        System.out.println("Reading from standard input...");        new LolParser(System.in);      }    }    catch (FileNotFoundException fnfe)    {      System.out.println(args [0] + " was not able to be found.");    }
+
 
     // Parse our lol    SimpleNode n = LolParser.parse();       // Create and initialize the ICode wrapper for the parse tree.
     ICode iCode = ICodeFactory.createICode();    iCode.setRoot(n);    programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
         // Print the cross-reference table.
     CrossReferencer crossReferencer = new CrossReferencer();    crossReferencer.print(symTabStack);
 	printer.print(symTabStack);
-	
+
+
+
     // Generate Code
+	if(objectFilePath==null)
+	{
+	 System.err.println("Invalid path for the jasmin file!");
     zehBackend.process(iCode, symTabStack, "out.j");
+	}
+	else
+	{	 zehBackend.process(iCode,symTabStack, objectFilePath);
+	}
+
+	
   }
 }
 PARSER_END(LolParser)
