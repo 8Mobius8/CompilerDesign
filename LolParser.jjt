@@ -125,7 +125,16 @@ void Statement(HashSet syncSet) #void:{}
 void Expression(HashSet syncSet) : {}
 {
   ConstLiteralExpression()
-| < IDENT >
+| < IDENT >{
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }
 | Error()}
 
 void AssignmentExpression(HashSet syncSet):{}
@@ -179,7 +188,16 @@ void FunctionDeclare() : {}
   Block()
   < IF_U_SAY_SO >}
 void Param() #void : {}
-{	< IDENT > // Must add to current symtable
+{	< IDENT > {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }// Must add to current symtable
 }
 void VarDeclareExpression() :
 {
@@ -236,7 +254,17 @@ void SMALLR(): {} // Min
 }
 void UP():{}
 {
-    <UP> <IDENT> <BANG> Expression(syncSet)
+    <UP> <IDENT>{
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }
+    <BANG> Expression(syncSet)
 }
 // ^^^ Arithemic Expressions ^^^ \\
 
@@ -305,25 +333,71 @@ void LOL_STD_OPS(HashSet hashSet) : {}
 | 	StdIn()
 }
 void Increment() : {}
-{	< UPPIN > < IDENT > 
+{	< UPPIN > < IDENT > {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }
 }
 void Decrement() : {}
 {
-	< NERFIN > < IDENT > 
+	< NERFIN > < IDENT > {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }
 }
 void Break() #void : {}
 {	< GTFO : "GTFO" >
 }
 void StdOut(HashSet hs) : {}
 {
-  < VISIBLE > (ConstLiteralExpression()| <IDENT> | < TROOF >)}
+  < VISIBLE > (ConstLiteralExpression()| <IDENT> {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  } | < TROOF >)}
 void StdIn() :{}
 {
-  < GIMMEH > <IDENT>}
+  < GIMMEH > <IDENT> {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }}
 
 void loop(): {}
 {
-  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> <IDENT> ((<TIL>|<WILE>) BoolComparisonOperation())? )?
+  <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> <IDENT> {
+	SymTabEntry variableId = symTabStack.lookup(token.image);
+	if(variableId == null)
+	{
+	  System.err.print("UNDECLARED VARIABLE\n");
+    } else
+    {
+      variableId.appendLineNumber(token.beginLine);
+    }
+  }
+  ((<TIL>|<WILE>) BoolComparisonOperation())? )?
   	Block()
   <IM><OUTTA><YR> <LOOP_LABEL>
 }
