@@ -196,7 +196,7 @@ void FunctionDeclare() : {
   < HOW_IZ_I >
   < IDENT >  {
         programId = symTabStack.enterLocal(token.image);
-        programId.setDefinition(DefinitionImpl.PROGRAM);
+        programId.setDefinition(DefinitionImpl.FUNCTION);
         programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
         symTabStack.setProgramId(programId);
     }
