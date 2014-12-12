@@ -37,221 +37,157 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 {
 
   @Override
-  public Object visit(SimpleNode node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(SimpleNode node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTparse node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTparse node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTBlock node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTBlock node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTAssign node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTAssign node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTConst node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTConst node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTFunctionCall node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTFunctionCall node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTFunctionDef node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTFunctionDef node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTVariableDef node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTVariableDef node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTAdd node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTAdd node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTSubtract node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTSubtract node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTMultiply node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTMultiply node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTDivide node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTDivide node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTModulus node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTModulus node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTMax node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTMax node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTMin node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTMin node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTIncrementByInt node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTIncrementByInt node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTAnd node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTAnd node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTOr node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTOr node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTXor node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTXor node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTNot node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTNot node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTEquals node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTEquals node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTNotEquals node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTNotEquals node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTLOL_STD_OPS node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTLOL_STD_OPS node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTIncrement node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTIncrement node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTDecrement node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTDecrement node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTStdOut node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTStdOut node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTStdIn node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTStdIn node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTLoop node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTLoop node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTIf node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTIf node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTIfBlock node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTIfBlock node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTIdent node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-	
+  public Object visit(ASTIdent node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 }
