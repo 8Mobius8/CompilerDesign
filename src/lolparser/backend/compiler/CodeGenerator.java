@@ -52,15 +52,10 @@ public class CodeGenerator extends Backend
                       programName.substring(1);
         String methodName = programName.substring(0, 1).toLowerCase() +
                             programName.substring(1);
-        
-        
+                
         SymTabEntry programId = symTabStack.getProgramId();
-        
-        
-         //we never set this value in out .jjt
-        
-        
-        //int localsCount =                (Integer) programId.getAttribute(ROUTINE_LOCALS_COUNT);
+        int localsCount =
+                (Integer) programId.getAttribute(ROUTINE_LOCALS_COUNT);
         SymTab routineSymTab = 
                 (SymTab) programId.getAttribute(ROUTINE_SYMTAB);
         ArrayList<SymTabEntry> locals = routineSymTab.sortedEntries();
@@ -69,80 +64,56 @@ public class CodeGenerator extends Backend
         objectFile.println(".class public " + programName);
         objectFile.println(".super java/lang/Object");
         objectFile.println();
-        
-        
-     // Generate code for the timer and standard input fields.
-//        objectFile.println(".field private static _runTimer LRunTimer;");
-//        objectFile.println(".field private static _standardIn LPascalTextIn;");
+
+        // Generate code for fields.
+        for (SymTabEntry id : locals) {
+            Definition defn = id.getDefinition();
+
+            if (defn == VARIABLE) {
+                String fieldName = id.getName();
+                TypeSpec type = id.getTypeSpec();
+                String typeCode = type == Predefined.integerType ? "I" : "F";
+                objectFile.println(".field private static " + fieldName + " " + typeCode);
+            }
+        }
         objectFile.println();
-        
-        
-        
-        /////////Generate the class constructor
-        
-        
-        
-     // Generate the main method header.
+
+        // Generate the class constructor/
+        objectFile.println(".method public <init>()V");
+        objectFile.println();
+        objectFile.println("  aload_0");
+        objectFile.println("  invokenonvirtual  java/lang/Object/<init>()V");
+        objectFile.println("  return");
+        objectFile.println();
+        objectFile.println(".limit locals 11");
+        objectFile.println(".limit stack 11");
+        objectFile.println(".end method");
+        objectFile.println();
+
+        // Generate the main method header.
         objectFile.println(".method public static main([Ljava/lang/String;)V");
         objectFile.println();
-        
-        // Generate the main method prologue.
-//        objectFile.println("    new	 RunTimer");
-//        objectFile.println("    dup");
-//        objectFile.println("    invokenonvirtual	RunTimer/<init>()V");
-//        objectFile.println("    putstatic	" + programName +
-//        		           "/_runTimer LRunTimer;");
-//        objectFile.println("    new	 PascalTextIn");
-//        objectFile.println("    dup");
-//        objectFile.println("    invokenonvirtual	PascalTextIn/<init>()V");
-//        objectFile.println("    putstatic	" + programName +
-//        		           "/_standardIn LPascalTextIn;");
-        
-        
-        /*
-         * The following is the println instruction. Push the string onto the stack, then call
-         * println.
-         * 
-         * I'm not sure how to get the PascalTextIn or RunTimer to work, so I commented those out for now
-         *
-         */
-        
-        //; push System.out onto the stack
-        objectFile.println("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        //; push a string onto the stack
-        objectFile.println("ldc \"Hello World!\"");
-        //; call the PrintStream.println() method.
-        objectFile.println("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
-        
-        objectFile.println();
-        objectFile.flush();
 
-        
         // Visit the parse tree nodes to generate code 
         // for the main method's compound statement.
         CodeGeneratorVisitor codeVisitor = new CodeGeneratorVisitor();
         Node rootNode = iCode.getRoot();
         rootNode.jjtAccept(codeVisitor, programName);
         objectFile.println();
-        
-        
-        
-     // Generate the main method epilogue.
-//        objectFile.println("    getstatic	" + programName +
-//        		           "/_runTimer LRunTimer;");
-//        objectFile.println("    invokevirtual	RunTimer.printElapsedTime()V");
+
+        // May need double/long, which are 2 slots each.
+        int localSlots = (localsCount * 2) + 1;
+
+        // Generate the main method epilogue.
         objectFile.println();
         objectFile.println("    return");
         objectFile.println();
-        objectFile.println(".limit locals " + 100/*This is hardcoded because we never set ROUTINE_LOCALS_COUNT in out .jjt*/);
-        				/// Should be the number of local variables in the file. We may be 
-        				/// able to get this from counting symbol table entries. Not sure though
+        objectFile.println(".limit locals " + localSlots);
         objectFile.println(".limit stack  " + STACK_LIMIT);
         objectFile.println(".end method");
         objectFile.flush();
 
-        CodeGenerator.objectFile.close();
-        
+        CodeGenerator.objectFile.close();   
     }
 
     public void processFunction(ICode iCode, SymTabStack symTabStack,
