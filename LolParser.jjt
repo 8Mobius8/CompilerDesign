@@ -46,70 +46,22 @@ public class LolParser
   
   public static void main(String args []) throws Exception
   {
-    Backend zehBackend = BackendFactory.createBackend("compile");
-    ParseTreePrinter printer = new ParseTreePrinter(System.out);
+    Backend zehBackend = BackendFactory.createBackend("compile");    ParseTreePrinter printer = new ParseTreePrinter(System.out);
+        symTabStack = SymTabFactory.createSymTabStack();    Predefined.initialize(symTabStack);
+        SymTab variableList = SymTabFactory.createSymTab(0);    String objectFilePath = null;
+        try    {      if (args.length >= 1)      {        System.out.println("Reading from file: " + args [0]);        new LolParser(new FileReader(args [0]));
+                String sourceFilePath = args [0];        int truncatedLength = sourceFilePath.length() - SOURCE_SUFFIX.length();        int suffixIndex = sourceFilePath.lastIndexOf(SOURCE_SUFFIX);        objectFilePath = (suffixIndex == truncatedLength)         ? sourceFilePath.substring(0, truncatedLength) + OUTPUT_SUFFIX         : sourceFilePath + OUTPUT_SUFFIX;      }      else      {        System.out.println("Reading from standard input...");        new LolParser(System.in);      }    }    catch (FileNotFoundException fnfe)    {      System.out.println(args [0] + " was not able to be found.");    }
+        // Parse our lol
+    SimpleNode n = LolParser.parse();
+        // Create and initialize the ICode wrapper for the parse tree.
+    ICode iCode = ICodeFactory.createICode();    iCode.setRoot(n);    programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
+        // Print the cross-reference table.
+    CrossReferencer crossReferencer = new CrossReferencer();    crossReferencer.print(symTabStack);    printer.print(symTabStack);
+        // Generate Code
+    if (objectFilePath == null)    {      System.err.println("Invalid path for the jasmin file! Outputing to out.j ...");      zehBackend.process(iCode, symTabStack, "out.j");    }    else    {      zehBackend.process(iCode, symTabStack, objectFilePath);    }
+        // Generate code for function defs
+    ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(SymTabKeyImpl.ROUTINE_ROUTINES);    for (SymTabEntry symTab : symTabEntries)    {      iCode = (ICode) symTab.getAttribute(SymTabKeyImpl.ROUTINE_ICODE);      zehBackend.processFunction(iCode, symTabStack, objectFilePath, symTab);    }
     
-    symTabStack = SymTabFactory.createSymTabStack();
-    Predefined.initialize(symTabStack);
-    
-    SymTab variableList = SymTabFactory.createSymTab(0);
-
-    String objectFilePath = null;
-    
-    try
-    {
-      if (args.length >= 1)
-      {
-        System.out.println("Reading from file: " + args [0]);
-        new LolParser(new FileReader(args [0]));
-
-        String sourceFilePath = args[0];
-        int truncatedLength = sourceFilePath.length() - SOURCE_SUFFIX.length();
-        int suffixIndex = sourceFilePath.lastIndexOf(SOURCE_SUFFIX);
-        objectFilePath = (suffixIndex == truncatedLength)
-            ? sourceFilePath.substring(0, truncatedLength) + OUTPUT_SUFFIX
-            : sourceFilePath + OUTPUT_SUFFIX;
-        
-      }
-      else
-      {
-        System.out.println("Reading from standard input...");
-        new LolParser(System.in);
-      }
-    }
-    catch (FileNotFoundException fnfe)
-    {
-      System.out.println(args [0] + " was not able to be found.");
-    }
-
-      // Parse our lol
-      SimpleNode n = LolParser.parse();
-   
-      // Create and initialize the ICode wrapper for the parse tree.
-      ICode iCode = ICodeFactory.createICode();
-      iCode.setRoot(n);
-      programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
-    
-      // Print the cross-reference table.
-      CrossReferencer crossReferencer = new CrossReferencer();
-      crossReferencer.print(symTabStack);
-	    printer.print(symTabStack);
-
-      // Generate Code
-      if(objectFilePath==null) {
-        System.err.println("Invalid path for the jasmin file!");
-        zehBackend.process(iCode, symTabStack, "out.j");
-      } else {
-        zehBackend.process(iCode,symTabStack, objectFilePath);
-      }
-
-      // Generate code for function defs
-      ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(SymTabKeyImpl.ROUTINE_ROUTINES);
-      for (SymTabEntry symTab : symTabEntries) {
-        iCode = (ICode) symTab.getAttribute(SymTabKeyImpl.ROUTINE_ICODE);
-        zehBackend.processFunction(iCode, symTabStack, objectFilePath, symTab);
-      }
-      
   }
   public static void printCaller()
   {
@@ -176,7 +128,7 @@ void Statement(HashSet syncSet) #void:{}
 | Error()
 }
 
-void Expression(HashSet syncSet) : {}
+void Expression(HashSet syncSet) #void : {}
 {
   ConstLiteralExpression()
 | variable() {
@@ -192,7 +144,7 @@ void Expression(HashSet syncSet) : {}
 | Error()
 }
 
-void AssignmentExpression(HashSet syncSet):{}
+void AssignmentExpression(HashSet syncSet) #Assign: {}
 {
  variable()  {
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -212,7 +164,7 @@ void FlowControlExpression() #void:{}
 | ifThen()
 }
 
-void ConstLiteralExpression() #void:{}
+void ConstLiteralExpression() #Const:{}
 {
   < QUOTED_STRING >
 | < INTEGER >
@@ -224,7 +176,7 @@ void Declarations() #void : {}
 | FunctionDeclare()
 }
 
-void FunctionCalls() #void : {
+void FunctionCalls() #FunctionCall : {
   HashSet paramSyncSet = new HashSet();
   syncSet = paramSyncSet;
   paramSyncSet.add(AN);
@@ -247,7 +199,7 @@ void FunctionCalls() #void : {
 	  ]
 	  < MKAY >
 }
-void FunctionDeclare() : {
+void FunctionDeclare() #FunctionDef : {
   SymTabEntry funcEntry;
   SymTab functionScope;
   int currentVarIndex = variableIndex;
@@ -271,7 +223,7 @@ void FunctionDeclare() : {
     variableIndex = currentVarIndex;  }
 }
 
-void VarDeclareExpression() : {}
+void VarDeclareExpression() #VariableDef : {}
 {
   	<I> <HAS> <A> variable(){
 		processVariableDecl(token, variableIndex++, symTabStack.getLocalSymTab());  	}
@@ -290,36 +242,36 @@ void ArithemticExpression(HashSet syncSet) #void:{}
 | SMALLR() 	// Min
 | UP()      // Increment
 }
-void SUM():  	// Add
+void SUM() #Add :  	// Add
 {}
 {
 	<SUM> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
-void DIFF(): {} // Subtract
+void DIFF() #Subtract : {} // Subtract
 {
   <DIFF> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
-void PRODUKT(): {} // Product
+void PRODUKT() #Multiply : {} // Product
 {
 	<PRODUKT> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
-void QUOSHUNT(): {} // Quotient
+void QUOSHUNT() #Divide : {} // Quotient
 {
   <QUOSHUNT> <OF> Expression(syncSet) <AN> Expression(syncSet)	
 }
-void MOD(): {} // Modulous
+void MOD() #Modulus: {} // Modulous
 {
 	<MOD> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
-void BIGGR(): {} // Max
+void BIGGR() #Max: {} // Max
 {
 	<BIGGR> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
-void SMALLR(): {} // Min
+void SMALLR() #Min: {} // Min
 {
 	<SMALLR> <OF> Expression(syncSet) <AN> Expression(syncSet)
 }
-void UP():{}
+void UP() #IncrementByInt :{}
 {
     <UP> variable() {
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -335,13 +287,13 @@ void UP():{}
 }
 // ^^^ Arithemic Expressions ^^^ \\
 
-void BoolComparisonOperation():{}{
+void BoolComparisonOperation() #void :{}{
 LOOKAHEAD(2) (ComparisonOperation())
 | BooleanOperation()
 }
 
 // vvv Boolean Expressions vvv \\
-void BooleanOperation():{
+void BooleanOperation() #void :{
   HashSet boolOpSet = new HashSet();
   syncSet = boolOpSet;
   boolOpSet.add(AN);
@@ -353,25 +305,25 @@ void BooleanOperation():{
 | WON(boolOpSet)    // Xor
 | NOT(boolOpSet)    // Not
 }
-void BOTH(HashSet syncSet):{} // And
+void BOTH(HashSet syncSet) #And :{} // And
 {
   <BOTH> <OF> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
-void EITHER(HashSet syncSet):{} // Or
+void EITHER(HashSet syncSet) #Or :{} // Or
 {
   <EITHER> <OF> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
-void WON(HashSet syncSet):{} // Xor
+void WON(HashSet syncSet) #Xor :{} // Xor
 {
   <WON> <OF> Expression(syncSet) (<AN>)? Expression(syncSet)
 }
-void NOT(HashSet syncSet):{} // Not
+void NOT(HashSet syncSet) #Not :{} // Not
 {
   <NOT> Expression(syncSet)
 }
 // ^^^ Boolean Expressions ^^^ \\
 
-void ComparisonOperation():{
+void ComparisonOperation() #void:{
   HashSet boolOpSet = new HashSet();
   syncSet = boolOpSet;
   boolOpSet.add(AN);
@@ -381,11 +333,11 @@ void ComparisonOperation():{
   BOTHSAEM(boolOpSet) // Equals
 | DIFFRINT(boolOpSet) // Not Equals
 }
-void BOTHSAEM(HashSet syncSet):{}
+void BOTHSAEM(HashSet syncSet) #Equals:{}
 {
   <BOTH> <SAEM> (Expression(syncSet)|<TROOF>) (<AN>)? (Expression(syncSet)|<TROOF>)
 }
-void DIFFRINT(HashSet syncSet):{}
+void DIFFRINT(HashSet syncSet) #NotEquals:{}
 {
   <DIFFRINT> (Expression(syncSet)|<TROOF>) (<AN>)? (Expression(syncSet)|<TROOF>)
 }
@@ -400,7 +352,7 @@ void LOL_STD_OPS(HashSet hashSet) : {}
 |   StdOut(hashSet)
 | 	StdIn()
 }
-void Increment() : {}
+void Increment() #Increment : {}
 {
 	< UPPIN > variable() {
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -413,7 +365,7 @@ void Increment() : {}
     }
   }
 }
-void Decrement() : {}
+void Decrement() #Decrement : {}
 {
 	< NERFIN > variable(){
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -430,7 +382,7 @@ void Break() #void : {}
 {
 	< GTFO : "GTFO" >
 }
-void StdOut(HashSet hs) : {}
+void StdOut(HashSet hs) #StdOut : {}
 {
   < VISIBLE > (ConstLiteralExpression()| variable() {
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -444,7 +396,7 @@ void StdOut(HashSet hs) : {}
   }
   | < TROOF >)
 }
-void StdIn() :{}
+void StdIn() #StdIn:{}
 {
   < GIMMEH > variable() {
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -458,7 +410,7 @@ void StdIn() :{}
   }
 }
 
-void loop(): {}
+void loop() #Loop: {}
 {
   <IM>  <IN> <YR> <LOOP_LABEL> (LOOKAHEAD(2) (<UPPIN>|<NERFIN>) <YR> variable() {
     SymTabEntry variableId = symTabStack.lookup(token.image);
@@ -475,13 +427,13 @@ void loop(): {}
   <IM><OUTTA><YR> <LOOP_LABEL>
 }
 
-void ifThen() #void :{}
+void ifThen() #If :{}
 {
   < O_RLY ><QUESTION>
   	IfBlock()
   < OIC >
 }
-void IfBlock() : {}
+void IfBlock() #IfBlock : {}
 {
   (BoolComparisonOperation() | <TROOF>)
   < YA_RLY >
@@ -492,7 +444,7 @@ void IfBlock() : {}
     Block() )?
 }
 
-void variable():{}
+void variable() #Ident:{}
 {
   < IDENT >
 }
