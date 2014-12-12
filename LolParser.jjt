@@ -185,11 +185,13 @@ void FunctionCalls() #void : {
 void FunctionDeclare() : {}
 {
   < HOW_IZ_I >
-  Param() (< YR > Param())*
-  Block()
-  < IF_U_SAY_SO >}
-void Param() #void : {}
-{	< IDENT > {
+  Param()  {
+        programId = symTabStack.enterLocal(token.image);
+        programId.setDefinition(DefinitionImpl.PROGRAM);
+        programId.setAttribute(SymTabKeyImpl.ROUTINE_SYMTAB, symTabStack.push());
+        symTabStack.setProgramId(programId);
+    }
+    (< YR > Param(){
 	SymTabEntry variableId = symTabStack.lookup(token.image);
 	if(variableId == null)
 	{
@@ -198,7 +200,11 @@ void Param() #void : {}
     {
       variableId.appendLineNumber(token.beginLine);
     }
-  }// Must add to current symtable
+  })*
+  Block()
+  < IF_U_SAY_SO >}
+void Param() #void : {}
+{	< IDENT > // Must add to current symtable
 }
 void VarDeclareExpression() :
 {
