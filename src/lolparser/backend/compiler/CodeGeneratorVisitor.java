@@ -42,8 +42,23 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
 						SymTabEntry entry = CodeGenerator.symTabStack.lookupLocal(val);
-						return entry.getAttribute(SymTabKeyImpl.DATA_VALUE); // returns the symbol table entry for the variable
 
+		        String programName = CodeGenerator.symTabStack.getProgramId().getName();
+		        String fullname = programName + "/" + val;
+		        TypeSpec type = entry.getTypeSpec();
+		        String typeStr;
+		        if(type == Predefined.integerType)
+		          typeStr = "I";
+		        else if(type == Predefined.realType)
+		          typeStr = "F";
+		        else if(type == Predefined.booleanType)
+		          typeStr = "Z";
+		        else
+		          typeStr = "Ljava/lang/String;";
+		        
+		        out("getstatic \t" + fullname + " " +typeStr);
+		        
+		        return entry.getAttribute(SymTabKeyImpl.DATA_VALUE); // returns the symbol table entry for the variable
 					}
 				return data; // should never get here
 			}
@@ -67,9 +82,24 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString(); //this gets the name of a child identifier
 				Object value = node.jjtGetChild(1).jjtAccept(this, data);
 
-				SymTabEntry entry = CodeGenerator.symTabStack.enterLocal(name);
+				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
 				entry.setAttribute(SymTabKeyImpl.DATA_VALUE, value); ///
-
+				
+				String programName = CodeGenerator.symTabStack.getProgramId().getName();
+        String fullname = programName + "/" + name;
+        TypeSpec type = entry.getTypeSpec();
+        String typeStr;
+        if(type == Predefined.integerType)
+          typeStr = "I";
+        else if(type == Predefined.realType)
+          typeStr = "F";
+        else if(type == Predefined.booleanType)
+          typeStr = "Z";
+        else
+          typeStr = "Ljava/lang/String;";
+        
+        out("putstatic \t" + fullname + " " +typeStr);
+        
 				return data;
 			}
 		

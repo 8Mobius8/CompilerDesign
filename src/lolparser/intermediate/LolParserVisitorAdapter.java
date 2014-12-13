@@ -21,7 +21,6 @@ import lolparser.frontend.ASTIfCheck;
 import lolparser.frontend.ASTIfElseBlock;
 import lolparser.frontend.ASTIncrement;
 import lolparser.frontend.ASTIncrementByInt;
-import lolparser.frontend.ASTLOL_STD_OPS;
 import lolparser.frontend.ASTLoop;
 import lolparser.frontend.ASTMax;
 import lolparser.frontend.ASTMin;
@@ -144,11 +143,6 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 
   @Override
   public Object visit(ASTNotEquals node, Object data) {
-      return node.childrenAccept(this, data);
-   }
-
-  @Override
-  public Object visit(ASTLOL_STD_OPS node, Object data) {
       return node.childrenAccept(this, data);
    }
 

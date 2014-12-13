@@ -2,6 +2,8 @@ package lolparser.backend.compiler;
 
 import lolparser.backend.compiler.CodeGenerator;
 import lolparser.backend.compiler.Instruction;
+import lolparser.intermediate.*;
+import lolparser.intermediate.symtabimpl.Predefined;
 
 public class CodeGeneratorHelper
 {
@@ -40,4 +42,5 @@ public class CodeGeneratorHelper
     CodeGenerator.objectFile.println(opcode.toString()+ "\t" + operand1 + " " +operand2);
     CodeGenerator.objectFile.flush();
   }
+  
 }
