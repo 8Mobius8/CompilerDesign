@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import lolparser.frontend.*;
 import lolparser.intermediate.ICodeNode;
 import lolparser.intermediate.LolParserVisitorAdapter;
+import lolparser.intermediate.SymTabEntry;
+import lolparser.intermediate.TypeForm;
 import lolparser.intermediate.icodeimpl.ICodeKeyImpl;
+import lolparser.intermediate.symtabimpl.SymTabKeyImpl;
+import lolparser.intermediate.typeimpl.TypeSpecImpl;
 
-public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
-		LolParserTreeConstants
+public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements LolParserTreeConstants
 	{
 		/*
 		 * data is the string for program name, or... ?
@@ -23,34 +26,77 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		 * CodeGenerator.objectFile.flush(); return data; }
 		 */
 
+		private static final TypeForm String = null;
+
+		public Object visit(ASTIdent node, Object data)
+			{
+				if (data.toString() == "name") { return node.getAttribute(ICodeKeyImpl.VALUE).toString(); }
+				if (node.containsKey(ICodeKeyImpl.VALUE))
+					{
+						// /get the name of the identifier from the tree
+						// / look it up in the symbol table
+
+						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+						SymTabEntry entry = CodeGenerator.symTabStack.lookupLocal(val);
+						return entry.getAttribute(SymTabKeyImpl.DATA_VALUE); // returns the symbol table entry for the variable
+
+					}
+				return data; // should never get here
+			}
+
+		public Object visit(ASTVariableDef node, Object data)
+			{
+
+				// do check to ensure that child is there? Or assume parser returned
+				// valid code?
+				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString(); //this gets the name of a child identifier
+				CodeGenerator.symTabStack.enterLocal(name);
+
+				return data;
+			}
+
+		public Object visit(ASTAssign node, Object data)
+			{
+				// /put the value of the second child into the symbol table entry for
+				// the first
+				
+				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString(); //this gets the name of a child identifier
+				Object value = node.jjtGetChild(1).jjtAccept(this, data);
+				
+				
+				SymTabEntry entry = CodeGenerator.symTabStack.enterLocal(name);
+				entry.setAttribute(SymTabKeyImpl.DATA_VALUE, value); ///
+				
+
+				return data;
+			}
+
 		public Object visit(ASTConst node, Object data)
-		{
-			
-			if(node.containsKey(ICodeKeyImpl.VALUE))
-				{
-					String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-					return val;
-					
-					
-				}
-			return data;
-		}
-		
-		//<meow> :,weo,m: Mew mew (meroow);
-		
+			{
+
+				if (node.containsKey(ICodeKeyImpl.VALUE))
+					{
+						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+						return val;
+
+					}
+				return data;
+			}
+
+		// <meow> :,weo,m: Mew mew (meroow);
+
 		public Object visit(ASTStdOut node, Object data)
 			{
 				Node kid = node.jjtGetChild(0);
-				
 
 				out("getstatic java/lang/System/out Ljava/io/PrintStream;");
 				if (kid == null)
 					{
 						out("ldc \"\"");
-					} 
+					}
 				else
 					{
-						
+
 						out("ldc \"" + kid.jjtAccept(this, data) + "\"");
 					}
 

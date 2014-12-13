@@ -1,3 +1,12 @@
+<<<<<<< origin/master
 HAI
-VISIBLE 3
+I HAS A var
+var R 3
+VISIBLE var
+=======
+HAI
+I HAS A var
+var R 3
+VISIBLE var
+>>>>>>> local
 KTHXBYE
