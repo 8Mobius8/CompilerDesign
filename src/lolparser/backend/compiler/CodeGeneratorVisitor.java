@@ -28,7 +28,8 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		 */
 
 		private static final TypeForm String = null;
-
+		private static int labelCount = 0;
+		
 		public Object visit(ASTIdent node, Object data)
 			{
 				if (data.toString() == "name") { return node.getAttribute(ICodeKeyImpl.VALUE).toString(); }

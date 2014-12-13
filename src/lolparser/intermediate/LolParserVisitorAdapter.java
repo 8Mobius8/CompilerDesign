@@ -7,12 +7,15 @@ import lolparser.frontend.ASTBlock;
 import lolparser.frontend.ASTConst;
 import lolparser.frontend.ASTDecrement;
 import lolparser.frontend.ASTDivide;
+import lolparser.frontend.ASTElseBlock;
 import lolparser.frontend.ASTEquals;
 import lolparser.frontend.ASTFunctionCall;
 import lolparser.frontend.ASTFunctionDef;
 import lolparser.frontend.ASTIdent;
 import lolparser.frontend.ASTIf;
 import lolparser.frontend.ASTIfBlock;
+import lolparser.frontend.ASTIfCheck;
+import lolparser.frontend.ASTIfElseBlock;
 import lolparser.frontend.ASTIncrement;
 import lolparser.frontend.ASTIncrementByInt;
 import lolparser.frontend.ASTLOL_STD_OPS;
@@ -190,4 +193,25 @@ public class LolParserVisitorAdapter implements LolParserVisitor
   public Object visit(ASTIdent node, Object data) {
       return node.childrenAccept(this, data);
    }
+
+  @Override
+  public Object visit(ASTIfCheck node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTIfElseBlock node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Object visit(ASTElseBlock node, Object data)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }
