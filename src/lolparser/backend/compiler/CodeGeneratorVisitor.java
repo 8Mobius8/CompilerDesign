@@ -23,19 +23,35 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		 * CodeGenerator.objectFile.flush(); return data; }
 		 */
 
+		public Object visit(ASTConst node, Object data)
+		{
+			
+			if(node.containsKey(ICodeKeyImpl.VALUE))
+				{
+					String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+					return val;
+					
+					
+				}
+			return data;
+		}
+		
+		//<meow> :,weo,m: Mew mew (meroow);
+		
 		public Object visit(ASTStdOut node, Object data)
 			{
-				ArrayList<ICodeNode> kids = node.getChildren();
+				Node kid = node.jjtGetChild(0);
+				
 
 				out("getstatic java/lang/System/out Ljava/io/PrintStream;");
-				if (kids == null || kids.isEmpty())
+				if (kid == null)
 					{
 						out("ldc \"\"");
-					} else
+					} 
+				else
 					{
-						ICodeNode firstborn = kids.get(0);
-						String val = firstborn.getAttribute(ICodeKeyImpl.VALUE).toString();
-						out("ldc " + val + "************");
+						
+						out("ldc \"" + kid.jjtAccept(this, data) + "\"");
 					}
 
 				out("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
