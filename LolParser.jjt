@@ -166,7 +166,9 @@ void FlowControlExpression() #void:{}
 
 void ConstLiteralExpression() #Const:{}
 {
-  < QUOTED_STRING >
+  < QUOTED_STRING >{
+    	jjtThis.setTypeSpec(Predefined.charType);
+    	jjtThis.setAttribute(ICodeKeyImpl.VALUE, token.image);  }
 | < INTEGER >{        jjtThis.setTypeSpec(Predefined.integerType);
         jjtThis.setAttribute(ICodeKeyImpl.VALUE, Integer.parseInt(token.image));
       }
