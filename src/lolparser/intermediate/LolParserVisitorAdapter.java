@@ -193,51 +193,37 @@ public class LolParserVisitorAdapter implements LolParserVisitor
    }
 
   @Override
-  public Object visit(ASTIfCheck node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTIfCheck node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTIfElseBlock node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTIfElseBlock node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTElseBlock node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTElseBlock node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTConst_String node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTConst_String node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTConst_Int node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTConst_Int node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTConst_Real node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTConst_Real node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 
   @Override
-  public Object visit(ASTConst_Bool node, Object data)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public Object visit(ASTConst_Bool node, Object data) {
+      return node.childrenAccept(this, data);
+   }
 }
