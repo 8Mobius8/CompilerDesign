@@ -36,6 +36,7 @@ public class Predefined
     public static SymTabEntry charId;
     public static SymTabEntry falseId;
     public static SymTabEntry trueId;
+    public static SymTabEntry undefinedId;
 //    public static SymTabEntry readId;
 //    public static SymTabEntry readlnId;
 //    public static SymTabEntry writeId;
@@ -104,7 +105,11 @@ public class Predefined
         charId.setTypeSpec(charType);
 
         // Undefined type.
+        undefinedId = symTabStack.enterLocal("NOOB");
         undefinedType = TypeFactory.createType(SCALAR);
+        undefinedType.setIdentifier(undefinedId);
+        undefinedId.setDefinition(DefinitionImpl.TYPE);
+        undefinedId.setTypeSpec(undefinedType);
     }
 
     /**
