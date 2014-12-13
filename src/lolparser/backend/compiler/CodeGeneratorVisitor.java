@@ -82,8 +82,8 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
         TypeSpec type1 = addend1Node.getTypeSpec();
 
         // Get the addition type.
-        TypeSpec type = node.getTypeSpec();
-        String typePrefix = (type == Predefined.integerType) ? "i" : "f";
+        TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType : Predefined.integerType;
+        String typePrefix = (type == Predefined.realType) ? "f" : "i";
 
         // Emit code for the first expression
         // with type conversion if necessary.
