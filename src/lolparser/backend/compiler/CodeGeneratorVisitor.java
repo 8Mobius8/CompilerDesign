@@ -85,53 +85,29 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				return data;
 			}*/
-		public Object visit(ASTConst_Int node, Object data)
-		{
-		  if (node.containsKey(ICodeKeyImpl.VALUE))
-      {
-        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
-          val = val.substring(1, val.length() - 1);
-        return val;
-      }
-		  return data;
+		public Object visit(ASTConst_Int node, Object data) {
+			int value = (Integer) node.getAttribute(ICodeKeyImpl.VALUE);
+
+			return value;
 		}
+
+		public Object visit(ASTConst_Real node, Object data) {
+      		float value = (Float) node.getAttribute(ICodeKeyImpl.VALUE);
+
+      		return value;
+    	}
 		
-		public Object visit(ASTConst_Bool node, Object data)
-		{
-		  if (node.containsKey(ICodeKeyImpl.VALUE))
-      {
-        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
-          val = val.substring(1, val.length() - 1);
-        return val;
-      }
-      return data;
+		public Object visit(ASTConst_String node, Object data) {
+			String value = (String) node.getAttribute(ICodeKeyImpl.VALUE);
+
+			return value;
 		}
-		
-		public Object visit(ASTConst_Real node, Object data)
-    {
-      if (node.containsKey(ICodeKeyImpl.VALUE))
-      {
-        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
-          val = val.substring(1, val.length() - 1);
-        return val;
-      }
-      return data;
-    }
-		
-		public Object visit(ASTConst_String node, Object data)
-    {
-      if (node.containsKey(ICodeKeyImpl.VALUE))
-      {
-        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
-          val = val.substring(1, val.length() - 1);
-        return val;
-      }
-      return data;
-    }
+
+		public Object visit(ASTConst_Bool node, Object data) {
+			boolean value = (Boolean) node.getAttribute(ICodeKeyImpl.VALUE);
+
+			return value;
+		}
 		
 		public Object visit(ASTStdIn node, Object data) {
 			out("getstatic java/lang/System/in Ljava/io/InputStream;");
