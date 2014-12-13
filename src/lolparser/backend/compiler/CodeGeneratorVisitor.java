@@ -71,7 +71,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return data;
 			}
 		
-		// Split up ASTConst into separte nodes.
+		// Split up ASTConst into separate nodes.
 		/*public Object visit(ASTConst node, Object data)
 			{
 
@@ -85,7 +85,54 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				return data;
 			}*/
-
+		public Object visit(ASTConst_Int node, Object data)
+		{
+		  if (node.containsKey(ICodeKeyImpl.VALUE))
+      {
+        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
+          val = val.substring(1, val.length() - 1);
+        return val;
+      }
+		  return data;
+		}
+		
+		public Object visit(ASTConst_Bool node, Object data)
+		{
+		  if (node.containsKey(ICodeKeyImpl.VALUE))
+      {
+        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
+          val = val.substring(1, val.length() - 1);
+        return val;
+      }
+      return data;
+		}
+		
+		public Object visit(ASTConst_Real node, Object data)
+    {
+      if (node.containsKey(ICodeKeyImpl.VALUE))
+      {
+        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
+          val = val.substring(1, val.length() - 1);
+        return val;
+      }
+      return data;
+    }
+		
+		public Object visit(ASTConst_String node, Object data)
+    {
+      if (node.containsKey(ICodeKeyImpl.VALUE))
+      {
+        String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+        if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
+          val = val.substring(1, val.length() - 1);
+        return val;
+      }
+      return data;
+    }
+		
 		public Object visit(ASTStdIn node, Object data) {
 			out("getstatic java/lang/System/in Ljava/io/InputStream;");
 			out("invokevirtual java/io/InputStream/read()I");
