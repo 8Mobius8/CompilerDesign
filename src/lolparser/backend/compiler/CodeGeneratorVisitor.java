@@ -7,6 +7,7 @@ import lolparser.intermediate.ICodeNode;
 import lolparser.intermediate.LolParserVisitorAdapter;
 import lolparser.intermediate.SymTabEntry;
 import lolparser.intermediate.TypeForm;
+import lolparser.intermediate.TypeSpec;
 import lolparser.intermediate.icodeimpl.ICodeKeyImpl;
 import lolparser.intermediate.symtabimpl.SymTabKeyImpl;
 import lolparser.intermediate.typeimpl.TypeSpecImpl;
@@ -71,6 +72,41 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return data;
 			}
 		
+		public Object visit(ASTAdd node, Object data)
+    {
+        SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+        SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+        TypeSpec type0 = addend0Node.getTypeSpec();
+        TypeSpec type1 = addend1Node.getTypeSpec();
+
+        // Get the addition type.
+        TypeSpec type = node.getTypeSpec();
+        String typePrefix = (type == Predefined.integerType) ? "i" : "f";
+
+        // Emit code for the first expression
+        // with type conversion if necessary.
+        addend0Node.jjtAccept(this, data);
+        if ((type == Predefined.realType) &&
+            (type0 == Predefined.integerType))
+        {
+            out("i2f");
+        }
+
+        // Emit code for the second expression
+        // with type conversion if necessary.
+        addend1Node.jjtAccept(this, data);
+        if ((type == Predefined.realType) &&
+            (type1 == Predefined.integerType))
+        {
+            out("i2f");
+        }
+
+        // Emit the appropriate add instruction.
+        out(typePrefix+"add");
+
+        return data;
+    }
 		// Split up ASTConst into separate nodes.
 		/*public Object visit(ASTConst node, Object data)
 			{
