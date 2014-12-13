@@ -577,6 +577,7 @@ void processVariableDecl(Token token, int index,
     variableId.setIndex(index);
     variableId.setDefinition(DefinitionImpl.VARIABLE);
     variableId.appendLineNumber(token.beginLine);
+    variableList.add(variableId);
 }
 
 JAVACODE
