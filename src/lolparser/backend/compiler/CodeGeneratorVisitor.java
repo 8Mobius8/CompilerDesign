@@ -71,7 +71,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return data;
 			}
 
-		public Object visit(ASTConstString node, Object data)
+		public Object visit(ASTConst node, Object data)
 			{
 
 				if (node.containsKey(ICodeKeyImpl.VALUE))
@@ -83,29 +83,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				return data;
 			}
-		
-    public Object visit(ASTConstInt node, Object data)
-    {
 
-      if (node.containsKey(ICodeKeyImpl.VALUE))
-        {
-          String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-          return val;
-
-        }
-      return data;
-    }
-    public Object visit(ASTConstNum node, Object data)
-    {
-
-      if (node.containsKey(ICodeKeyImpl.VALUE))
-        {
-          String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-          return val;
-        }
-      return data;
-    }
-    
 		// <meow> :,weo,m: Mew mew (meroow);
 
 		public Object visit(ASTStdOut node, Object data)
