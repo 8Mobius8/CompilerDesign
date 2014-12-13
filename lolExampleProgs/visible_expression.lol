@@ -5,6 +5,6 @@ HAI
  I HAS A otherVar
  otherVar R 5
 
- VISIBLE SUM Var AN otherVar
+ VISIBLE SUM OF Var AN otherVar
 
 KTHXBYE
