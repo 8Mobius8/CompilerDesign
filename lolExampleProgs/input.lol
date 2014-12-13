@@ -1,3 +1,4 @@
 HAI
+VISIBLE "Enter something: "
 GIMMEH HIGHFIVE
 KTHXBYE
