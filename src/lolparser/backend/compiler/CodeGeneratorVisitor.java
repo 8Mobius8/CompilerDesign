@@ -73,41 +73,145 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return data;
 			}
 		
-		public Object visit(ASTAdd node, Object data)
-    {
-        SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
-        SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+		public Object visit(ASTAdd node, Object data) {
+        	SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+        	SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
 
-        TypeSpec type0 = addend0Node.getTypeSpec();
-        TypeSpec type1 = addend1Node.getTypeSpec();
+        	TypeSpec type0 = addend0Node.getTypeSpec();
+        	TypeSpec type1 = addend1Node.getTypeSpec();
 
-        // Get the addition type.
-        TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType : Predefined.integerType;
-        String typePrefix = (type == Predefined.realType) ? "f" : "i";
+        	// Get the addition type.
+        	TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType : Predefined.integerType;
+        	String typePrefix = (type == Predefined.realType) ? "f" : "i";
 
-        // Emit code for the first expression
-        // with type conversion if necessary.
-        addend0Node.jjtAccept(this, data);
-        if ((type == Predefined.realType) &&
-            (type0 == Predefined.integerType))
-        {
-            out("i2f");
-        }
+        	// Emit code for the first expression
+        	// with type conversion if necessary.
+        	addend0Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type0 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
 
-        // Emit code for the second expression
-        // with type conversion if necessary.
-        addend1Node.jjtAccept(this, data);
-        if ((type == Predefined.realType) &&
-            (type1 == Predefined.integerType))
-        {
-            out("i2f");
-        }
+        	// Emit code for the second expression
+        	// with type conversion if necessary.
+        	addend1Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type1 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
 
-        // Emit the appropriate add instruction.
-        out(typePrefix+"add");
+        	// Emit the appropriate add instruction.
+        	out(typePrefix+"add");
 
-        return data;
-    }
+        	return data;
+    	}
+
+    	public Object visit(ASTSubtract node, Object data) {
+        	SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+        	SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+        	TypeSpec type0 = addend0Node.getTypeSpec();
+        	TypeSpec type1 = addend1Node.getTypeSpec();
+
+        	// Get the addition type.
+        	TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType : Predefined.integerType;
+        	String typePrefix = (type == Predefined.realType) ? "f" : "i";
+
+        	// Emit code for the first expression
+        	// with type conversion if necessary.
+        	addend0Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type0 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
+
+        	// Emit code for the second expression
+        	// with type conversion if necessary.
+        	addend1Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type1 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
+
+        	// Emit the appropriate add instruction.
+        	out(typePrefix+"sub");
+
+        	return data;
+    	}
+
+    	public Object visit(ASTMultiply node, Object data) {
+        	SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+        	SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+        	TypeSpec type0 = addend0Node.getTypeSpec();
+        	TypeSpec type1 = addend1Node.getTypeSpec();
+
+        	// Get the addition type.
+        	TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType : Predefined.integerType;
+        	String typePrefix = (type == Predefined.realType) ? "f" : "i";
+
+        	// Emit code for the first expression
+        	// with type conversion if necessary.
+        	addend0Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type0 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
+
+        	// Emit code for the second expression
+        	// with type conversion if necessary.
+        	addend1Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type1 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
+
+        	// Emit the appropriate add instruction.
+        	out(typePrefix+"mul");
+
+        	return data;
+    	}
+
+    	public Object visit(ASTDivide node, Object data) {
+        	SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+        	SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+        	TypeSpec type0 = addend0Node.getTypeSpec();
+        	TypeSpec type1 = addend1Node.getTypeSpec();
+
+        	// Get the addition type.
+        	TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType : Predefined.integerType;
+        	String typePrefix = (type == Predefined.realType) ? "f" : "i";
+
+        	// Emit code for the first expression
+        	// with type conversion if necessary.
+        	addend0Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type0 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
+
+        	// Emit code for the second expression
+        	// with type conversion if necessary.
+        	addend1Node.jjtAccept(this, data);
+        	if ((type == Predefined.realType) &&
+            	(type1 == Predefined.integerType))
+        	{
+            	out("i2f");
+        	}
+
+        	// Emit the appropriate add instruction.
+        	out(typePrefix+"div");
+
+        	return data;
+    	}
 		// Split up ASTConst into separate nodes.
 		/*public Object visit(ASTConst node, Object data)
 			{
@@ -126,19 +230,20 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 			int value = (Integer) node.getAttribute(ICodeKeyImpl.VALUE);
 			
 			CodeGeneratorHelper.emit(Instruction.LDC, value);
-			
 			return value;
 		}
 
 		public Object visit(ASTConst_Real node, Object data) {
       		float value = (Float) node.getAttribute(ICodeKeyImpl.VALUE);
 
+      		CodeGeneratorHelper.emit(Instruction.LDC, value);
       		return value;
     	}
 		
 		public Object visit(ASTConst_String node, Object data) {
 			String value = (String) node.getAttribute(ICodeKeyImpl.VALUE);
 
+			CodeGeneratorHelper.emit(Instruction.LDC, value);
 			return value;
 		}
 
