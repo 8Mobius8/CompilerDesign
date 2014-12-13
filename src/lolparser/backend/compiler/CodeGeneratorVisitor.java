@@ -84,6 +84,12 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return data;
 			}
 
+		public Object visit(ASTStdIn node, Object data) {
+			out("getstatic java/lang/System/in Ljava/io/InputStream;");
+			out("invokevirtual java/io/InputStream/read()I");
+			return data;
+		}
+
 		// <meow> :,weo,m: Mew mew (meroow);
 
 		public Object visit(ASTStdOut node, Object data)
