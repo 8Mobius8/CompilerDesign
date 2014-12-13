@@ -77,6 +77,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				if (node.containsKey(ICodeKeyImpl.VALUE))
 					{
 						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
+						val = val.substring(1, val.length()-1);
 						return val;
 
 					}
