@@ -5,6 +5,9 @@ import lolparser.frontend.ASTAnd;
 import lolparser.frontend.ASTAssign;
 import lolparser.frontend.ASTBlock;
 import lolparser.frontend.ASTConst;
+import lolparser.frontend.ASTConstInt;
+import lolparser.frontend.ASTConstNum;
+import lolparser.frontend.ASTConstString;
 import lolparser.frontend.ASTDecrement;
 import lolparser.frontend.ASTDivide;
 import lolparser.frontend.ASTEquals;
@@ -53,11 +56,6 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 
   @Override
   public Object visit(ASTAssign node, Object data) {
-      return node.childrenAccept(this, data);
-   }
-
-  @Override
-  public Object visit(ASTConst node, Object data) {
       return node.childrenAccept(this, data);
    }
 
@@ -190,4 +188,22 @@ public class LolParserVisitorAdapter implements LolParserVisitor
   public Object visit(ASTIdent node, Object data) {
       return node.childrenAccept(this, data);
    }
+
+  @Override
+  public Object visit(ASTConstString node, Object data)
+  {
+    return node.childrenAccept(this, data);
+  }
+
+  @Override
+  public Object visit(ASTConstInt node, Object data)
+  {
+    return node.childrenAccept(this, data);
+  }
+
+  @Override
+  public Object visit(ASTConstNum node, Object data)
+  {
+    return node.childrenAccept(this, data);
+  }
 }
