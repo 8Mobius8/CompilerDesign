@@ -12,6 +12,7 @@ import lolparser.intermediate.icodeimpl.ICodeKeyImpl;
 import lolparser.intermediate.symtabimpl.SymTabKeyImpl;
 import lolparser.intermediate.typeimpl.TypeSpecImpl;
 import lolparser.intermediate.symtabimpl.Predefined;
+import lolparser.backend.*;
 
 public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements LolParserTreeConstants
 	{
@@ -123,7 +124,9 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 			}*/
 		public Object visit(ASTConst_Int node, Object data) {
 			int value = (Integer) node.getAttribute(ICodeKeyImpl.VALUE);
-
+			
+			CodeGeneratorHelper.emit(Instruction.LDC, value);
+			
 			return value;
 		}
 
