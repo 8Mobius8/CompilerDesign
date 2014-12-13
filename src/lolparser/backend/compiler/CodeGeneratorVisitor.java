@@ -70,8 +70,9 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				return data;
 			}
-
-		public Object visit(ASTConst node, Object data)
+		
+		// Split up ASTConst into separte nodes.
+		/*public Object visit(ASTConst node, Object data)
 			{
 
 				if (node.containsKey(ICodeKeyImpl.VALUE))
@@ -83,7 +84,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 					}
 				return data;
-			}
+			}*/
 
 		public Object visit(ASTStdIn node, Object data) {
 			out("getstatic java/lang/System/in Ljava/io/InputStream;");
@@ -130,11 +131,17 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				return data;
 			}
-
+		
+		public Object visit(ASTIf node, Object data)
+		{
+		  ArrayList<ICodeNode> chilln = node.getChildren();
+		  
+		  return data;
+		}
+		
 		private static void out(String s)
 			{
 				CodeGenerator.objectFile.println(s);
 				CodeGenerator.objectFile.flush();
 			}
-
 	}
