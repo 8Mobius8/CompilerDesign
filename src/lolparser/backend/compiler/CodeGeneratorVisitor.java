@@ -60,14 +60,12 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 			{
 				// /put the value of the second child into the symbol table entry for
 				// the first
-				
+
 				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString(); //this gets the name of a child identifier
 				Object value = node.jjtGetChild(1).jjtAccept(this, data);
-				
-				
+
 				SymTabEntry entry = CodeGenerator.symTabStack.enterLocal(name);
 				entry.setAttribute(SymTabKeyImpl.DATA_VALUE, value); ///
-				
 
 				return data;
 			}
@@ -79,7 +77,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
 						if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
-							val = val.substring(1, val.length()-1);
+							val = val.substring(1, val.length() - 1);
 						return val;
 
 					}
@@ -99,8 +97,26 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				else
 					{
+						String val = kid.jjtAccept(this, data).toString();
+						if (val != null && val.contains("\""))
+							{
+								int offset = 0;
+								do
+									{
+										int index = val.indexOf("\"", offset);
+										if (index == -1)
+											{
+												break;
+											}
+										String firstBit = val.substring(0, index);
+										String endBit = val.substring(index);
+										val = firstBit + "\\" + endBit;
+										offset = index + 2;
 
-						out("ldc \"" + kid.jjtAccept(this, data) + "\"");
+									} while (val.contains("\""));
+							}
+
+						out("ldc \"" + val + "\"");
 					}
 
 				out("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
