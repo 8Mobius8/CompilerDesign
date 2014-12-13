@@ -46,21 +46,71 @@ public class LolParser
   
   public static void main(String args []) throws Exception
   {
-    Backend zehBackend = BackendFactory.createBackend("compile");    ParseTreePrinter printer = new ParseTreePrinter(System.out);
-        symTabStack = SymTabFactory.createSymTabStack();    Predefined.initialize(symTabStack);
-        SymTab variableList = SymTabFactory.createSymTab(0);    String objectFilePath = null;
-        try    {      if (args.length >= 1)      {        System.out.println("Reading from file: " + args [0]);        new LolParser(new FileReader(args [0]));
-                String sourceFilePath = args [0];        int truncatedLength = sourceFilePath.length() - SOURCE_SUFFIX.length();        int suffixIndex = sourceFilePath.lastIndexOf(SOURCE_SUFFIX);        objectFilePath = (suffixIndex == truncatedLength)         ? sourceFilePath.substring(0, truncatedLength) + OUTPUT_SUFFIX         : sourceFilePath + OUTPUT_SUFFIX;      }      else      {        System.out.println("Reading from standard input...");        new LolParser(System.in);      }    }    catch (FileNotFoundException fnfe)    {      System.out.println(args [0] + " was not able to be found.");    }
-        // Parse our lol
+    Backend zehBackend = BackendFactory.createBackend("compile");
+    ParseTreePrinter printer = new ParseTreePrinter(System.out);
+    
+    symTabStack = SymTabFactory.createSymTabStack();
+    Predefined.initialize(symTabStack);
+    
+    SymTab variableList = SymTabFactory.createSymTab(0);
+    String objectFilePath = null;
+    
+    try
+    {
+      if (args.length >= 1)
+      {
+        System.out.println("Reading from file: " + args [0]);
+        new LolParser(new FileReader(args [0]));
+        
+        String sourceFilePath = args [0];
+        int truncatedLength = sourceFilePath.length() - SOURCE_SUFFIX.length();
+        int suffixIndex = sourceFilePath.lastIndexOf(SOURCE_SUFFIX);
+        objectFilePath = (suffixIndex == truncatedLength) 
+        ? sourceFilePath.substring(0, truncatedLength) + OUTPUT_SUFFIX 
+        : sourceFilePath + OUTPUT_SUFFIX;
+      }
+      else
+      {
+        System.out.println("Reading from standard input...");
+        new LolParser(System.in);
+      }
+    }
+    catch (FileNotFoundException fnfe)
+    {
+      System.out.println(args [0] + " was not able to be found.");
+    }
+    
+    // Parse our lol
     SimpleNode n = LolParser.parse();
-        // Create and initialize the ICode wrapper for the parse tree.
-    ICode iCode = ICodeFactory.createICode();    iCode.setRoot(n);    programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
-        // Print the cross-reference table.
-    CrossReferencer crossReferencer = new CrossReferencer();    crossReferencer.print(symTabStack);    printer.print(symTabStack);
-        // Generate Code
-    if (objectFilePath == null)    {      System.err.println("Invalid path for the jasmin file! Outputing to out.j ...");      zehBackend.process(iCode, symTabStack, "out.j");    }    else    {      zehBackend.process(iCode, symTabStack, objectFilePath);    }
-        // Generate code for function defs
-    ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(SymTabKeyImpl.ROUTINE_ROUTINES);    for (SymTabEntry symTab : symTabEntries)    {      iCode = (ICode) symTab.getAttribute(SymTabKeyImpl.ROUTINE_ICODE);      zehBackend.processFunction(iCode, symTabStack, objectFilePath, symTab);    }
+    
+    // Create and initialize the ICode wrapper for the parse tree.
+    ICode iCode = ICodeFactory.createICode();
+    iCode.setRoot(n);
+    programId.setAttribute(SymTabKeyImpl.ROUTINE_ICODE, iCode);
+    
+    // Print the cross-reference table.
+    CrossReferencer crossReferencer = new CrossReferencer();
+    crossReferencer.print(symTabStack);
+    printer.print(symTabStack);
+    
+    // Generate Code
+    if (objectFilePath == null)
+    {
+      System.err.println("Invalid path for the jasmin file! Outputing to out.j ...");
+      zehBackend.process(iCode, symTabStack, "out.j");
+    }
+    else
+    {
+      zehBackend.process(iCode, symTabStack, objectFilePath);
+    }
+    
+    // Generate code for function defs
+    ArrayList<SymTabEntry> symTabEntries = (ArrayList<SymTabEntry>) programId.getAttribute(SymTabKeyImpl.ROUTINE_ROUTINES);
+    for (SymTabEntry symTab : symTabEntries)
+    {
+      iCode = (ICode) symTab.getAttribute(SymTabKeyImpl.ROUTINE_ICODE);
+      zehBackend.processFunction(iCode, symTabStack, objectFilePath, symTab);
+    }
     
   }
   public static void printCaller()
@@ -167,12 +217,15 @@ void FlowControlExpression() #void:{}
 void ConstLiteralExpression() #Const:{}
 {
   < QUOTED_STRING >{
-    	jjtThis.setTypeSpec(Predefined.charType);
-    	jjtThis.setAttribute(ICodeKeyImpl.VALUE, token.image);  }
-| < INTEGER >{        jjtThis.setTypeSpec(Predefined.integerType);
+        jjtThis.setTypeSpec(Predefined.charType);
+        jjtThis.setAttribute(ICodeKeyImpl.VALUE, token.image);
+  }
+| < INTEGER >{
+        jjtThis.setTypeSpec(Predefined.integerType);
         jjtThis.setAttribute(ICodeKeyImpl.VALUE, Integer.parseInt(token.image));
       }
-| < NUMBAR > {		jjtThis.setTypeSpec(Predefined.realType);
+| < NUMBAR > {
+		jjtThis.setTypeSpec(Predefined.realType);
 		jjtThis.setAttribute(ICodeKeyImpl.VALUE, Float.parseFloat(token.image));
 	}
 }
@@ -225,15 +278,18 @@ void FunctionDeclare() #FunctionDef : {
 		processVariableDecl(token, variableIndex++, functionScope);
   })* 
   Block()
-  < IF_U_SAY_SO >  {
+  < IF_U_SAY_SO >
+  {
     symTabStack.pop();
-    variableIndex = currentVarIndex;  }
+    variableIndex = currentVarIndex;
+  }
 }
 
 void VarDeclareExpression() #VariableDef : {}
 {
   	<I> <HAS> <A> variable(){
-		processVariableDecl(token, variableIndex++, symTabStack.getLocalSymTab());  	}
+		processVariableDecl(token, variableIndex++, symTabStack.getLocalSymTab());
+  	}
 	(<ITZ> ConstLiteralExpression())?
 }
 
