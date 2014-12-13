@@ -10,6 +10,7 @@ import lolparser.intermediate.TypeForm;
 import lolparser.intermediate.icodeimpl.ICodeKeyImpl;
 import lolparser.intermediate.symtabimpl.SymTabKeyImpl;
 import lolparser.intermediate.typeimpl.TypeSpecImpl;
+import lolparser.intermediate.symtabimpl.Predefined;
 
 public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements LolParserTreeConstants
 	{
@@ -77,7 +78,8 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				if (node.containsKey(ICodeKeyImpl.VALUE))
 					{
 						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
-						val = val.substring(1, val.length()-1);
+						if (node.getTypeSpec() != null && node.getTypeSpec() == Predefined.charType)
+							val = val.substring(1, val.length()-1);
 						return val;
 
 					}
