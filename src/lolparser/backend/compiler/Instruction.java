@@ -1,0 +1,48 @@
+package lolparser.backend.compiler;
+
+public enum Instruction
+{
+  // Load Constant
+  ICONST_0, ICONST_1, ICONST_2, ICONST_3, ICONST_4, ICONST_5, ICONST_M1,
+  FCONST_0, FCONST_1, FCONST_2, ACONST_NULL,
+  BIPUSH, SIPUSH, LDC,
+  
+  // Load value or address
+  ILOAD_0, ILOAD_1, ILOAD_2, ILOAD_3, 
+  FLOAD_0, FLOAD_1, FLOAD_2, FLOAD_3,
+  ALOAD_0, ALOAD_1, ALOAD_2, ALOAD_3, 
+  ILOAD, FLOAD, ALOAD,
+  GETSTATIC, GETFIELD,
+
+  // Store value or address
+  ISTORE_0, ISTORE_1, ISTORE_2, ISTORE_3,
+  FSTORE_0, FSTORE_1, FSTORE_2, FSTORE_3,
+  ASTORE_0, ASTORE_1, ASTORE_2, ASTORE_3,
+  ISTORE, FSTORE, ASTORE,
+  PUTSTATIC, PUTFIELD,
+
+  // Arithmetic and logical
+  IADD, LADD, FADD, ISUB, FSUB, LSUB, IMUL, FMUL, LMUL,
+  IDIV, FDIV, LDIV, IREM, FREM, LREM, INEG, FNEG,
+  IINC, IAND, IOR, IXOR,
+
+  // Compare and branch
+  IFEQ, IFNE, IFLT, IFLE, IFGT, IFGE,
+  IF_ICMPEQ, IF_ICMPNE, IF_ICMEPLT, IF_ICMPLE, IF_ICMPGT, IF_ICMPGE,
+  FCMPG, GOTO, LOOKUPSWITCH, LOOKUPTABLE,
+  
+  // Call and return
+  INVOKESTATIC, INVOKEVIRTUAL, INVOKENONVIRTUAL,
+  RETURN, IRETURN, FRETURN, ARETURN,
+  
+  // Operand Stack
+  POP, SWAP, DUP,
+  
+  // No Op
+  NOP;
+
+  public String toString() 
+  {
+    return super.toString().toLowerCase();
+  }
+}
