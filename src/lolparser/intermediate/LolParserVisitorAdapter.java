@@ -4,6 +4,7 @@ import lolparser.frontend.ASTAdd;
 import lolparser.frontend.ASTAnd;
 import lolparser.frontend.ASTAssign;
 import lolparser.frontend.ASTBlock;
+import lolparser.frontend.ASTBreak;
 import lolparser.frontend.ASTConst_Bool;
 import lolparser.frontend.ASTConst_Int;
 import lolparser.frontend.ASTConst_Real;
@@ -220,4 +221,11 @@ public class LolParserVisitorAdapter implements LolParserVisitor
   public Object visit(ASTConst_Bool node, Object data) {
       return node.childrenAccept(this, data);
    }
+
+	@Override
+	public Object visit(ASTBreak node, Object data)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
 }
