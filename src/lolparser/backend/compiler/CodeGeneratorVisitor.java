@@ -377,6 +377,30 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 			return data;
 		}
 
+		public Object visit(ASTLoop node, Object data) {
+			String loopStart = CodeGenerator.makeLabel("loop");
+			String endLoop = CodeGenerator.makeLabel("end_loop");
+
+			out(loopStart + ":");
+			// TODO boolean comparison - is this the right child?
+			SimpleNode literalNode = (SimpleNode) node.jjtGetChild(1);
+			literalNode.jjtAccept(this, data);
+			// TODO - not sure what to use here
+			out("invokestatic ");
+			
+			out("ifeq " + endLoop);
+			// print increment/decrement code
+			literalNode = (SimpleNode) node.jjtGetChild(0);
+			literalNode.jjtAccept(this, data);		
+			// print the while statement block
+			literalNode = (SimpleNode) node.jjtGetChild(2);
+			literalNode.jjtAccept(this, data);
+			out("goto " + loopStart);
+			out(endLoop + ":");
+		
+			return data;
+		}
+
 		private static void out(String s)
 			{
 				CodeGenerator.objectFile.println(s);
