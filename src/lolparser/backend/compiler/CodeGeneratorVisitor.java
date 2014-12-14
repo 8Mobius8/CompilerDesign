@@ -372,6 +372,11 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		  return data;
 		}
 		
+		// functions are ignored for now
+		public Object visit(ASTFunctionDef node, Object data) {
+			return data;
+		}
+
 		private static void out(String s)
 			{
 				CodeGenerator.objectFile.println(s);

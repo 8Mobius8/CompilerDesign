@@ -141,8 +141,8 @@ public class CodeGenerator extends Backend
 
         ArrayList<SymTabEntry> params = (ArrayList<SymTabEntry>) functionId.getAttribute(ROUTINE_PARMS);
         for (SymTabEntry param : params)
-            objectFile.print("LVariant;");
-        objectFile.println(")LVariant;");
+            objectFile.print("Ljava/lang/String;");
+        objectFile.println(")V");
         
         // Visit the parse tree nodes to generate code for this function
         CodeGeneratorVisitor codeVisitor = new CodeGeneratorVisitor();
@@ -152,10 +152,6 @@ public class CodeGenerator extends Backend
         // approximate the number of slots needed for local variables
         int localsCount = (Integer) functionId.getAttribute(ROUTINE_LOCALS_COUNT);
         int localSlots = (localsCount * 2) + 1;
-        
-        // put the IT variable on top of the stack to return
-        objectFile.println("invokestatic Util/getMostRecentExpression()LVariant;");
-        objectFile.println("areturn");
         
         // Generate the function epilogue
         objectFile.println();
