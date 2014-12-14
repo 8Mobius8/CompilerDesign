@@ -43,7 +43,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						String val = node.getAttribute(ICodeKeyImpl.VALUE).toString();
 						SymTabEntry entry = CodeGenerator.symTabStack.lookupLocal(val);
 
-		        String programName = CodeGenerator.symTabStack.getProgramId().getName();
+		        String programName = CodeGenerator.programName;
 		        String fullname = programName + "/" + val;
 		        TypeSpec type = entry.getTypeSpec();
 		        String typeStr;
@@ -85,7 +85,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
 				entry.setAttribute(SymTabKeyImpl.DATA_VALUE, value); ///
 				
-				String programName = CodeGenerator.symTabStack.getProgramId().getName();
+				String programName = CodeGenerator.programName;
         String fullname = programName + "/" + name;
         TypeSpec type = entry.getTypeSpec();
         String typeStr;
