@@ -183,7 +183,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				TypeSpec type0 = addend0Node.getTypeSpec();
 				TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Get the addition type.
+				// Get the subtraction type.
 				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
 						: Predefined.integerType;
 				String typePrefix = (type == Predefined.realType) ? "f" : "i";
@@ -204,7 +204,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						out("i2f");
 					}
 
-				// Emit the appropriate add instruction.
+				// Emit the appropriate sub instruction.
 				out(typePrefix + "sub");
 
 				return data;
@@ -218,7 +218,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				TypeSpec type0 = addend0Node.getTypeSpec();
 				TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Get the addition type.
+				// Get the multiplication type.
 				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
 						: Predefined.integerType;
 				String typePrefix = (type == Predefined.realType) ? "f" : "i";
@@ -239,7 +239,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						out("i2f");
 					}
 
-				// Emit the appropriate add instruction.
+				// Emit the appropriate mul instruction.
 				out(typePrefix + "mul");
 
 				return data;
@@ -253,7 +253,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				TypeSpec type0 = addend0Node.getTypeSpec();
 				TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Get the addition type.
+				// Get the division type.
 				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
 						: Predefined.integerType;
 				String typePrefix = (type == Predefined.realType) ? "f" : "i";
@@ -274,8 +274,43 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						out("i2f");
 					}
 
-				// Emit the appropriate add instruction.
+				// Emit the appropriate div instruction.
 				out(typePrefix + "div");
+
+				return data;
+			}
+
+			public Object visit(ASTModulus node, Object data)
+			{
+				SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+				SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+				TypeSpec type0 = addend0Node.getTypeSpec();
+				TypeSpec type1 = addend1Node.getTypeSpec();
+
+				// Get the modulus type.
+				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
+						: Predefined.integerType;
+				String typePrefix = (type == Predefined.realType) ? "f" : "i";
+
+				// Emit code for the first expression
+				// with type conversion if necessary.
+				addend0Node.jjtAccept(this, data);
+				if ((type == Predefined.realType) && (type0 == Predefined.integerType))
+					{
+						out("i2f");
+					}
+
+				// Emit code for the second expression
+				// with type conversion if necessary.
+				addend1Node.jjtAccept(this, data);
+				if ((type == Predefined.realType) && (type1 == Predefined.integerType))
+					{
+						out("i2f");
+					}
+
+				// Emit the appropriate rem instruction.
+				out(typePrefix + "rem");
 
 				return data;
 			}
