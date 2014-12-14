@@ -323,7 +323,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 		public Object visit(ASTConst_Bool node, Object data)
 			{
-				boolean value = (Boolean) node.getAttribute(ICodeKeyImpl.VALUE);
+				boolean value = ((String) node.getAttribute(ICodeKeyImpl.VALUE)).equals("true") ? true :false;
 
 				node.setTypeSpec(Predefined.booleanType);
 
@@ -399,24 +399,28 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 			}
 
 		//IF / THEN / ELSE
-		public Object visit(ASTIf node, Object data)
+		public Object visit(ASTIfBlock node, Object data)
 			{
 				String ifeq = CodeGenerator.makeLabel("ifequal");
-				String ifne = CodeGenerator.makeLabel("ifnequal");
-				
-				ArrayList<ICodeNode> chilln = node.getChildren();
-				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(1);
-				literalNode.jjtAccept(this, data);
+				String end = CodeGenerator.makeLabel("ifend");
+
+				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(0);
+				literalNode.jjtAccept(this, Predefined.booleanType); //print bool expression
+				//out TRUE, for comparison ??  Does ifeq pop two values off the stack?
 				out("ifeq " + ifeq);
-				// print increment/decrement code
-				literalNode = (SimpleNode) node.jjtGetChild(0);
-				literalNode.jjtAccept(this, data);		
-				// print the while statement block
-				literalNode = (SimpleNode) node.jjtGetChild(2);
-				literalNode.jjtAccept(this, data);
-				out("goto " + ifne);
-				out(endLoop + ":");
+				if(node.jjtGetNumChildren() >= 3) //if getChild(2) exists
+					{
+						literalNode = (SimpleNode) node.jjtGetChild(2);
+						literalNode.jjtAccept(this, data);
+					}
+				//elseif goes here?
+				out("goto " + end);
+				out(ifeq + ":");
+				literalNode = (SimpleNode) node.jjtGetChild(1);
+				literalNode.jjtAccept(this, data); //print if block
 				
+				out(end+":");
+
 				return data;
 			}
 
@@ -441,7 +445,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				out(loopStart + ":");
 				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(0);
 				literalNode.jjtAccept(this, data);
-				
+
 				out("goto " + loopStart);
 				out(endLoop + ":");
 
