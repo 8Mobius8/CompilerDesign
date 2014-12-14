@@ -35,6 +35,8 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		
 		public Object visit(ASTIdent node, Object data)
 			{
+        
+				
 				if (data.toString() == "name") { return node.getAttribute(ICodeKeyImpl.VALUE).toString(); }
 				if (node.containsKey(ICodeKeyImpl.VALUE))
 					{
@@ -48,16 +50,19 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		        String fullname = programName + "/" + val;
 		        TypeSpec type = entry.getTypeSpec();
 		        String typeStr;
+		        
+		        String suffixes[] = {"i","f","z","s"};
+		        int suf = 0;
 		        if(type == Predefined.integerType)
-		          typeStr = "I";
+		          {typeStr = "I"; suf=0;}
 		        else if(type == Predefined.realType)
-		          typeStr = "F";
+		          {typeStr = "F"; suf=1;}
 		        else if(type == Predefined.booleanType)
-		          typeStr = "Z";
+		          {typeStr = "Z";suf=2;}
 		        else
-		          typeStr = "Ljava/lang/String;";
+		          {typeStr = "Ljava/lang/String;"; suf=3;}
 		        node.setTypeSpec(type);
-		        out("getstatic \t" + fullname + " " +typeStr);
+		        out("getstatic \t" + fullname + suffixes[suf]+ " " +typeStr);
 		        
 		        return entry.getAttribute(SymTabKeyImpl.DATA_VALUE); // returns the symbol table entry for the variable
 					}
@@ -92,16 +97,19 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
         String fullname = programName + "/" + name;
         TypeSpec type = entry.getTypeSpec();
         String typeStr;
-        if(type == Predefined.integerType)
-          typeStr = "I";
-        else if(type == Predefined.realType)
-          typeStr = "F";
-        else if(type == Predefined.booleanType)
-          typeStr = "Z";
-        else
-          typeStr = "Ljava/lang/String;";
         
-        out("putstatic \t" + fullname + " " +typeStr);
+        String suffixes[] = {"i","f","z","s"};
+        int suf = 0;
+        if(type == Predefined.integerType)
+          {typeStr = "I"; suf=0;}
+        else if(type == Predefined.realType)
+          {typeStr = "F"; suf=1;}
+        else if(type == Predefined.booleanType)
+          {typeStr = "Z";suf=2;}
+        else
+          {typeStr = "Ljava/lang/String;"; suf=3;}
+        
+        out("putstatic \t" + fullname+suffixes[suf] + " " +typeStr);
         
 				return data;
 			}

@@ -65,16 +65,25 @@ public class CodeGenerator extends Backend
         objectFile.println(".class public " + programName);
         objectFile.println(".super java/lang/Object");
         objectFile.println();
+        
+        
+        String types[] = {"I","F","Z","Ljava/lang/String;"};
+        String suffixes[] = {"i","f","z","s"};
 
         // Generate code for fields.
         for (SymTabEntry id : locals) {
             Definition defn = id.getDefinition();
 
             if (defn == VARIABLE) {
-                String fieldName = id.getName();
-                TypeSpec type = id.getTypeSpec();
-                String typeCode = type == Predefined.integerType ? "I" : "F";
-                objectFile.println(".field private static " + fieldName + " " + typeCode);
+            	for(int i = 0; i < types.length; i++)
+            		{
+
+                  String fieldName = id.getName();
+                  TypeSpec type = id.getTypeSpec();
+                  String typeCode = type == Predefined.integerType ? "I" : "F";
+                  objectFile.println(".field private static " + fieldName + suffixes[i]+ " " + types[i]);
+            		}
+            	
             }
         }
         objectFile.println();
