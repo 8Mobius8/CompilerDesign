@@ -407,7 +407,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(0);
 				literalNode.jjtAccept(this, Predefined.booleanType); //print bool expression
 				//out TRUE, for comparison ??  Does ifeq pop two values off the stack?
-				out("ifeq " + ifeq);
+				out("ifeq " + ifeq); //if true, jump to ifeq label
 				if(node.jjtGetNumChildren() >= 3) //if getChild(2) exists
 					{
 						literalNode = (SimpleNode) node.jjtGetChild(2);
@@ -415,7 +415,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				//elseif goes here?
 				out("goto " + end);
-				out(ifeq + ":");
+				out(ifeq + ":"); //ifeq label
 				literalNode = (SimpleNode) node.jjtGetChild(1);
 				literalNode.jjtAccept(this, data); //print if block
 				
