@@ -1,7 +1,9 @@
 HAI
 
-  I HAS A x ITZ 10
-  I HAS A y ITZ 100
+  I HAS A x 
+  x R 10
+  I HAS A y 
+  y R 100
   
   SUM OF x AN y       BTW +
   DIFF OF x AN y      BTW -

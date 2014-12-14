@@ -6,6 +6,7 @@ import lolparser.frontend.*;
 import lolparser.intermediate.ICodeNode;
 import lolparser.intermediate.LolParserVisitorAdapter;
 import lolparser.intermediate.SymTabEntry;
+import lolparser.intermediate.SymTabFactory;
 import lolparser.intermediate.TypeForm;
 import lolparser.intermediate.TypeSpec;
 import lolparser.intermediate.icodeimpl.ICodeKeyImpl;
@@ -55,7 +56,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		          typeStr = "Z";
 		        else
 		          typeStr = "Ljava/lang/String;";
-		        
+		        node.setTypeSpec(type);
 		        out("getstatic \t" + fullname + " " +typeStr);
 		        
 		        return entry.getAttribute(SymTabKeyImpl.DATA_VALUE); // returns the symbol table entry for the variable
@@ -76,14 +77,16 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 		public Object visit(ASTAssign node, Object data)
 			{
-				// /put the value of the second child into the symbol table entry for
+				// Put the value of the second child into the symbol table entry for
 				// the first
-
-				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString(); //this gets the name of a child identifier
-				Object value = node.jjtGetChild(1).jjtAccept(this, data);
+		    SimpleNode varNode = (SimpleNode) node.jjtGetChild(0);
+				String name = varNode.jjtAccept(this, "name").toString(); //this gets the name of a child identifier
+				SimpleNode resultNode = (SimpleNode) node.jjtGetChild(1);
+				Object value = resultNode.jjtAccept(this, data);
 
 				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
 				entry.setAttribute(SymTabKeyImpl.DATA_VALUE, value); ///
+				entry.setTypeSpec(resultNode.getTypeSpec());
 				
 				String programName = CodeGenerator.programName;
         String fullname = programName + "/" + name;
@@ -259,27 +262,35 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		public Object visit(ASTConst_Int node, Object data) {
 			int value = (Integer) node.getAttribute(ICodeKeyImpl.VALUE);
 			
+      node.setTypeSpec(Predefined.integerType);
+			
 			CodeGeneratorHelper.emit(Instruction.LDC, value);
 			return value;
 		}
 
 		public Object visit(ASTConst_Real node, Object data) {
       		float value = (Float) node.getAttribute(ICodeKeyImpl.VALUE);
-
+      		
+      		node.setTypeSpec(Predefined.realType);
+          
       		CodeGeneratorHelper.emit(Instruction.LDC, value);
       		return value;
     	}
 		
 		public Object visit(ASTConst_String node, Object data) {
 			String value = (String) node.getAttribute(ICodeKeyImpl.VALUE);
-
+			
+			// Type for strings?
+			
 			CodeGeneratorHelper.emit(Instruction.LDC, value);
 			return value;
 		}
 
 		public Object visit(ASTConst_Bool node, Object data) {
 			boolean value = (Boolean) node.getAttribute(ICodeKeyImpl.VALUE);
-
+			
+			node.setTypeSpec(Predefined.booleanType);
+			
 			return value;
 		}
 		
@@ -293,8 +304,8 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 		public Object visit(ASTStdOut node, Object data)
 			{
-				Node kid = node.jjtGetChild(0);
-
+				SimpleNode kid = (SimpleNode)node.jjtGetChild(0);
+				
 				out("getstatic java/lang/System/out Ljava/io/PrintStream;");
 				if (kid == null)
 					{
@@ -308,6 +319,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 								int offset = 0;
 								do
 									{
+								  
 										int index = val.indexOf("\"", offset);
 										if (index == -1)
 											{
@@ -320,11 +332,27 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 									} while (val.contains("\""));
 							}
-
-						out("ldc \"" + val + "\"");
 					}
-
-				out("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+				
+				String typeDescriptor ="";
+				TypeSpec type = kid.getTypeSpec();
+				if(type == Predefined.integerType)
+				{
+				  typeDescriptor = "I";
+				}
+				else if(type == Predefined.realType) {
+				  typeDescriptor = "F";
+				}
+				else if(type == Predefined.booleanType) {
+				  typeDescriptor = "Z";
+				}
+				else if (type == Predefined.charType) {
+				  typeDescriptor = "Ljava/lang/String;";
+				}
+				else if(type == Predefined.undefinedType){
+				  System.err.println("Trying to print undefined");
+				}
+				out("invokevirtual java/io/PrintStream/println("+typeDescriptor+")V");
 
 				return data;
 			}

@@ -1,5 +1,5 @@
 HAI
 I HAS A var
-var R SUM OF 3 AN 5
+var R 3 
 VISIBLE var
 KTHXBYE
