@@ -291,7 +291,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				// Emit the appropriate div instruction.
 				out(typePrefix + "div");
 
-				return data;
+				return type;
 			}
 
 		public Object visit(ASTModulus node, Object data)
@@ -361,7 +361,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				out("invokestatic java/lang/Math/max(" + typePrefix + typePrefix + ")" + typePrefix);
 
-				return data;
+				return type;
 			}
 
 		public Object visit(ASTMin node, Object data)
@@ -395,7 +395,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				out("invokestatic java/lang/Math/min(" + typePrefix + typePrefix + ")" + typePrefix);
 
-				return data;
+				return type;
 			}
 
 		// Split up ASTConst into separate nodes.
@@ -468,31 +468,31 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						out("ldc \"\"");
 					}
-				else
-					{
-						String val = kid.jjtAccept(this, data).toString();
-						if (val != null && val.contains("\""))
-							{
-								int offset = 0;
-								do
-									{
-
-										int index = val.indexOf("\"", offset);
-										if (index == -1)
-											{
-												break;
-											}
-										String firstBit = val.substring(0, index);
-										String endBit = val.substring(index);
-										val = firstBit + "\\" + endBit;
-										offset = index + 2;
-
-									} while (val.contains("\""));
-							}
-					}
+//				else
+//					{
+//						String val = kid.jjtAccept(this, data).toString();
+//						if (val != null && val.contains("\""))
+//							{
+//								int offset = 0;
+//								do
+//									{
+//
+//										int index = val.indexOf("\"", offset);
+//										if (index == -1)
+//											{
+//												break;
+//											}
+//										String firstBit = val.substring(0, index);
+//										String endBit = val.substring(index);
+//										val = firstBit + "\\" + endBit;
+//										offset = index + 2;
+//
+//									} while (val.contains("\""));
+//							}
+//					}
 
 				String typeDescriptor = "";
-				TypeSpec type = kid.getTypeSpec();
+				TypeSpec type = (TypeSpec)kid.jjtAccept(this,data);
 
 				if (type != Predefined.charType)
 					{
