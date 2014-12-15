@@ -333,6 +333,74 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		return type;
 	}
 
+	public Object visit(ASTMax node, Object data)
+			{
+				SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+				SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+				TypeSpec type0 = addend0Node.getTypeSpec();
+				TypeSpec type1 = addend1Node.getTypeSpec();
+
+				// Get the modulus type.
+				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
+						: Predefined.integerType;
+				String typePrefix = (type == Predefined.realType) ? "F" : "I";
+
+				// Emit code for the first expression
+				// with type conversion if necessary.
+				addend0Node.jjtAccept(this, data);
+				if ((type == Predefined.realType) && (type0 == Predefined.integerType))
+					{
+						out("i2f");
+					}
+
+				// Emit code for the second expression
+				// with type conversion if necessary.
+				addend1Node.jjtAccept(this, data);
+				if ((type == Predefined.realType) && (type1 == Predefined.integerType))
+					{
+						out("i2f");
+					}
+
+				out("invokestatic java/lang/Math/max("+typePrefix+typePrefix+")"+typePrefix);
+
+				return data;
+			}
+
+			public Object visit(ASTMin node, Object data)
+			{
+				SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
+				SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+
+				TypeSpec type0 = addend0Node.getTypeSpec();
+				TypeSpec type1 = addend1Node.getTypeSpec();
+
+				// Get the modulus type.
+				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
+						: Predefined.integerType;
+				String typePrefix = (type == Predefined.realType) ? "F" : "I";
+
+				// Emit code for the first expression
+				// with type conversion if necessary.
+				addend0Node.jjtAccept(this, data);
+				if ((type == Predefined.realType) && (type0 == Predefined.integerType))
+					{
+						out("i2f");
+					}
+
+				// Emit code for the second expression
+				// with type conversion if necessary.
+				addend1Node.jjtAccept(this, data);
+				if ((type == Predefined.realType) && (type1 == Predefined.integerType))
+					{
+						out("i2f");
+					}
+
+				out("invokestatic java/lang/Math/min("+typePrefix+typePrefix+")"+typePrefix);
+
+				return data;
+			}
+			
 	// Split up ASTConst into separate nodes.
 	/*
 	 * public Object visit(ASTConst node, Object data) {
