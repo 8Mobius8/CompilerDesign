@@ -199,7 +199,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		TypeSpec type0 = addend0Node.getTypeSpec();
 		TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Get the subtraction type.
+		// Get the subtraction type.
 		TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
 				: Predefined.integerType;
 		String typePrefix = (type == Predefined.realType) ? "f" : "i";
@@ -220,7 +220,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 			out("i2f");
 		}
 
-				// Emit the appropriate sub instruction.
+		// Emit the appropriate sub instruction.
 		out(typePrefix + "sub");
 
 		return type;
@@ -234,7 +234,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		TypeSpec type0 = addend0Node.getTypeSpec();
 		TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Get the multiplication type.
+		// Get the multiplication type.
 		TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
 				: Predefined.integerType;
 		String typePrefix = (type == Predefined.realType) ? "f" : "i";
@@ -255,7 +255,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 			out("i2f");
 		}
 
-				// Emit the appropriate mul instruction.
+		// Emit the appropriate mul instruction.
 		out(typePrefix + "mul");
 
 		return type;
@@ -269,7 +269,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		TypeSpec type0 = addend0Node.getTypeSpec();
 		TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Get the division type.
+		// Get the division type.
 		TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
 				: Predefined.integerType;
 		String typePrefix = (type == Predefined.realType) ? "f" : "i";
@@ -290,45 +290,44 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 			out("i2f");
 		}
 
-				// Emit the appropriate div instruction.
+		// Emit the appropriate div instruction.
 		out(typePrefix + "div");
 
-				return data;
-			}
+		return data;
+	}
 
-			public Object visit(ASTModulus node, Object data)
-			{
-				SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
-				
-				
-				SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
+	public Object visit(ASTModulus node, Object data)
+	{
+		SimpleNode addend0Node = (SimpleNode) node.jjtGetChild(0);
 
-				TypeSpec type0 = addend0Node.getTypeSpec();
-				TypeSpec type1 = addend1Node.getTypeSpec();
+		SimpleNode addend1Node = (SimpleNode) node.jjtGetChild(1);
 
-				// Get the modulus type.
-				TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
-						: Predefined.integerType;
-				String typePrefix = (type == Predefined.realType) ? "f" : "i";
+		TypeSpec type0 = addend0Node.getTypeSpec();
+		TypeSpec type1 = addend1Node.getTypeSpec();
 
-				// Emit code for the first expression
-				// with type conversion if necessary.
-				addend0Node.jjtAccept(this, data);
-				if ((type == Predefined.realType) && (type0 == Predefined.integerType))
-					{
-						out("i2f");
-					}
+		// Get the modulus type.
+		TypeSpec type = (type0 == Predefined.realType || type1 == Predefined.realType) ? Predefined.realType
+				: Predefined.integerType;
+		String typePrefix = (type == Predefined.realType) ? "f" : "i";
 
-				// Emit code for the second expression
-				// with type conversion if necessary.
-				addend1Node.jjtAccept(this, data);
-				if ((type == Predefined.realType) && (type1 == Predefined.integerType))
-					{
-						out("i2f");
-					}
+		// Emit code for the first expression
+		// with type conversion if necessary.
+		addend0Node.jjtAccept(this, data);
+		if ((type == Predefined.realType) && (type0 == Predefined.integerType))
+		{
+			out("i2f");
+		}
 
-				// Emit the appropriate rem instruction.
-				out(typePrefix + "rem");
+		// Emit code for the second expression
+		// with type conversion if necessary.
+		addend1Node.jjtAccept(this, data);
+		if ((type == Predefined.realType) && (type1 == Predefined.integerType))
+		{
+			out("i2f");
+		}
+
+		// Emit the appropriate rem instruction.
+		out(typePrefix + "rem");
 
 		return type;
 	}
@@ -433,6 +432,10 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 		if (type != Predefined.charType)
 		{
 			type = cast(type, Predefined.charType);
+			type = cast(type, Predefined.integerType);
+			type = cast(type, Predefined.booleanType);
+			type = cast(type, Predefined.realType);
+			type = cast(type, Predefined.charType);
 		}
 
 		if (type == Predefined.integerType)
@@ -494,6 +497,9 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 
 	private TypeSpec cast(TypeSpec original, TypeSpec required)
 	{
+		out("");
+		out("");
+		
 		if (original == required) { return original; }
 
 		if (required == Predefined.undefinedType)
@@ -536,6 +542,62 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements
 			}
 
 			out(exit + ":");
+		}
+
+		if (original == Predefined.integerType)
+		{
+			if (required == Predefined.realType)
+			{
+				out("i2f");
+			}
+			if (required == Predefined.charType)
+			{
+				out("invokestatic   java/lang/Integer/toString(I)Ljava/lang/String;");
+			}
+			if (required == Predefined.booleanType)
+			{
+				String isTrue = CodeGenerator.makeLabel("isEqual");
+				String exit = CodeGenerator.makeLabel("exit");
+				out("ifeq " + isTrue);
+				CodeGeneratorHelper.emit(Instruction.LDC, 1);
+				out("goto " + exit);
+				out(isTrue + ":");
+				CodeGeneratorHelper.emit(Instruction.LDC, 0);
+				out(exit + ":");
+			}
+		}
+
+		if (original == Predefined.realType)
+		{
+			if (required == Predefined.integerType)
+			{
+				out("f2i");
+			}
+			if (required == Predefined.charType)
+			{
+				out("invokestatic   java/lang/Float/toString(F)Ljava/lang/String;");
+			}
+			if (required == Predefined.booleanType)
+			{
+				out("f2i");
+				return cast(Predefined.integerType, required);
+			}
+		}
+		if (original == Predefined.charType)
+		{
+			if (required == Predefined.integerType)
+			{
+				out("invokestatic  java/lang/Integer/parseInt(Ljava/lang/String;)I");
+			}
+			if (required == Predefined.realType)
+			{
+				out("invokestatic  java/lang/Float/parseFloat(Ljava/lang/String;)F");
+			}
+			if (required == Predefined.booleanType)
+			{
+				// TODO
+			}
+
 		}
 
 		return required;

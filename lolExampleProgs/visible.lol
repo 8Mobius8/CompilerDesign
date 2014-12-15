@@ -1,5 +1,5 @@
 HAI
 I HAS A var
-var R WIN
+var R 3
 VISIBLE var
 KTHXBYE
