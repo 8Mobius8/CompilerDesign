@@ -18,14 +18,7 @@ import lolparser.backend.*;
 
 public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements LolParserTreeConstants
 	{
-		public CodeGeneratorVisitor()
-			{
-				predefinedTypeCodes.put(Predefined.booleanType, "Z");
-				predefinedTypeCodes.put(Predefined.charType, "Ljava/Ljava/lang/String;");
-				predefinedTypeCodes.put(Predefined.integerType, "I");
-				predefinedTypeCodes.put(Predefined.realType, "F");
-				predefinedTypeCodes.put(Predefined.undefinedType, "********Undefined type!**********"); //this has been giving me trouble
-			}
+		
 
 		/*
 		 * data is the string for program name, or... ?
@@ -43,8 +36,6 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		private static final TypeForm String = null;
 		private static int labelCount = 0;
 		private static String curLabelEnd = null;
-
-		private static HashMap<TypeSpec, String> predefinedTypeCodes = new HashMap<TypeSpec, String>();
 
 		public Object visit(ASTIdent node, Object data)
 			{
@@ -464,7 +455,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						typeStr = "Ljava/lang/String;";
 						suf = 3;
 					}
-
+				out("dup");
 				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
 
 				//TODO this
@@ -544,13 +535,13 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				if (type == secondType)
 					{
-						typeCode = predefinedTypeCodes.get(type);
-						System.err.println(typeCode);
-						System.err.println(type == Predefined.charType ? "String" : "Not string!");
-						System.err.flush();
-						if (typeCode == predefinedTypeCodes.get(Predefined.undefinedType))
+						typeCode = getTypeCode(type);
+//						System.err.println(typeCode);
+//						System.err.println(type == Predefined.charType ? "String" : "Not string!");
+//						System.err.flush();
+						if (typeCode == getTypeCode(Predefined.undefinedType))
 							{
-								typeCode = predefinedTypeCodes.get(Predefined.charType);
+								typeCode = "a";
 							}
 					}
 				else if ((type == Predefined.integerType || type == Predefined.realType)
@@ -558,7 +549,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						if (type == Predefined.realType || secondType == Predefined.realType)
 							{
-								typeCode = predefinedTypeCodes.get(Predefined.realType); //either reals
+								typeCode = "f"; //either reals
 								if (secondType == Predefined.integerType)
 									{
 										out("i2f"); //cast the top int to a real
@@ -571,7 +562,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 							}
 						else
 							{
-								typeCode = predefinedTypeCodes.get(Predefined.integerType); //both integers
+								typeCode = "i"; //both integers
 							}
 					}
 				else
@@ -594,7 +585,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						typeCode = "i"; //lowercase for this operation
 					}
-				if (typeCode == predefinedTypeCodes.get(Predefined.charType))
+				if (typeCode == getTypeCode(Predefined.charType))
 					{
 						typeCode = "a";
 					}
@@ -620,6 +611,29 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return Predefined.booleanType;
 			}
 
+		private static String getTypeCode(TypeSpec type)
+		{
+			if(type == Predefined.booleanType)
+				//moooooroororowoww meeow moorooroooow meeeoow mroooo mwwwwqq owmmmemerooo =(^-.-^)=
+				{
+					return "Z";
+				}
+			else if(type == Predefined.charType)
+				{
+					return "Ljava/lang/String;";
+				}
+			else if(type == Predefined.integerType)
+				{
+					return "I";
+				}
+			else if(type == Predefined.realType)
+				{
+					return "F";
+				}
+			else //System.err.println("Invalid type! " + type.toString());
+			return null;
+		}
+		
 		/**
 		 * this code was copied directly from ASTEquals, so please make sure to
 		 * change this also if you change that.
@@ -648,14 +662,14 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				if (type == secondType)
 					{
-						typeCode = predefinedTypeCodes.get(type);
+						typeCode = getTypeCode(type);
 					}
 				else if ((type == Predefined.integerType || type == Predefined.realType)
 						&& (secondType == Predefined.realType || secondType == Predefined.integerType)) //both number values
 					{
 						if (type == Predefined.realType || secondType == Predefined.realType)
 							{
-								typeCode = predefinedTypeCodes.get(Predefined.realType); //either reals
+								typeCode =  getTypeCode(Predefined.realType); //either reals
 								if (secondType == Predefined.integerType)
 									{
 										out("i2f"); //cast the top int to a real
@@ -668,7 +682,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 							}
 						else
 							{
-								typeCode = predefinedTypeCodes.get(Predefined.integerType); //both integers
+								typeCode =  getTypeCode(Predefined.integerType); //both integers
 							}
 					}
 				else
@@ -691,7 +705,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						typeCode = "i"; //lowercase for this operation
 					}
-				if (typeCode == predefinedTypeCodes.get(Predefined.charType))
+				if (typeCode ==  getTypeCode(Predefined.charType))
 					{
 						typeCode = "a";
 					}

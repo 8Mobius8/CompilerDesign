@@ -4,7 +4,7 @@ I HAS A nothervar
 var R 3
 nothervar R 5
 VISIBLE var
-UP var!!1
+UP var!!2
 UP var!!1
 VISIBLE var
 VISIBLE nothervar
