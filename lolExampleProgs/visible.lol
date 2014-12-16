@@ -5,5 +5,5 @@ var R "Three"
 nothervar R "Three"
 VISIBLE var
 VISIBLE nothervar
-VISIBLE BOTH SAEM var AN nothervar
+VISIBLE DIFFRINT var AN nothervar
 KTHXBYE

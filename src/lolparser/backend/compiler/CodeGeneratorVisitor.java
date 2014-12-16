@@ -109,7 +109,8 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				// a
 				// child
 				// identifier
-				CodeGenerator.symTabStack.enterLocal(name);
+				CodeGenerator.symTabStack.enterLocal(name).setTypeSpec(Predefined.undefinedType);
+				
 
 				return Predefined.undefinedType;
 			}
@@ -125,14 +126,14 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				// child
 				// identifier
 				SimpleNode resultNode = (SimpleNode) node.jjtGetChild(1);
-				Object value = resultNode.jjtAccept(this, data);
+				TypeSpec value = (TypeSpec) resultNode.jjtAccept(this, data);
 
 				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
 				entry.setAttribute(SymTabKeyImpl.DATA_VALUE, value); // / this may be
 																															// unnecessary
 				// This may be a type not a value
 
-				entry.setTypeSpec(resultNode.getTypeSpec());
+				entry.setTypeSpec(value); //TODO fix this
 
 				String programName = CodeGenerator.programName;
 				String fullname = programName + "/" + name;
@@ -489,6 +490,10 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						System.err.println(typeCode);
 						System.err.println(type == Predefined.charType?"String":"Not string!");
 						System.err.flush();
+						if(typeCode == predefinedTypeCodes.get(Predefined.undefinedType))
+							{
+								typeCode = predefinedTypeCodes.get(Predefined.charType);
+							}
 					}
 				else if ((type == Predefined.integerType || type == Predefined.realType)
 						&& (secondType == Predefined.realType || secondType == Predefined.integerType)) //both number values
@@ -531,7 +536,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						typeCode = "i"; //lowercase for this operation
 					}
-				if (typeCode == "Ljava/lang/String;")
+				if (typeCode == predefinedTypeCodes.get(Predefined.charType))
 					{
 						typeCode = "a";
 					}
@@ -627,7 +632,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				{
 					typeCode = "i"; //lowercase for this operation
 				}
-			if (typeCode == "Ljava/lang/String;")
+			if (typeCode == predefinedTypeCodes.get(Predefined.charType))
 				{
 					typeCode = "a";
 				}
