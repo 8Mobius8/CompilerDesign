@@ -24,7 +24,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				predefinedTypeCodes.put(Predefined.charType, "Ljava/Ljava/lang/String;");
 				predefinedTypeCodes.put(Predefined.integerType, "I");
 				predefinedTypeCodes.put(Predefined.realType, "F");
-				predefinedTypeCodes.put(Predefined.undefinedType, "Error! No type code");
+				predefinedTypeCodes.put(Predefined.undefinedType, "********Undefined type!**********"); //this has been giving me trouble
 			}
 
 		/*
@@ -110,7 +110,6 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				// child
 				// identifier
 				CodeGenerator.symTabStack.enterLocal(name).setTypeSpec(Predefined.undefinedType);
-				
 
 				return Predefined.undefinedType;
 			}
@@ -413,6 +412,65 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return type;
 			}
 
+		public Object visit(ASTIncrementByInt node, Object data)
+			{
+				SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
+				TypeSpec type = (TypeSpec) kid.jjtAccept(this, this);
+				if (type == Predefined.undefinedType)
+					{
+						System.err.println("Error! Incrementing a NOOB!");
+					}
+				String name = (String) kid.jjtAccept(this, "name");
+				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
+
+				if (type != Predefined.integerType && type != Predefined.realType)
+					{
+						type = cast(type, Predefined.integerType); //if it's not a number, cast to int
+						kid.setTypeSpec(type);
+					}
+				entry.setTypeSpec(type);
+
+				SimpleNode increm = (SimpleNode) node.jjtGetChild(1);
+				TypeSpec incremType = (TypeSpec) increm.jjtAccept(this, this);
+				cast(incremType, Predefined.integerType); //convert to int
+				//This is increment by int after all
+				cast(incremType, type); //cast to proper type (the type of the first child)
+
+				String typeCode = type == Predefined.integerType ? "i" : "f";
+				out(typeCode + "add");
+
+				String fullname = CodeGenerator.programName + "/" + name;
+				String typeStr;
+				String suffixes[] =
+					{ "i", "f", "z", "s" };
+				int suf = 0;
+				if (type == Predefined.integerType)
+					{
+						typeStr = "I";
+						suf = 0;
+					}
+				else if (type == Predefined.realType)
+					{
+						typeStr = "F";
+						suf = 1;
+					}
+				else if (type == Predefined.booleanType)
+					{
+						typeStr = "Z";
+						suf = 2;
+					}
+				else
+					{
+						typeStr = "Ljava/lang/String;";
+						suf = 3;
+					}
+
+				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
+
+				//TODO this
+				return type;
+			}
+
 		// Split up ASTConst into separate nodes.
 		/*
 		 * public Object visit(ASTConst node, Object data) {
@@ -488,9 +546,9 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						typeCode = predefinedTypeCodes.get(type);
 						System.err.println(typeCode);
-						System.err.println(type == Predefined.charType?"String":"Not string!");
+						System.err.println(type == Predefined.charType ? "String" : "Not string!");
 						System.err.flush();
-						if(typeCode == predefinedTypeCodes.get(Predefined.undefinedType))
+						if (typeCode == predefinedTypeCodes.get(Predefined.undefinedType))
 							{
 								typeCode = predefinedTypeCodes.get(Predefined.charType);
 							}
@@ -561,102 +619,103 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				return Predefined.booleanType;
 			}
-		
+
 		/**
-		 * this code was copied directly from ASTEquals, so please make sure to change this also if you change that.
+		 * this code was copied directly from ASTEquals, so please make sure to
+		 * change this also if you change that.
 		 * 
 		 * The only things that changed are the return values.
 		 * 
 		 */
 		public Object visit(ASTNotEquals node, Object data)
-		{
-			int numKids = node.jjtGetNumChildren();
-			if (numKids < 2)
-				{
-					System.err.println("Not enough children of NotEquals node!");
-				}
-			SimpleNode first = (SimpleNode) node.jjtGetChild(0);
-			TypeSpec type = (TypeSpec) first.jjtAccept(this, data);
+			{
+				int numKids = node.jjtGetNumChildren();
+				if (numKids < 2)
+					{
+						System.err.println("Not enough children of NotEquals node!");
+					}
+				SimpleNode first = (SimpleNode) node.jjtGetChild(0);
+				TypeSpec type = (TypeSpec) first.jjtAccept(this, data);
 
-			SimpleNode second = (SimpleNode) node.jjtGetChild(1);
-			TypeSpec secondType = (TypeSpec) second.jjtAccept(this, data);
+				SimpleNode second = (SimpleNode) node.jjtGetChild(1);
+				TypeSpec secondType = (TypeSpec) second.jjtAccept(this, data);
 
-			String typeCode;
+				String typeCode;
 
-			//Comparisons are performed as integer math in the presence of two NUMBRs, 
-			//but if either of the expressions are NUMBARs, then floating point math takes over. 
-			//Otherwise, there is no automatic casting in the equality, so BOTH SAEM "3" AN 3 is FAIL.
+				//Comparisons are performed as integer math in the presence of two NUMBRs, 
+				//but if either of the expressions are NUMBARs, then floating point math takes over. 
+				//Otherwise, there is no automatic casting in the equality, so BOTH SAEM "3" AN 3 is FAIL.
 
-			if (type == secondType)
-				{
-					typeCode = predefinedTypeCodes.get(type);
-				}
-			else if ((type == Predefined.integerType || type == Predefined.realType)
-					&& (secondType == Predefined.realType || secondType == Predefined.integerType)) //both number values
-				{
-					if (type == Predefined.realType || secondType == Predefined.realType)
-						{
-							typeCode = predefinedTypeCodes.get(Predefined.realType); //either reals
-							if (secondType == Predefined.integerType)
-								{
-									out("i2f"); //cast the top int to a real
-								}
-							else if (type == Predefined.realType)
-								{
-									out("swap");
-									out("i2f");
-								}
-						}
-					else
-						{
-							typeCode = predefinedTypeCodes.get(Predefined.integerType); //both integers
-						}
-				}
-			else
-				{
-					// No typecasting in equals, so all other combinations are FAIL. Need to pop the top two values off 
-					//the stack, they could be single- or double-width...
+				if (type == secondType)
+					{
+						typeCode = predefinedTypeCodes.get(type);
+					}
+				else if ((type == Predefined.integerType || type == Predefined.realType)
+						&& (secondType == Predefined.realType || secondType == Predefined.integerType)) //both number values
+					{
+						if (type == Predefined.realType || secondType == Predefined.realType)
+							{
+								typeCode = predefinedTypeCodes.get(Predefined.realType); //either reals
+								if (secondType == Predefined.integerType)
+									{
+										out("i2f"); //cast the top int to a real
+									}
+								else if (type == Predefined.realType)
+									{
+										out("swap");
+										out("i2f");
+									}
+							}
+						else
+							{
+								typeCode = predefinedTypeCodes.get(Predefined.integerType); //both integers
+							}
+					}
+				else
+					{
+						// No typecasting in equals, so all other combinations are FAIL. Need to pop the top two values off 
+						//the stack, they could be single- or double-width...
 
-					//Or can they? Is a string pointer a 32 bit value, like an int?
-					//That's easier, so I'll assume that for now.
-					//TODO figure that out ^^
-					out("pop2"); //pop two values from the stack
-					CodeGeneratorHelper.emit(Instruction.LDC, 1); //boolean true
-					return Predefined.booleanType;
-				}
-			if (typeCode == "Z")
-				{
-					typeCode = "I"; // booleans are handled as integers internally, 0 or 1
-				}
-			if (typeCode == "I")
-				{
-					typeCode = "i"; //lowercase for this operation
-				}
-			if (typeCode == predefinedTypeCodes.get(Predefined.charType))
-				{
-					typeCode = "a";
-				}
-			//Typecodes are all set, do math
+						//Or can they? Is a string pointer a 32 bit value, like an int?
+						//That's easier, so I'll assume that for now.
+						//TODO figure that out ^^
+						out("pop2"); //pop two values from the stack
+						CodeGeneratorHelper.emit(Instruction.LDC, 1); //boolean true
+						return Predefined.booleanType;
+					}
+				if (typeCode == "Z")
+					{
+						typeCode = "I"; // booleans are handled as integers internally, 0 or 1
+					}
+				if (typeCode == "I")
+					{
+						typeCode = "i"; //lowercase for this operation
+					}
+				if (typeCode == predefinedTypeCodes.get(Predefined.charType))
+					{
+						typeCode = "a";
+					}
+				//Typecodes are all set, do math
 
-			String compareTrue = CodeGenerator.makeLabel("cmpTrue");
-			String compareExit = CodeGenerator.makeLabel("cmpExit");
-			if (typeCode == "F")
-				{
-					out("fcmpl"); //pops two floats, pushes 0 if equal and 1 if (not equal or NAN)
-					out("ifne " + compareTrue); //jump to compareTrue if 1 (items are not equal)
-				}
-			else
-				{
-					out("if_" + typeCode + "cmpne " + compareTrue); //jump if not equal
-				}
-			CodeGeneratorHelper.emit(Instruction.LDC, 0); //0 is false 
-			out("goto " + compareExit);
-			out(compareTrue + ":");
-			CodeGeneratorHelper.emit(Instruction.LDC, 1); //1 is true for lolcode
-			out(compareExit + ":");
+				String compareTrue = CodeGenerator.makeLabel("cmpTrue");
+				String compareExit = CodeGenerator.makeLabel("cmpExit");
+				if (typeCode == "F")
+					{
+						out("fcmpl"); //pops two floats, pushes 0 if equal and 1 if (not equal or NAN)
+						out("ifne " + compareTrue); //jump to compareTrue if 1 (items are not equal)
+					}
+				else
+					{
+						out("if_" + typeCode + "cmpne " + compareTrue); //jump if not equal
+					}
+				CodeGeneratorHelper.emit(Instruction.LDC, 0); //0 is false 
+				out("goto " + compareExit);
+				out(compareTrue + ":");
+				CodeGeneratorHelper.emit(Instruction.LDC, 1); //1 is true for lolcode
+				out(compareExit + ":");
 
-			return Predefined.booleanType;
-		}
+				return Predefined.booleanType;
+			}
 
 		public Object visit(ASTStdIn node, Object data)
 			{
@@ -715,7 +774,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		//TODO Add else/then statements
 		public Object visit(ASTIfBlock node, Object data)
 			{
-				String ifeq = CodeGenerator.makeLabel("ifequal");
+				String ifeq = CodeGenerator.makeLabel("isequal");
 				String end = CodeGenerator.makeLabel("ifend");
 
 				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(0);
@@ -808,6 +867,29 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						System.err.println("Cast to NOOB! Exiting cast");
 						return original;
+					}
+
+				//If it's undefined, it has not been assigned yet. I think.
+				if (original == Predefined.undefinedType)
+					{
+						if (required == Predefined.integerType)
+							{
+								CodeGeneratorHelper.emit(Instruction.LDC, 0);
+							}
+						if (required == Predefined.charType)
+							{
+								CodeGeneratorHelper.emit(Instruction.LDC, "");
+							}
+						if (required == Predefined.booleanType)
+							{
+								CodeGeneratorHelper.emit(Instruction.LDC, 0);
+							}
+						if (required == Predefined.realType)
+							{
+								CodeGeneratorHelper.emit(Instruction.LDC, 1);
+								out("i2f");
+							}
+						return required; //Assign it and return
 					}
 
 				if (original == Predefined.booleanType) // should be a 0 or 1 (int) on

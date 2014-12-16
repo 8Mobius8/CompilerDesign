@@ -3,6 +3,7 @@ HAI
 BTW Testing loop
 
 I HAS A VAR
+VAR R 1
 IM IN YR LOOP
   UP VAR!!1
   BTW VISIBLE VAR
