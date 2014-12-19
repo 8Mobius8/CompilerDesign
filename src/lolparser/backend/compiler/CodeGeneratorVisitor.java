@@ -18,7 +18,6 @@ import lolparser.backend.*;
 
 public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements LolParserTreeConstants
 	{
-		
 
 		/*
 		 * data is the string for program name, or... ?
@@ -455,10 +454,9 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						typeStr = "Ljava/lang/String;";
 						suf = 3;
 					}
-				out("dup");
 				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
 
-				//TODO this
+				//TODO check this
 				return type;
 			}
 
@@ -536,9 +534,9 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				if (type == secondType)
 					{
 						typeCode = getTypeCode(type);
-//						System.err.println(typeCode);
-//						System.err.println(type == Predefined.charType ? "String" : "Not string!");
-//						System.err.flush();
+						//						System.err.println(typeCode);
+						//						System.err.println(type == Predefined.charType ? "String" : "Not string!");
+						//						System.err.flush();
 						if (typeCode == getTypeCode(Predefined.undefinedType))
 							{
 								typeCode = "a";
@@ -612,28 +610,28 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 			}
 
 		private static String getTypeCode(TypeSpec type)
-		{
-			if(type == Predefined.booleanType)
+			{
+				if (type == Predefined.booleanType)
 				//moooooroororowoww meeow moorooroooow meeeoow mroooo mwwwwqq owmmmemerooo =(^-.-^)=
-				{
-					return "Z";
-				}
-			else if(type == Predefined.charType)
-				{
-					return "Ljava/lang/String;";
-				}
-			else if(type == Predefined.integerType)
-				{
-					return "I";
-				}
-			else if(type == Predefined.realType)
-				{
-					return "F";
-				}
-			else //System.err.println("Invalid type! " + type.toString());
-			return null;
-		}
-		
+					{
+						return "Z";
+					}
+				else if (type == Predefined.charType)
+					{
+						return "Ljava/lang/String;";
+					}
+				else if (type == Predefined.integerType)
+					{
+						return "I";
+					}
+				else if (type == Predefined.realType)
+					{
+						return "F";
+					}
+				else //System.err.println("Invalid type! " + type.toString());
+				return null;
+			}
+
 		/**
 		 * this code was copied directly from ASTEquals, so please make sure to
 		 * change this also if you change that.
@@ -669,7 +667,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						if (type == Predefined.realType || secondType == Predefined.realType)
 							{
-								typeCode =  getTypeCode(Predefined.realType); //either reals
+								typeCode = getTypeCode(Predefined.realType); //either reals
 								if (secondType == Predefined.integerType)
 									{
 										out("i2f"); //cast the top int to a real
@@ -682,7 +680,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 							}
 						else
 							{
-								typeCode =  getTypeCode(Predefined.integerType); //both integers
+								typeCode = getTypeCode(Predefined.integerType); //both integers
 							}
 					}
 				else
@@ -705,7 +703,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						typeCode = "i"; //lowercase for this operation
 					}
-				if (typeCode ==  getTypeCode(Predefined.charType))
+				if (typeCode == getTypeCode(Predefined.charType))
 					{
 						typeCode = "a";
 					}
@@ -1006,6 +1004,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 					}
 
+				out("");
 				return required;
 
 			}
@@ -1014,6 +1013,126 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		public Object visit(ASTFunctionDef node, Object data)
 			{
 				return data;
+			}
+
+		public Object visit(ASTIncrement node, Object data)
+			{
+				out("; This is an increment statement");
+
+				//vvv Taken from incrementByInt vvv
+				SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
+				TypeSpec type = (TypeSpec) kid.jjtAccept(this, this);
+				if (type == Predefined.undefinedType)
+					{
+						System.err.println("Error! Incrementing a NOOB!");
+					}
+				String name = (String) kid.jjtAccept(this, "name");
+				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
+
+				if (type != Predefined.integerType && type != Predefined.realType)
+					{
+						type = cast(type, Predefined.integerType); //if it's not a number, cast to int
+						kid.setTypeSpec(type);
+					}
+				entry.setTypeSpec(type);
+				//^^^ Taken from incrementByInt ^^^
+
+				out("bipush 1");
+
+				//vvv Taken from incrementByInt vvv
+				String typeCode = type == Predefined.integerType ? "i" : "f";
+				out(typeCode + "add");
+
+				String fullname = CodeGenerator.programName + "/" + name;
+				String typeStr;
+				String suffixes[] =
+					{ "i", "f", "z", "s" };
+				int suf = 0;
+				if (type == Predefined.integerType)
+					{
+						typeStr = "I";
+						suf = 0;
+					}
+				else if (type == Predefined.realType)
+					{
+						typeStr = "F";
+						suf = 1;
+					}
+				else if (type == Predefined.booleanType)
+					{
+						typeStr = "Z";
+						suf = 2;
+					}
+				else
+					{
+						typeStr = "Ljava/lang/String;";
+						suf = 3;
+					}
+				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
+
+				//TODO check this
+				return type;
+				//^^^ Taken from incrementByInt ^^^
+			}
+
+		public Object visit(ASTDecrement node, Object data)
+			{
+				out("; This is an increment statement");
+
+				//vvv Taken from incrementByInt vvv
+				SimpleNode kid = (SimpleNode) node.jjtGetChild(0);
+				TypeSpec type = (TypeSpec) kid.jjtAccept(this, this);
+				if (type == Predefined.undefinedType)
+					{
+						System.err.println("Error! Incrementing a NOOB!");
+					}
+				String name = (String) kid.jjtAccept(this, "name");
+				SymTabEntry entry = CodeGenerator.symTabStack.lookup(name);
+
+				if (type != Predefined.integerType && type != Predefined.realType)
+					{
+						type = cast(type, Predefined.integerType); //if it's not a number, cast to int
+						kid.setTypeSpec(type);
+					}
+				entry.setTypeSpec(type);
+				//^^^ Taken from incrementByInt ^^^
+
+				out("bipush -1");
+
+				//vvv Taken from incrementByInt vvv
+				String typeCode = type == Predefined.integerType ? "i" : "f";
+				out(typeCode + "add");
+
+				String fullname = CodeGenerator.programName + "/" + name;
+				String typeStr;
+				String suffixes[] =
+					{ "i", "f", "z", "s" };
+				int suf = 0;
+				if (type == Predefined.integerType)
+					{
+						typeStr = "I";
+						suf = 0;
+					}
+				else if (type == Predefined.realType)
+					{
+						typeStr = "F";
+						suf = 1;
+					}
+				else if (type == Predefined.booleanType)
+					{
+						typeStr = "Z";
+						suf = 2;
+					}
+				else
+					{
+						typeStr = "Ljava/lang/String;";
+						suf = 3;
+					}
+				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
+
+				//TODO check this
+				return type;
+				//^^^ Taken from incrementByInt ^^^
 			}
 
 		// loops
@@ -1027,13 +1146,47 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						System.err.println("Nested loops! This may get hairy");
 					}
 				curLabelEnd = endLoop;
-
 				out(loopStart + ":");
-				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(0);
-				literalNode.jjtAccept(this, data);
+				SimpleNode literalNode;
 
-				out("goto " + loopStart);
-				out(endLoop + ":");
+				int numKids = node.jjtGetNumChildren();
+				if (numKids == 1) //IN YR LOOP
+					{
+						literalNode = (SimpleNode) node.jjtGetChild(0); //block
+						literalNode.jjtAccept(this, data);
+						out("goto " + loopStart);
+					}
+				else if (numKids == 2) //IN YR LOOP UPPIN YR VAR
+					{
+						literalNode = (SimpleNode) node.jjtGetChild(0); //inc or dec statement
+						literalNode.jjtAccept(this, data);
+
+						literalNode = (SimpleNode) node.jjtGetChild(1); //block
+						literalNode.jjtAccept(this, data);
+						out("goto " + loopStart);
+					}
+				else if (numKids == 3) //IN YR LOOP UPPIN YR VAR TIL the cows come home
+					{
+						String comparisonBranch = CodeGenerator.makeLabel("loopBranch");
+						literalNode = (SimpleNode) node.jjtGetChild(0); //inc or dec statement
+						literalNode.jjtAccept(this, data);
+
+						literalNode = (SimpleNode) node.jjtGetChild(1); //boolean comparison
+						literalNode.jjtAccept(this, data);
+						out("ifeq " + comparisonBranch); //if false, jump to comparisonBranch
+						out("goto " + curLabelEnd);
+						out(comparisonBranch + ":");
+
+						literalNode = (SimpleNode) node.jjtGetChild(2);
+						literalNode.jjtAccept(this, data);
+
+						out("goto " + loopStart);
+					}
+				else
+					{
+						System.err.println("Too many loop child nodes!");
+					}
+				out(endLoop + ":\n");
 
 				curLabelEnd = null;
 				return data;
