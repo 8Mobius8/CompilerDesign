@@ -1145,10 +1145,10 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				String loopStart = CodeGenerator.makeLabel("loop");
 				String endLoop = CodeGenerator.makeLabel("end_loop");
 
-				if (curLabelEnd != null)
-					{
-						System.err.println("Nested loops! This may get hairy");
-					}
+//				if (curLabelEnd != null)
+//					{
+//						System.err.println("Nested loops! This may get hairy");
+//					}
 				curLabelEnd.push(endLoop);
 				out(loopStart + ":");
 				SimpleNode literalNode;
