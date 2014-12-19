@@ -2,6 +2,7 @@ package lolparser.backend.compiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 import lolparser.frontend.*;
 import lolparser.intermediate.ICodeNode;
@@ -34,7 +35,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 		private static final TypeForm String = null;
 		private static int labelCount = 0;
-		private static String curLabelEnd = null;
+		private static Stack<String> curLabelEnd = new Stack<String>();
 
 		public Object visit(ASTIdent node, Object data)
 			{
@@ -456,6 +457,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
 
+				out("");
 				//TODO check this
 				return type;
 			}
@@ -778,7 +780,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				out("invokevirtual java/io/PrintStream/println(" + typeDescriptor + ")V");
 
-				return data;
+				return null;
 			}
 
 		// IF / THEN / ELSE
@@ -1070,6 +1072,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
 
+				out("");
 				//TODO check this
 				return type;
 				//^^^ Taken from incrementByInt ^^^
@@ -1130,6 +1133,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
 
+				out("");
 				//TODO check this
 				return type;
 				//^^^ Taken from incrementByInt ^^^
@@ -1145,7 +1149,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					{
 						System.err.println("Nested loops! This may get hairy");
 					}
-				curLabelEnd = endLoop;
+				curLabelEnd.push(endLoop);
 				out(loopStart + ":");
 				SimpleNode literalNode;
 
@@ -1174,7 +1178,7 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 						literalNode = (SimpleNode) node.jjtGetChild(1); //boolean comparison
 						literalNode.jjtAccept(this, data);
 						out("ifeq " + comparisonBranch); //if false, jump to comparisonBranch
-						out("goto " + curLabelEnd);
+						out("goto " + curLabelEnd.peek());
 						out(comparisonBranch + ":");
 
 						literalNode = (SimpleNode) node.jjtGetChild(2);
@@ -1188,13 +1192,13 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 					}
 				out(endLoop + ":\n");
 
-				curLabelEnd = null;
+				curLabelEnd.pop(); //TODO 
 				return data;
 			}
 
 		public Object visit(ASTBreak node, Object data)
 			{
-				out("goto " + curLabelEnd);
+				out("goto " + curLabelEnd.peek());
 				return data;
 			}
 
