@@ -1,21 +1,14 @@
 package lolparser.backend.compiler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Stack;
 
 import lolparser.frontend.*;
-import lolparser.intermediate.ICodeNode;
 import lolparser.intermediate.LolParserVisitorAdapter;
 import lolparser.intermediate.SymTabEntry;
-import lolparser.intermediate.SymTabFactory;
-import lolparser.intermediate.TypeForm;
 import lolparser.intermediate.TypeSpec;
 import lolparser.intermediate.icodeimpl.ICodeKeyImpl;
 import lolparser.intermediate.symtabimpl.SymTabKeyImpl;
-import lolparser.intermediate.typeimpl.TypeSpecImpl;
 import lolparser.intermediate.symtabimpl.Predefined;
-import lolparser.backend.*;
 
 public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements LolParserTreeConstants
 	{
@@ -33,9 +26,10 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		 * CodeGenerator.objectFile.flush(); return data; }
 		 */
 
-		private static final TypeForm String = null;
-		private static int labelCount = 0;
+		//private static final TypeForm String = null;
+		//private static int labelCount = 0;
 		private static Stack<String> curLabelEnd = new Stack<String>();
+		private static TypeSpec IT = Predefined.undefinedType;
 
 		public Object visit(ASTIdent node, Object data)
 			{
@@ -788,32 +782,125 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 		//TODO Add else/then statements
 		public Object visit(ASTIfBlock node, Object data)
 			{
-				String ifeq = CodeGenerator.makeLabel("isequal");
-				String end = CodeGenerator.makeLabel("ifend");
+				//String ifeq = CodeGenerator.makeLabel("isEqual");
+				//String end = curLabelEnd.peek();
 
+				// expression
+				// out TRUE, for comparison ?? Does ifeq pop two values off the stack?
+				//out("ifeq " + ifeq); // if true, jump to ifeq label
+
+				// elseif goes here?
+				//out("goto " + end);
+				//out(ifeq + ":"); // ifeq label
 				SimpleNode literalNode = (SimpleNode) node.jjtGetChild(0);
-				literalNode.jjtAccept(this, data); // print bool
-				TypeSpec type = literalNode.getTypeSpec();
+				literalNode.jjtAccept(this, data); // print if block
+
+				return data;
+			}
+
+		public Object visit(ASTIfCheck node, Object data)
+			{
+				TypeSpec type = Predefined.undefinedType;
+				Object temp = node.jjtGetChild(0).jjtAccept(this, data);
+				try
+					{
+						type = (TypeSpec) temp;
+						if (type != Predefined.booleanType)
+							{
+								cast(type, Predefined.booleanType);
+							}
+					}
+				catch (ClassCastException e)
+					{
+						System.err.println("Found an invalid type return!");
+					}
+
+				return type;
+			}
+
+		public Object visit(ASTIf node, Object data)
+			{
+				//If will always have an ifBlock as the first child
+				//May have many if/else blocks as children 1-n
+				//Child n may be an else block
+
+				int numKids = node.jjtGetNumChildren() - 1; // -1 for zero-indexed array length
+
+				String ifEnd = CodeGenerator.makeLabel("ifEnd");
+				curLabelEnd.push(ifEnd);
+				String ifElse = CodeGenerator.makeLabel("ifElse");
+
+				out("ifeq " + ifElse);
+
+				SimpleNode child = (SimpleNode) node.jjtGetChild(0);
+				child.jjtAccept(this, data); //accept the IfBlock node
+				out(ifElse + ":");
+				///Accept all other children
+
+				for (int i = 1; i <= numKids; i++)
+					{
+						child = (SimpleNode) node.jjtGetChild(i);
+						child.jjtAccept(this, data);
+					}
+
+				out(curLabelEnd.pop() + ":");
+				return data;
+			}
+
+		public Object visit(ASTIfElseBlock node, Object data)
+			{
+				SimpleNode child = (SimpleNode) node.jjtGetChild(0);
+				TypeSpec type = (TypeSpec) child.jjtAccept(this, data);
+				String ifeq = CodeGenerator.makeLabel("isEqual");
+				String end = curLabelEnd.peek();
+
 				if (type != Predefined.booleanType)
 					{
 						cast(type, Predefined.booleanType);
 					}
-				// expression
-				// out TRUE, for comparison ?? Does ifeq pop two values off the stack?
-				out("ifeq " + ifeq); // if true, jump to ifeq label
-				if (node.jjtGetNumChildren() >= 3) // if getChild(2) exists
-					{
-						literalNode = (SimpleNode) node.jjtGetChild(2);
-						literalNode.jjtAccept(this, data);
-					}
-				// elseif goes here?
+
+				out("ifeq " + ifeq);
+
+				child = (SimpleNode) node.jjtGetChild(1);
+				child.jjtAccept(this, data);
+
 				out("goto " + end);
-				out(ifeq + ":"); // ifeq label
-				literalNode = (SimpleNode) node.jjtGetChild(1);
-				literalNode.jjtAccept(this, data); // print if block
+				out(ifeq + ":");
 
-				out(end + ":");
+				return data;
+			}
 
+		public Object visit(ASTIt node, Object data)
+			{
+				out("\n;Begin LOL_STD_OPS");
+				node.jjtGetChild(0).jjtAccept(this, data);
+
+				//set IT
+
+				out(";End LOL_STD_OPS\n");
+
+				//		private TypeSpec getIT()
+				//		{
+				//			String typeCode = getTypeCode(IT).toLowerCase();
+				//			if(typeCode.contains("l"))
+				//				{
+				//					typeCode = "a"; //string
+				//				}
+				//			if(typeCode == "z")
+				//				{
+				//					typeCode = "i";
+				//				}
+				//			
+				//			out(typeCode + "load_0");
+				//			return IT;
+				//		}
+				//		
+				//		private void setIT(TypeSpec spec)
+				//		{
+				//			//TODO
+				//			
+				//			return;
+				//		}
 				return data;
 			}
 
@@ -1145,10 +1232,10 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				String loopStart = CodeGenerator.makeLabel("loop");
 				String endLoop = CodeGenerator.makeLabel("end_loop");
 
-//				if (curLabelEnd != null)
-//					{
-//						System.err.println("Nested loops! This may get hairy");
-//					}
+				//				if (curLabelEnd != null)
+				//					{
+				//						System.err.println("Nested loops! This may get hairy");
+				//					}
 				curLabelEnd.push(endLoop);
 				out(loopStart + ":");
 				SimpleNode literalNode;

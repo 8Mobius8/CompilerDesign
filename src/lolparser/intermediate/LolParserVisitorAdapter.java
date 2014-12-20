@@ -22,6 +22,7 @@ import lolparser.frontend.ASTIfCheck;
 import lolparser.frontend.ASTIfElseBlock;
 import lolparser.frontend.ASTIncrement;
 import lolparser.frontend.ASTIncrementByInt;
+import lolparser.frontend.ASTIt;
 import lolparser.frontend.ASTLoop;
 import lolparser.frontend.ASTMax;
 import lolparser.frontend.ASTMin;
@@ -224,6 +225,13 @@ public class LolParserVisitorAdapter implements LolParserVisitor
 
 	@Override
 	public Object visit(ASTBreak node, Object data)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	@Override
+	public Object visit(ASTIt node, Object data)
 		{
 			// TODO Auto-generated method stub
 			return null;
