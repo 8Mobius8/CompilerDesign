@@ -2,16 +2,9 @@ HAI
 
 BTW Testing loop
 
-I HAS A VAR
-VAR R 1
-IM IN YR LOOP
-  UP VAR!!1
-  BTW VISIBLE VAR
-  	O RLY? 
-  	BOTH SAEM VAR AN 10
-  		YA RLY
-  			GTFO
-  	OIC
+I HAS A VAR ITZ 1
+IM IN YR LOOP UPPIN YR VAR TIL BOTH SAEM VAR AN 10
+	VISIBLE VAR
 IM OUTTA YR LOOP
 
 OBTW multiple lines of comments
@@ -20,7 +13,8 @@ TLDR
 
 BTW Testing if statement
 
-O RLY? BOTH SAEM 5 AN 3
+BOTH SAEM 5 AN 3
+O RLY? 
   YA RLY
     VISIBLE "We are the Champions"
   NO WAI
@@ -28,12 +22,10 @@ O RLY? BOTH SAEM 5 AN 3
 OIC
 
 I HAS A test ITZ 5
-
-O RLY? BOTH SAEM test AN test
+BOTH SAEM test AN test
+O RLY? 
   YA RLY
     VISIBLE WIN
-  MEBBE WIN
-    VISIBLE FAIL
   NO WAI
     VISIBLE FAIL
 OIC
