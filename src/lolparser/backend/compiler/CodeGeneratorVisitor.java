@@ -86,17 +86,50 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 
 				// do check to ensure that child is there? Or assume parser returned
 				// valid code?
-				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString(); // this
-				// gets
-				// the
-				// name
-				// of
-				// a
-				// child
-				// identifier
-				CodeGenerator.symTabStack.enterLocal(name).setTypeSpec(Predefined.undefinedType);
+				String name = node.jjtGetChild(0).jjtAccept(this, "name").toString();
+				// this gets the name of a child identifier
 
-				return Predefined.undefinedType;
+				TypeSpec type = Predefined.undefinedType;
+				if (node.jjtGetNumChildren() == 2)
+					{
+						SimpleNode child = (SimpleNode) node.jjtGetChild(1);
+						type = (TypeSpec) child.jjtAccept(this, data);
+
+						String programName = CodeGenerator.programName;
+						String fullname = programName + "/" + name;
+						String typeStr;
+
+						String suffixes[] =
+							{ "i", "f", "z", "s" };
+						int suf = 0;
+						if (type == Predefined.integerType)
+							{
+								typeStr = "I";
+								suf = 0;
+							}
+						else if (type == Predefined.realType)
+							{
+								typeStr = "F";
+								suf = 1;
+							}
+						else if (type == Predefined.booleanType)
+							{
+								typeStr = "Z";
+								suf = 2;
+							}
+						else
+							{
+								typeStr = "Ljava/lang/String;";
+								suf = 3;
+							}
+
+						out("putstatic \t" + fullname + suffixes[suf] + " " + typeStr);
+
+					}
+
+				CodeGenerator.symTabStack.enterLocal(name).setTypeSpec(type);
+
+				return type;
 			}
 
 		public Object visit(ASTAssign node, Object data)
@@ -870,7 +903,13 @@ public class CodeGeneratorVisitor extends LolParserVisitorAdapter implements Lol
 				return data;
 			}
 
+		public Object visit(ASTElseBlock node, Object data)
+			{
+				return node.jjtGetChild(0).jjtAccept(this, data);
+			}
+
 		public Object visit(ASTIt node, Object data)
+
 			{
 				out("\n;Begin LOL_STD_OPS");
 				node.jjtGetChild(0).jjtAccept(this, data);
